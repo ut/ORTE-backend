@@ -1,0 +1,61 @@
+- content_for(:title) { "Search in #{@map.title}" }
+
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Map:
+    = link_to map_path(@map) do
+      = @map.title
+
+
+
+
+  - if @map.places.all_tags
+    %div.tags
+      - @map.places.all_tags.each do |tag|
+        - if @map.places.tagged_with(["#{tag.name}"]).count > 1
+          %span.label.secondary.tag
+            = link_to map_tag_path(@map,tag) do
+              %i.fi-price-tag
+              = tag.name
+              (#{@map.places.tagged_with(["#{tag.name}"]).count})
+
+  .grid-x.grid-padding-x
+    .cell.medium-4
+      - if @map.places.all_tags
+        %p
+          = link_to map_tags_path(@map), :class => "button small" do
+            %i.fi-pricetag-multiple
+            List of all tags
+    .cell.medium-8
+      = render 'searchform', object: @map
+  %hr
+  %p
+    Searching all places of this map for "#{@query}"
+    - if @places && @places.count > 0
+      \— #{@places.count} Places found
+    - else
+      \— Sorry, nothing found
+  %hr
+
+  %div
+    - @places.each do |place|
+      %div.cards
+        - if place.startdate.present?
+          %p
+            = smart_date_display(place.startdate, place.enddate)
+        %h5
+          = link_to map_layer_place_path(@map,place.layer,place) do
+            = place.title
+        %p.small
+          = link_to map_layer_path(@map,place.layer) do
+            = place.layer.title
+        - if place.tag_list
+          %p
+            - place.tags.each do |tag|
+              %span.label.secondary.tag
+                %i.fi-price-tag
+                = link_to map_tag_path(@map,tag) do
+                  = tag

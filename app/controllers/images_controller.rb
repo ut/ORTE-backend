@@ -43,7 +43,9 @@ class ImagesController < ApplicationController
   # POST /images.json
   def create
     @image = Image.new(image_params)
-
+    @map = Map.by_user(current_user).find(params[:map_id])
+    @layer = Layer.find(params[:layer_id])
+    @place = Place.find(params[:place_id])
     respond_to do |format|
       if @image.save
         format.html { redirect_to edit_map_layer_place_path(@image.place.layer.map, @image.place.layer, @image.place), notice: 'Image was successfully created.' }

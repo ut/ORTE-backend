@@ -94,10 +94,11 @@ RSpec.describe PlacesController, type: :controller do
           expect(response).to redirect_to(map_layer_url(@map, @layer))
         end
 
-        xit 'attaches an uploaded image' do
-          valid_attributes_with_image = FactoryBot.build(:place, :with_images, layer_id: @layer.id).attributes
+        # ActiveStorage::Attachment, :count still not working
+        xit 'attaches an uploaded audio' do
+          valid_attributes_with_audio = FactoryBot.build(:place, :with_audio, layer_id: @layer.id).attributes
           expect do
-            post :create, params: { place: valid_attributes_with_image, layer_id: @layer.id, map_id: @map.id }, session: valid_session
+            post :create, params: { place: valid_attributes_with_audio, layer_id: @layer.id, map_id: @map.id }, session: valid_session
           end.to change(ActiveStorage::Attachment, :count).by(1)
         end
 
@@ -114,7 +115,7 @@ RSpec.describe PlacesController, type: :controller do
           startdate = '2010-04-29 20:30:00.000000000 +0000'
           startdate_date = '2010-04-29'
           startdate_time = '20:30'
-          # ups, FactoryBot.build did not handel the attr_accessor values startdate_date...
+          # ups, FactoryBot.build did not handle the attr_accessor values startdate_date...
           attributes = FactoryBot.attributes_for(:place, :date_and_time, layer_id: @layer.id, startdate_date: startdate_date, startdate_time: startdate_time)
           post :create, params: { place: attributes, layer_id: @layer.id, map_id: @map.id }, session: valid_session
           expect(Place.last.startdate).to eq(startdate)
@@ -201,7 +202,7 @@ RSpec.describe PlacesController, type: :controller do
     describe 'POST #sort' do
       it 'sort images of a place (via XHR)' do
         place = Place.create! valid_attributes
-        
+
         image1 = FactoryBot.create(:image, place: place, sorting: 1)
         image2 = FactoryBot.create(:image, place: place, sorting: 2)
         image3 = FactoryBot.create(:image, place: place, sorting: 3)

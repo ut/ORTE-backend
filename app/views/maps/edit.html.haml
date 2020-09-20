@@ -1,6 +1,9 @@
+- content_for(:title) { "#{@map.title} (Edit)" }
+
+
 #form-wrapper
   %p.text-right.close_link_wrapper
     =link_to maps_path, :class=>'close_link' do
-      \&times;
+      %i.fi.fi-x
   %h1 Editing map
   = render 'form'

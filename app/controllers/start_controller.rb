@@ -9,6 +9,9 @@ class StartController < ApplicationController
 
   def info; end
 
+  def settings
+    @user = current_user
+  end
   def edit_profile
     @user = current_user
   end

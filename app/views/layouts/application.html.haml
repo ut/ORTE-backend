@@ -5,7 +5,14 @@
     %meta{ name: 'robots', content: 'noindex, nofollow' }
     %meta{ name: "viewport", content: "width=device-width, initial-scale=1.0" }
 
-    %title= content_for?(:title) ? yield(:title) : "#{Settings.app_name}"
+    - title = content_for?(:title) ? "#{yield(:title)} — #{Settings.app_name}" : "#{Settings.app_name}"
+    %title= title
+
+    %meta{property:"og:type", content:"website"}
+    %meta{property:"og:title", content:"#{title}"}
+    %meta{property:"og:description", content:"#{Settings.app_tagline}"}
+    %meta{property:"og:image", content:"#{Settings.app_url}#{asset_path('apple-touch-icon.png')}"}
+
 
     = stylesheet_link_tag "application"
     = javascript_include_tag "application", "data-turbolinks-track" => true
@@ -18,7 +25,7 @@
     = favicon_link_tag asset_path('safari-pinned-tab.svg'), rel: 'mask-icon', color: '#5bbad5'
     = favicon_link_tag asset_path('favicon.ico'), rel: 'shortcut icon'
     %meta{name: 'msapplication-config', content: '/assets/favicon/browserconfig.xml'}
-    %meta{name: 'theme-color', content: '#ffffff' }    
+    %meta{name: 'theme-color', content: '#ffffff' }
 
 
 
@@ -52,11 +59,11 @@
         .cell.large-2.medium-4.small-6.text-right
           - if controller_name == 'layers' && params[:action] == 'show' && @map && @layer
             = link_to map_layer_path(@map,@layer,:format => :csv), :title => "Export this layer as CSV", class: 'small' do
-              CSV 
+              CSV
             \::
             = link_to map_layer_path(@map,@layer,:format => :json ), :title => "Export this layer as JSON", class: 'small' do
               JSON
-          - if controller_name == 'maps' && params[:action] == 'show' && @map 
+          - if controller_name == 'maps' && params[:action] == 'show' && @map
             = link_to public_map_path(@map,:format => :json ), :title => "Public link for this map as JSON", class: 'small' do
               Public JSON
 

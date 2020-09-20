@@ -1,5 +1,6 @@
-#table-wrapper
+- content_for(:title) { "Tags of #{@map.title}" }
 
+#table-wrapper
   %h3
     = link_to map_path(@map) do
       = @map.title

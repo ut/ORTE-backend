@@ -14,15 +14,24 @@ RSpec.describe ImagesController, type: :controller do
     end
 
     let(:image) do
-      FactoryBot.create(:image, place_id: @place.id)
+      FactoryBot.create(:image, :with_file, place_id: @place.id)
     end
 
     let(:valid_attributes) do
-      FactoryBot.build(:image, place_id: @place.id).attributes
+      FactoryBot.attributes_for(:image, :with_file, place_id: @place.id)
+      # FactoryBot.build(:image, :with_file, place_id: @place.id).attributes
     end
 
     let(:invalid_attributes) do
       FactoryBot.attributes_for(:image, :invalid)
+    end
+
+    let(:without_file_attributes) do
+      FactoryBot.attributes_for(:image, :without_file, place_id: @place.id)
+    end
+
+    let(:with_wrong_fileformat_attributes) do
+      FactoryBot.attributes_for(:image, :with_wrong_fileformat, place_id: @place.id)
     end
 
     let(:valid_session) { {} }
@@ -99,12 +108,25 @@ RSpec.describe ImagesController, type: :controller do
       context 'with invalid params' do
         it "returns a success response (i.e. to display the 'new' template)" do
           post :create, params: { image: invalid_attributes, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
+          expect(response).to render_template('new')
+          expect(response).to have_http_status(200)
+
+        end
+      end
+      context 'wit wrong fileformat' do
+        it "returns a success response (i.e. to display the 'new' template)" do
+          pending 'fails to prevent save with wrong fileformat'
+          post :create, params: { image: with_wrong_fileformat_attributes, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
+          expect(response).to render_template('new')
           expect(response).to have_http_status(200)
         end
-
-        xit 'redirects to new image url' do
-          post :create, params: { image: invalid_attributes, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
-          expect(response).to redirect_to(new_map_layer_place_image_url(@map, @layer, @place))
+      end
+      context 'without file' do
+        it "returns a success response (i.e. to display the 'new' template)" do
+          pending 'fails to prevent save with missing file'
+          post :create, params: { image: without_file_attributes, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
+          expect(response).to render_template('new')
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -133,7 +155,7 @@ RSpec.describe ImagesController, type: :controller do
         it "returns a success response (i.e. to display the 'edit' template)" do
           image = Image.create! valid_attributes
           put :update, params: { id: image.to_param, image: invalid_attributes, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
-          expect(response).to have_http_status(302)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -149,7 +171,7 @@ RSpec.describe ImagesController, type: :controller do
       it 'redirects to the place edit view' do
         image = Image.create! valid_attributes
         delete :destroy, params: { id: image.to_param, layer_id: @layer.id, map_id: @map.id, place_id: @place.id }, session: valid_session
-          expect(response).to redirect_to(edit_map_layer_place_url(@map, @layer, @place))        
+          expect(response).to redirect_to(edit_map_layer_place_url(@map, @layer, @place))
       end
     end
   end

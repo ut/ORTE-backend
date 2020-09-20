@@ -1,4 +1,9 @@
+- content_for(:title) { "Users (Edit)" }
+
 #form-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to admin_users_path, :class=>'close_link' do
+      %i.fi.fi-x
   %h1 Editing a user
 
   = render 'form'

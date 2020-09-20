@@ -1,26 +1,29 @@
-#table-wrapper
+- content_for(:title) { "#{@tag.name}" }
 
+
+#table-wrapper
   %h3
     = link_to map_path(@map) do
       = @map.title
-    >
+    \:
     = link_to map_tags_path(@map) do
-      Tags
-    >
-    = @tag.name
+      = @tag.name
 
   %p.hint.text-left
     #{@map.places.tagged_with(["#{@tag.name}"]).count} place(s) tagged with #{@tag.name}
   %hr
-  %ul
+  %div
     - @map.places.tagged_with(["#{@tag.name}"]).each do |place|
-      %li
+      %div.cards
         - if place.startdate.present?
           %p
             = smart_date_display(place.startdate, place.enddate)
         %h5
           = link_to map_layer_place_path(@map,place.layer,place) do
             = place.title
+        %p.small
+          = link_to map_layer_path(@map,place.layer) do
+            = place.layer.title
         - if place.tag_list
           %p
             - place.tags.each do |tag|

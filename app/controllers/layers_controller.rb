@@ -14,6 +14,16 @@ class LayersController < ApplicationController
     @layers = @map.layers
   end
 
+  def search
+    puts params.inspect
+    @map = Map.sorted.by_user(current_user).find(params[:map_id])
+    @layers = @map.layers
+    @query = params[:q][:query]
+    puts @query
+    @places = @map.places.where('places.title LIKE :query OR places.teaser LIKE :query OR places.text LIKE :query', query: "%#{@query}%")
+    puts @places.count
+  end
+
   # GET /layers/1
   # GET /layers/1.json
   def show

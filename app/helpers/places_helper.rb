@@ -4,12 +4,10 @@ module PlacesHelper
 
    def default_url_options
       { host: Settings.app_host}
-    end  
+    end
 
   def show_link(title, map_id, layer_id, id)
-    " <a href=\"/maps/#{map_id}/layers/#{layer_id}/places/#{id}\">
-      #{title}
-      </a>"
+    " <a href=\"/maps/#{map_id}/layers/#{layer_id}/places/#{id}\">#{title}</a>"
   end
 
   def edit_link(map_id, layer_id, id)
@@ -21,7 +19,7 @@ module PlacesHelper
   end
 
   def image_link(image)
-    if image.file.attached? 
+    if image.file.attached?
       polymorphic_url(image.file)
     end
   end

@@ -125,14 +125,6 @@
           = link_to new_map_layer_place_image_path(@place.layer.map,@place.layer,@place), class: 'button' do
             %i.fi.fi-plus
             Add image
-        - if @place.images.count > 0
-          %p
-            Images, old format
-          %p
-            - @place.images.each do |img|
-              - # = image_tag img.variant(resize_to_limit: [100, 100]).processed
-              = link_to url_for(img) do
-                = image_tag url_for(img)
         - images = Image.where(place_id: @place.id)
         - if images.count > 0
           %p
@@ -148,7 +140,10 @@
                     = image_tag url_for(img.file)
                 - else
                   = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
-                    = image_tag url_for(img.file)
+                    - if img.file.attached?
+                      = image_tag url_for(img.file)
+                    - else
+                      Invalid Image. Please click me and try again.
         %hr
         %label Audio
         - if @place.audio && @place.audio.attached?

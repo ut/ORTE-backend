@@ -1,0 +1,36 @@
+- content_for(:title) { "Settings" }
+
+#info-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to maps_path, :class=>'close_link' do
+      %i.fi.fi-x
+  .grid-x
+    .large-12.medium-12.cell
+      %h1= Settings
+      %p
+        = @user.email
+        \|
+        %i.fi-torsos-all.fi-21
+        = @user.group.title
+      %p.small
+        Last login
+        = l(@user.last_sign_in_at)
+      %hr
+      %ul.menu
+        - if user_signed_in?
+          %li
+            %a{:href => edit_profile_path, :title => 'Settings'}
+              %i.fi-torso.fi-21
+              Edit your profile
+      - if admin?
+        %hr
+        %ul.menu
+          %li
+            %a{:href => admin_users_path, :title => 'Manage users'}
+              %i.fi-torsos.fi-21
+              Users (#{User.all.count})
+          %li
+            %a{:href => admin_groups_path, :title => 'Manage groups'}
+              %i.fi-torsos-all.fi-21
+              Usergroups
+              (#{Group.all.count})

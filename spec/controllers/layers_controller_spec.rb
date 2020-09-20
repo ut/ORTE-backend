@@ -39,6 +39,22 @@ RSpec.describe LayersController, type: :controller do
       end
     end
 
+    describe 'GET #search' do
+
+      it 'returns a success response' do
+        layer = Layer.create! valid_attributes
+        get :search, params: { map_id: @map.id, q: { query: 'Nope' } }, session: valid_session
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns a success response' do
+        layer = Layer.create! valid_attributes
+        place = FactoryBot.create(:place, layer_id: layer.id, title: 'Test')
+        get :search, params: { map_id: @map.id, q: { query: 'Test' } }, session: valid_session
+        expect(assigns(:places)).to eq([place])
+      end
+    end
+
     describe 'GET #show' do
       it 'returns a success response' do
         layer = Layer.create! valid_attributes

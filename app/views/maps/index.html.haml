@@ -1,5 +1,3 @@
-
-
 #selection
   .grid-x
     - if @maps.count > 0
@@ -11,11 +9,11 @@
 
             = f.input :id, :collection => @maps.map { |m| ["#{m.title}", "/maps/#{m.id}", :class => "map-#{m.id} input-group-field"] }, :label => false, :selected => @map, :include_blank => 'Select a map...', input_html: {:class => 'nav-selector'}
             .input-group-button
-              = link_to new_map_path, :class => 'button secondary', :title => 'Create a new map' do
+              = link_to new_map_path, :class => 'button secondary', :id => 'new_map_button', :title => 'Create a new map' do
                 %i.fi-plus.fi-24
 
     - else
       .cell.medium-12
-        = link_to new_map_path, :class => 'button action' do
+        = link_to new_map_path, :class => 'button action', :id => 'new_map_button', :title => 'Create a new map' do
           %i.fi-plus.fi-24
           Add a map

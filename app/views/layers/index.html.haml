@@ -1,23 +1,38 @@
+- content_for(:title) { "Layers of #{@map.title}" }
 
 #table-wrapper
   %p.text-right.close_link_wrapper
     =link_to map_path(@map), :class=>'close_link' do
-      \&times;
+      %i.fi.fi-x
   %h1
     Map:
     = link_to map_path(@map) do
       = @map.title
 
   - if @map.places.all_tags
-    = link_to map_tags_path(@map), :class => "button" do
-      %i.fi-pricetag-multiple
-      List of Tags
+    %div.tags
+      - @map.places.all_tags.each do |tag|
+        - if @map.places.tagged_with(["#{tag.name}"]).count > 1
+          %span.label.secondary.tag
+            = link_to map_tag_path(@map,tag) do
+              %i.fi-price-tag
+              = tag.name
+              (#{@map.places.tagged_with(["#{tag.name}"]).count})
+
+  .grid-x.grid-padding-x
+    .cell.medium-4
+      - if @map.places.all_tags
+        %p
+          = link_to map_tags_path(@map), :class => "button small" do
+            %i.fi-pricetag-multiple
+            List of all tags
+    .cell.medium-8
+      = render 'searchform', object: @map
 
   %table
     %thead
       %tr
         %th Layer
-        %th.show-for-medium Marker
         %th.show-for-medium
           %i.fi-eye.fi-24
         %th
@@ -27,6 +42,10 @@
         %tr
           %td
             %h4
+              %span.show-for-medium
+                - if layer.color.present?
+                  %svg{height:30,width:30,version:"1.1",xmlns:"http://www.w3.org/2000/svg"}
+                    %circle{cx:"15",cy:"15",r:"15",fill:"#{layer.color}"}
               = link_to map_layer_url(layer.map,layer) do
                 = layer.title
                 (#{layer.places.count})
@@ -37,11 +56,6 @@
                 %svg{height:30,width:30,version:"1.1",xmlns:"http://www.w3.org/2000/svg"}
                   %circle{cx:"15",cy:"15",r:"15",fill:"#{layer.color}"}
               %span.icons{:style=>"height: 40px; vertical-align: middle;"}
-          %td.show-for-medium
-            - if layer.color.present?
-              %svg{height:30,width:30,version:"1.1",xmlns:"http://www.w3.org/2000/svg"}
-                %circle{cx:"15",cy:"15",r:"15",fill:"#{layer.color}"}
-            %span.icons{:style=>"height: 40px; vertical-align: middle;"}
           %td.show-for-medium
             - if layer.published
               %i.fi-check.fi-24

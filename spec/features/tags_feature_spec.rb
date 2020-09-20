@@ -20,7 +20,6 @@ RSpec.feature 'Adding and removing tags ' do
     tag2 = FactoryBot.create(:tag, name: 'beta')
     @place = FactoryBot.create(:place, layer_id: @layer.id, tag_list: [tag1,tag2])
     visit edit_map_layer_place_path(@map, @layer, @place)
-    save_and_open_page
     option1 = find('#place_tag_list').find(:xpath, 'option[1]')
     expect(option1).to have_content 'alpha'
     option1.select_option

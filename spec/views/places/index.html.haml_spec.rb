@@ -6,43 +6,13 @@ RSpec.describe 'places/index', type: :view do
   before(:each) do
     @map = FactoryBot.create(:map)
     @layer = FactoryBot.create(:layer, map_id: @map.id)
-    @places = assign(:places, [
-                       Place.create!(
-                         title: 'Title1',
-                         teaser: 'MyText',
-                         text: 'MyText',
-                         link: 'Link',
-                         lat: 'Lat',
-                         lon: 'Lon',
-                         location: 'Location',
-                         address: 'Address',
-                         zip: 'Zip',
-                         city: 'City',
-                         country: 'Country',
-                         startdate: '2018-10-01',
-                         published: false,
-                         layer: @layer
-                       ),
-                       Place.create!(
-                         title: 'Title2',
-                         teaser: 'MyText',
-                         text: 'MyText',
-                         link: 'Link',
-                         lat: 'Lat',
-                         lon: 'Lon',
-                         location: 'Location',
-                         address: 'Address',
-                         zip: 'Zip',
-                         city: 'City',
-                         country: 'Country',
-                         startdate: '2018-10-02',
-                         published: false,
-                         layer: @layer
-                       )
-                     ])
+    @other_layer = FactoryBot.create(:layer, map_id: @map.id)
+    place1 = FactoryBot.create(:place, layer_id: @layer.id, title: 'Title1')
+    place2 = FactoryBot.create(:place, layer_id: @layer.id, title: 'Title2')
+    @places = [place1,place2]
   end
 
-  xit 'renders a list of places' do
+  it 'renders a list of places' do
     render
     expect(rendered).to match(/Title1/)
     expect(rendered).to match(/Title2/)

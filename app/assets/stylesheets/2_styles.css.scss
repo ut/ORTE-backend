@@ -23,20 +23,21 @@ main {
 }
 @media screen and (max-width: 63.9375em) {
   main {
-
-
   }
 }
 @media screen and (max-width: 39.9375em) {
   main {
       padding: 5px;
       top: 0;
-      margin: 0 0 0 0;
+      margin:  40px 0 0 5px;
       min-height: none;
       right: 0;
       left: 0;
       max-width: 99%;
       min-height: auto;
+  }
+  #layers main {
+    margin-top: 5px;
   }
 }
 
@@ -123,12 +124,15 @@ input#addresslookup_address.hide {
 #form-wrapper {
   background-color: rgba(255,255,255,0.8);
   padding: 10px 20px;
-  min-width: 400px;
+  min-width: 450px;
   max-width: 90%;
   @media screen and (max-width: 39.9375em) {
     padding: 10px;
     min-width: none;
-    margin-top: 50px;    
+    margin-top: 10px;
+    max-width: 97%;
+    max-width: unset;
+
     tbody th, tbody td {
       padding: 0.5rem 0.3rem 0.3rem;
     }
@@ -160,7 +164,8 @@ input#addresslookup_address.hide {
   #info-wrapper,
   #table-wrapper,
   #form-wrapper {
-    min-width: auto;
+    min-width: initial;
+    max-width: initial;
   }
   #table-wrapper.large-wrapper,
   #form-wrapper.large-wrapper {
@@ -173,15 +178,15 @@ input#addresslookup_address.hide {
 
 
 p.close_link_wrapper {
-  width: 50px;
+  width: 20px;
   float: right;
   padding: 0;
   line-height: 1;
   margin: 0;
   a.close_link {
-    font-size: 3rem;
+    font-size: 2rem;
     line-height: 0.7;
-    color: #888;
+    color: #aaaa00;
     right: none;
     position: relative;
   }
@@ -276,4 +281,20 @@ svg.icons {
     fill: #939300;
 
   }
+}
+
+.card.card-image-info {
+    padding: 10px 10px 0;
+    color: #444;
+    background-color: transparent;
+    border: 1px solid #444;
+    p {
+      margin-bottom: 5px;
+    }
+
+}
+
+.tags {
+  max-width: 80vw;
+  margin: 15px 30px 15px 0;
 }

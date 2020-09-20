@@ -1,0 +1,6 @@
+= simple_form_for :q, url: search_map_layers_path(@map), method: "GET", html: { class: 'form-inline' } do |f|
+  .input-group
+    .input-group-field
+      = f.input :query, label: false, input_html: { value: "#{@query}", placeholder: 'Search a place'}
+    .input-group-button
+      = f.submit "Search", class: "button small"

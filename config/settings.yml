@@ -18,6 +18,9 @@ development:
 test:
   <<: *defaults
 
+localtest:
+  <<: *defaults
+
 staging:
   <<: *defaults
   app_host:          'orte.rekoder.de'

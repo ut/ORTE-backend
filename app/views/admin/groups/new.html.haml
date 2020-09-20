@@ -1,4 +1,7 @@
 #form-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to admin_groups_path, :class=>'close_link' do
+      %i.fi.fi-x
   %h1 New group
 
   = render 'form'

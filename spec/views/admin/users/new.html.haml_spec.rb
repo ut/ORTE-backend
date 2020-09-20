@@ -13,7 +13,7 @@ RSpec.describe 'admin/users/new', type: :view do
                                ))
   end
 
-  xit 'renders new admin_user form' do
+  it 'renders new admin_user form' do
     render
 
     assert_select 'form[action=?][method=?]', admin_users_path, 'post' do

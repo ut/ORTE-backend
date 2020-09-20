@@ -1,3 +1,4 @@
+- content_for(:title) { @map.title }
 
 #selection{:data => { 'url' => "/maps/#{@map.id}.json", 'map_id' => "#{@map.id}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}" }}
   - if params[:setbound]

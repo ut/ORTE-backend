@@ -1,4 +1,8 @@
 #info-wrapper
+  %p.small
+    %a{:href => settings_path, :title => 'Settings'}
+      %i.fi-widget.fi-21
+      Settings
   = simple_form_for @user, url: update_profile_path do |f|
     .grid-x
       .large-12.cell

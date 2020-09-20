@@ -1,4 +1,13 @@
+- content_for(:title) { "User groups" }
+
 #table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to settings_path, :class=>'close_link' do
+      %i.fi.fi-x
+  %p.small
+    %a{:href => settings_path, :title => 'Settings'}
+      %i.fi-widget.fi-21
+      Settings
   %h1 Groups
 
   %table

@@ -1,3 +1,4 @@
+- content_for(:title) { "#{@place.title} (Edit)" }
 
 #form-wrapper.large-wrapper
   = link_to map_layer_url(@map,@layer), :class=>"close-button small", "aria-label"=>"Close back",:type=>"button" do

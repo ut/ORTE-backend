@@ -1,3 +1,5 @@
+- content_for(:title) { @layer.title }
+
 - if @map.script && @map.script.present?
   :javascript
     $(document).on('turbolinks:load', function() {

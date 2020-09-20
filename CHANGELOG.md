@@ -5,10 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [0.39] - PENDING
+## [0.41] - PENDING
 
+### Added
+- [Feature] Search for title/teaser/text of all places of one map
+- [Images] Better display of metadata and infos
+- [Images] Click on image shows large version in a modal
+- [UI] Admin view: Combine access to settings, user, groups into one view
+- [UI] Adding HTML titles + OG metadata for most views
+- [UI] Some smaller improvements and adjustments
+- [App] Improve RSpecs + feature tests
 
-## [0.38] - 2020-06-26
+### Changed
+- Finally removed old way of attaching images directly to places
+
+## [0.40] - 2020-08-20
+
+### Added
+- [Place] Improve audio upload a bit
+- [App] Adding CODE_OF_CONDUCT
+- [App] Switching from masst to main branch
+
+## [0.38] - 2020-07-26
 
 ### Added
 - [Map] Adding leaflet control module (for user location on map)

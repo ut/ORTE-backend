@@ -26,23 +26,10 @@
           %i.fi-info.fi-21
       - if user_signed_in?
         %li
-          %a{:href => edit_profile_path, :title => 'Edit your profile'}
-            %i.fi-torso.fi-21
+          %a{:href => settings_path, :title => 'Settings'}
+            %i.fi-widget.fi-21
             %span.show-for-large
-              Profil
-
-        - if admin?
-          %li
-            %a{:href => admin_groups_path, :title => 'Manage Groups'}
-              %i.fi-torsos.fi-21
-              %span.show-for-large
-                Groups
-          %li
-            %a{:href => admin_users_path, :title => 'Manage Users'}
-              %i.fi-torsos-all.fi-21
-              %span.show-for-large
-                Users
-
+              Settings
         %li.show-for-medium-up
           = link_to destroy_user_session_path, method: :delete, :id => 'logout', :title => "#{t('.sign_out')}", :class=>'button logout' do
             %i.fi-power.fi-21

@@ -8,12 +8,17 @@
         %p
           = f.input :title
           = f.input :subtitle
-          = tinymce          
+          = tinymce
           = f.input :text, :label => 'Description', :input_html => {:rows => 8, class: 'large-text tinymce' }
         .grid-x.grid-padding-x
           .large-6.medium-6.small-6.cell
-            - if admin?
-              = f.association :group, collection: Group.by_user(current_user), include_blank: false
+            %p
+              - if admin?
+                = f.association :group, collection: Group.by_user(current_user), include_blank: false
+              - else
+                = f.association :group, as: :hidden, :input_html => {:value => current_user.group.id}
+                %i.fi-torsos-all.fi-21
+                = current_user.group.title
           .large-6.medium-6.small-6.cell
             %p
               = f.input :published, :label => 'Publish'
@@ -44,7 +49,8 @@
         - # = f.input :script
       .form-actions
         %p
-          = f.button :submit, :class => "button"
+          - # disable_with: rails5 ujs
+          = f.button :submit, :class => "button", :data => { "disable_with" => false }
 
 - if admin? && params[:action] == 'edit'
   - if @map.layers.count == 0
@@ -52,4 +58,5 @@
     = link_to @map, :method => :delete, :data => { :confirm => 'Are you sure?' }, :class => 'button warning' do
       %i.fi.fi-x
       Delete map
-  %p.shy Note: Only admins can delete a map. You are an admin. But: You only can destroy this map if you've deleted all places and layers before :#
+  %br
+  %p.shy Note: Only admins can delete a map. You are an admin. But you only can destroy this map once you've deleted all places and layers associated link_to this map :#

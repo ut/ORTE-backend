@@ -34,7 +34,11 @@ FactoryBot.define do
       title { 'OtherTitle' }
       published { true }
     end
+    trait :with_audio do
+      audio { [fixture_file_upload(Rails.root.join('spec', 'support', 'files', 'test.mp3'), 'audio/mpeg')] }
+    end
     trait :with_images do
+      # deprecated
       images { [fixture_file_upload(Rails.root.join('public', 'apple-touch-icon.png'), 'image/png')] }
     end
   end

@@ -1,9 +1,9 @@
 #form-wrapper
   %p#notice= notice
   %p
-    - if @image.file.attached? 
+    - if @image.file.attached?
       = link_to url_for(@image.file) do
-        = image_tag url_for(@image.file)    
+        = image_tag url_for(@image.file)
     - else
       No Image
   %p
@@ -19,37 +19,54 @@
 
   - if @image.title
     %h3= @image.title
-  %p
-    %b Alt:
-    = @image.alt
-  %p
+  .card.card-image-info
+    %p
+      - if @image.file.attached?
+        %b File:
+        = link_to url_for(@image.file) do
+          %tt= @image.filename
+    - if @image.alt.present?
+      %p
+        %b Alt:
+        = @image.alt
     - if @image.caption.present?
-      %b Caption:
-      = @image.caption
-  %p
-    %b Source:
-    = link_to @image.source do
-      = @image.source
-  %p
-    %b Creator:
-    = @image.creator
-    %b Licence:
-    = @image.licence    
-  %p
-    - if @image.sorting
-      %b Sorting:
-      = @image.sorting
-    - if @image.preview
-      %b Preview:
-      %i.fi-star.fi-24
+      %p
+        %b Caption:
+        = @image.caption
+    - if @image.source.present?
+      %p
+        %b Source:
+        = link_to @image.source do
+          = @image.source
+    %p
+      %b Creator:
+      - if @image.creator.present?
+        = @image.creator
+      - else
+        Unknown
+      \|
+      %b Licence:
+      - if @image.licence.present?
+        = @image.licence
+      - else
+        Unknown
+    %p
+      - if @image.sorting.present?
+        %b Sorting:
+        = @image.sorting
+      - if @image.sorting.present? && @image.preview.present?
+        \|
+      - if @image.preview
+        %b Preview:
+        %i.fi-star.fi-24
 
   = link_to edit_map_layer_place_image_path(@place.layer.map,@place.layer,@place,@image), class: "button"  do
     %i.fi.fi-pencil
     Edit
   &nbsp;
   = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,@image), method: :delete, data: { confirm: 'Are you sure to delete this image?' }, :class => 'button warning' do
-    %i.fi.fi-trash   
-    Delete     
+    %i.fi.fi-trash
+    Delete
   &nbsp;
   = link_to edit_map_layer_place_path(@place.layer.map,@place.layer,@place), class: "button"  do
-    Back to place  
+    Back to place

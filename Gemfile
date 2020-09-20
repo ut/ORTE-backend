@@ -7,7 +7,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.2.4.3'
+gem 'rails', '~> 5.2.4.4'
 gem 'puma', '~> 4'
 # seg fault with sassc 2.3.0
 gem 'sassc', '~> 2.2.1'
@@ -41,9 +41,8 @@ gem 'settingslogic'
 gem 'simple_form'
 gem 'select2-rails'
 
-# gem 'libv8', '6.3.292.48.1'
-# gem 'mini_racer', '0.2.4',platforms: :ruby
-gem 'mini_racer', '0.2.15', platforms: :ruby
+# gem 'mini_racer', '0.2.15', platforms: :ruby
+gem 'mini_racer', platforms: :ruby
 gem 'image_processing', '~> 1.2'
 
 gem 'color-generator'
@@ -60,7 +59,7 @@ end
 
 gem 'coveralls_reborn', '~> 0.15', require: false
 
-group :development, :test do
+group :development, :test, :localtest do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   # Adds support for Capybara system testing and selenium driver

@@ -1,4 +1,9 @@
+- content_for(:title) { "User groups (Edit)" }
+
 #form-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to admin_groups_path, :class=>'close_link' do
+      %i.fi.fi-x
   %h1 Editing group
   = render 'form'
   %hr

@@ -155,22 +155,30 @@ RSpec.describe Admin::GroupsController, type: :controller do
     end
 
     describe 'DELETE #destroy' do
-      xit 'cant destroy the requested group (if a user is still there' do
+
+      before(:each) do
+        @other_group = FactoryBot.create(:group)
+        @other_user = FactoryBot.create(:admin_user, group_id: @other_group.id)
+
+      end
+      xit 'cant destroy the requested group (if a user is still there)' do
         expect do
           delete :destroy, params: { id: @admin_group.to_param }, session: valid_session
         end.to change(Group, :count).by(0)
       end
 
-      xit 'destroys the requested group' do
-        @admin_user.destroy!
+      it 'destroys the requested group' do
+        @other_user.destroy!
+        @other_group.reload
         expect do
-          delete :destroy, params: { id: @admin_group.to_param }, session: valid_session
+          delete :destroy, params: { id: @other_group.to_param }, session: valid_session
         end.to change(Group, :count).by(-1)
       end
 
-      xit 'redirects to the groups list' do
-        @admin_user.destroy!
-        delete :destroy, params: { id: @admin_group.to_param }, session: valid_session
+      it 'redirects to the groups list' do
+        @other_user.destroy!
+        @other_group.reload
+        delete :destroy, params: { id: @other_group.to_param }, session: valid_session
         expect(response).to redirect_to(admin_groups_url)
       end
     end

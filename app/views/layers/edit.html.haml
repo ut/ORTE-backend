@@ -1,7 +1,9 @@
+- content_for(:title) { "#{@layer.title} (Edit)" }
+
 #form-wrapper
   %p.text-right.close_link_wrapper
     =link_to map_layers_path(@map), :class=>'close_link' do
-      \&times;
+      %i.fi.fi-x
   %h1 Editing layer
   = render 'form'
   = link_to 'View Layer', [@map, @layer], :class => 'button secondary'

@@ -18,6 +18,22 @@ RSpec.describe StartController, type: :controller do
     end
   end
 
+  describe 'GET #info as user' do
+    it 'returns success' do
+      sign_in(@user)
+      get :info
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  describe 'GET #settings as user' do
+    it 'returns success' do
+      sign_in(@user)
+      get :settings
+      expect(response).to have_http_status(200)
+    end
+  end
+
   describe 'update profile as user' do
     before do
       sign_in(@user)
@@ -28,8 +44,8 @@ RSpec.describe StartController, type: :controller do
       expect(response).to have_http_status(200)
     end
 
-    xit 'update response should be success' do
-      put :update_profile, params: { user: { id: User.first.id, email: User.first.email, password: User.first.password } }
+    it 'update response should be success' do
+      put :update_profile, params: { user: { id: @user.id, email: @user.email, password: 'Test1234567890?' } }
       expect(response).to redirect_to(root_url)
       expect(flash[:notice]).to match 'Your profile was successfully updated.'
     end

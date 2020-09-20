@@ -1,3 +1,5 @@
+- content_for(:title) { "Places of #{@layer.title}" }
+
 
 #table-wrapper
   %p.text-right.close_link_wrapper
@@ -7,7 +9,7 @@
   %h3
     = link_to map_path(@layer.map) do
       = @layer.map.title
-    \>
+    \:
     = link_to map_layer_path(@layer.map,@layer) do
       = @layer.title
     (#{@places.count})
@@ -24,7 +26,7 @@
           &nbsp;
 
     %tbody
-      - @places.order(:startdate).each do |place|
+      - @places.sort_by(&:startdate).each do |place|
         %tr
           %td.show-for-medium
             = smart_date_display(place.startdate, place.enddate)

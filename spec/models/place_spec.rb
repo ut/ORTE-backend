@@ -8,10 +8,16 @@ RSpec.describe Place, type: :model do
     expect(build(:place)).to be_valid
   end
 
-  describe 'Attachment' do
-    it 'is valid  ' do
-      subject.images.attach(io: File.open(Rails.root.join('public', 'apple-touch-icon.png')), filename: 'attachment.png', content_type: 'image/png')
-      expect(subject.images).to be_attached
+  describe 'Audio attachment' do
+    it 'is attached' do
+      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.mp3')), filename: 'test.mp3', content_type: 'audio/mpeg')
+      expect(subject.audio).to be_attached
+    end
+    it 'is invalid ' do
+      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.m4a')), filename: 'test.mp3', content_type: 'audio/mpeg')
+      # expect(subject.audio).not_to be_attached
+      expect(subject).not_to be_valid
+      expect(subject.errors.full_messages).to include("Audio format must be MP3.")
     end
   end
 
@@ -47,11 +53,25 @@ RSpec.describe Place, type: :model do
     end
   end
 
+  it 'show_link' do
+    m = FactoryBot.create(:map)
+    l = FactoryBot.create(:layer, map: m)
+    p = FactoryBot.create(:place, layer: l)
+    expect(p.show_link).to eq(" <a href=\"/maps/#{m.id}/layers/#{l.id}/places/#{p.id}\">#{p.title}</a>")
+  end
+
   it 'edit_link' do
     m = FactoryBot.create(:map)
     l = FactoryBot.create(:layer, map: m)
     p = FactoryBot.create(:place, layer: l)
     expect(p.edit_link).to eq(" <a href=\"/maps/#{m.id}/layers/#{l.id}/places/#{p.id}/edit\" class='edit_link'><i class='fi fi-pencil'></i></a>")
+  end
+
+  it 'imagelink2' do
+    m = FactoryBot.create(:map)
+    l = FactoryBot.create(:layer, map: m)
+    p = FactoryBot.create(:place, layer: l)
+    expect(p.imagelink2).to eq(p.imagelink)
   end
 
   describe 'Address' do
