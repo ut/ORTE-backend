@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   patch 'update_profile',  to: 'start#update_profile'
 
   resources :iconsets do
-    resources :icons
+    resources :icons, only: [:edit, :destroy, :update]
   end
   resources :maps do
     resources :tags, only: [:index, :show]

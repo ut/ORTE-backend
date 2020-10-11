@@ -16,10 +16,19 @@ class IconsetsController < ApplicationController
   # GET /iconsets/new
   def new
     @iconset = Iconset.new
+    10.times { @iconset.icons.build }
   end
 
   # GET /iconsets/1/edit
-  def edit; end
+  def edit
+    if ( @iconset.icons.count < 6 )
+      x = 6 - @iconset.icons.count
+      x.times { @iconset.icons.build }
+    else
+      1.times { @iconset.icons.build }
+    end
+
+  end
 
   # POST /iconsets
   # POST /iconsets.json
@@ -70,6 +79,6 @@ class IconsetsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def iconset_params
-    params.require(:iconset).permit(:title, :text, :image)
+    params.require(:iconset).permit(:title, :text, :file, :icon_anchor, :icon_size, :popup_anchor, :class_name, icons_attributes: [:title, :file, :id, :_destroy])
   end
 end

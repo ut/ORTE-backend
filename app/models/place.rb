@@ -6,6 +6,7 @@ class Place < ApplicationRecord
   # self.skip_time_zone_conversion_for_attributes = [:startdate,:startdate_date,:startdate_time]
 
   belongs_to :layer
+  belongs_to :icon, optional: true
 
   acts_as_taggable_on :tags
 
@@ -51,14 +52,32 @@ class Place < ApplicationRecord
     ApplicationController.helpers.edit_link(layer.map.id, layer.id, id)
   end
 
+  def icon_name
+    if self.icon
+      ApplicationController.helpers.icon_name(self.icon.title)
+    end
+  end
+
+  def icon_link
+    if self.icon && self.icon.file.attached?
+      ApplicationController.helpers.icon_link(self.icon.file)
+    end
+  end
+
+  def icon_class
+    if self.icon && self.icon.iconset.class_name
+      ApplicationController.helpers.icon_class(self.icon.iconset.class_name,self.icon.title)
+    end
+  end
+
   def imagelink2
     i = Image.preview(id)
     if i.count > 0
       ApplicationController.helpers.image_link(i.first)
-    else
-      imagelink
     end
   end
+
+
 
   def full_address
     if location.present? && address.present?

@@ -1,15 +1,49 @@
-%p#notice= notice
+#form-wrapper.large-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to admin_groups_path, :class=>'close_link' do
+      %i.fi.fi-x
+  %p.small
+    %a{:href => settings_path, :title => 'Settings'}
+      %i.fi-widget.fi-21
+      Settings
+    \&mdash;
+    %a{:href => iconsets_path, :title => 'Iconsets'}
+      %i.fi-marker.fi-21
+      Icon sets
 
-%p
-  %b Title:
-  = @iconset.title
-%p
-  %b Text:
-  = @iconset.text
-%p
-  %b Image:
-  = @iconset.image
+  %p#notice= notice
 
-= link_to 'Edit', edit_iconset_path(@iconset)
-\|
-= link_to 'Back', iconsets_path
+  %h1
+    = @iconset.title
+  %p
+    = @iconset.text
+  - if @iconset.file.attached?
+    %h5 Preview & default icon:
+    %p
+      = link_to url_for(@iconset.file) do
+        - if @iconset.file.content_type == 'image/svg+xml'
+          = image_tag rails_blob_url(@iconset.file), class: "thumbnail thumbnail-svg"
+        - elsif @iconset.file.image? && @iconset.file.content_type != 'image/svg+xml'
+          = image_tag @iconset.file.variant(resize: "120x120").processed, class: "thumbnail"
+  - if @iconset.icons.count > 0
+    %h5 Icons
+    - @iconset.icons.each do |icon|
+      %p
+        - if icon.file.attached?
+          - if icon.file.content_type == 'image/svg+xml'
+            = image_tag rails_blob_url(icon.file), class: "thumbnail thumbnail-svg"
+          - elsif icon.file.image?
+            = image_tag icon.file.variant(resize: "120x120").processed, class: "thumbnail"
+          = icon.title
+          = link_to iconset_icon_path(@iconset,icon), method: :delete, data: { confirm: 'Are you sure to delete this icon?' }, :class => 'button warning tiny' do
+            %i.fi.fi-trash
+            Delete
+  %hr
+  = link_to edit_iconset_path(@iconset), class: "button"  do
+    %i.fi.fi-pencil
+    Edit/Add more icons
+  &nbsp;
+  = link_to iconset_path(@iconset), method: :delete, data: { confirm: 'Are you sure to delete this image?' }, :class => 'button warning' do
+    %i.fi.fi-trash
+    Delete
+

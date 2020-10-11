@@ -19,6 +19,6 @@ module OrteBackend
 
     config.active_record.sqlite3.represent_boolean_as_integer = true
 
-
+    config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
   end
 end

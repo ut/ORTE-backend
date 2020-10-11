@@ -11,6 +11,11 @@ defaults: &defaults
   base_log_level:    <%= "#{Logger::DEBUG}" %>
   relative_url_root: ""
   secure:             'false'
+  default_icon_anchor: ''
+  default_icon_size: ''
+  default_popup_anchor: ''
+  default_class_name: ''
+
 
 development:
   <<: *defaults

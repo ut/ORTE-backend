@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_21_130031) do
+ActiveRecord::Schema.define(version: 2020_10_11_142900) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 2020_08_21_130031) do
 
   create_table "icons", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
-    t.string "image"
     t.bigint "iconset_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -51,9 +50,12 @@ ActiveRecord::Schema.define(version: 2020_08_21_130031) do
   create_table "iconsets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
     t.text "text"
-    t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "icon_anchor"
+    t.string "icon_size"
+    t.string "popup_anchor"
+    t.string "class_name"
   end
 
   create_table "images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -94,6 +96,7 @@ ActiveRecord::Schema.define(version: 2020_08_21_130031) do
     t.string "northeast_corner"
     t.string "southwest_corner"
     t.text "text"
+    t.integer "iconset_id"
     t.index ["group_id"], name: "index_maps_on_group_id"
   end
 
@@ -116,6 +119,8 @@ ActiveRecord::Schema.define(version: 2020_08_21_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "imagelink"
+    t.integer "icon_id"
+    t.boolean "featured"
     t.index ["layer_id"], name: "index_places_on_layer_id"
   end
 

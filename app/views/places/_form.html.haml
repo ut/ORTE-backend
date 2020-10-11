@@ -1,6 +1,6 @@
 = simple_form_for([@map,@layer,@place]) do |f|
   .grid-x.grid-padding-x
-    .large-3.medium-3.cell
+    .large-2.medium-3.cell
       %h1 Place
     .large-4.medium-4.cell
       %div#layer_change
@@ -42,30 +42,46 @@
         = f.input :lat, as: :hidden
         = f.input :lon, as: :hidden
 
-    .large-5.medium-5.cell
-      #switch.switch.inline
-        %input{:name=>"place[published]", :class => "switch-input", :id => "place_published", :type => "checkbox", :checked => @place.published }
-        %label.switch-paddle{:for=>"place_published"}
-          %span.show-for-sr
-            Publish
-          %span.switch-active{:aria-hidden=>"true"} Publish
-          %span.switch-inactive{:aria-hidden=>"true"} Publish
-
+    .large-6.medium-5.cell
+      .grid-x.grid-padding-x
+        .large-4.medium-12.small-6.cell
+          #switch.switch.inline
+            %input{:name=>"place[published]", :class => "switch-input", :id => "place_published", :type => "checkbox", :checked => @place.published }
+            %label.switch-paddle{:for=>"place_published"}
+              %span.show-for-sr
+                Publish
+              %span.switch-active{:aria-hidden=>"true"} Publish
+              %span.switch-inactive{:aria-hidden=>"true"} Publish
+        .large-8.medium-12.small-6.cell
+          #feature.switch.inline
+            - checked = false
+            - checked = true if @place.featured == true
+            %input{:name=>"place[featured]", :class => "switch-input", :id => "place_featured", :type => "checkbox", :checked => checked }
+            %label.switch-paddle{:for=>"place_featured"}
+              %span.show-for-sr
+                Feature
+              %span.switch-active{:aria-hidden=>"true"} Feature
+              %span.switch-inactive{:aria-hidden=>"true"} Feature
+          &nbsp;
+          %i.fi.fi-info{"data-tooltip"=>true, :title=>"Featured places are places that are highlighted on the map and that may contain more/detailed informations then other places on the same layer."}
       - if params[:action] == 'edit'
-        %p#remap.clear
-          = link_to map_layer_path(@place.layer.map,@place.layer,remap: true, place_id: @place.id), :class =>"button small", title: "Reposition this place on the map" do
-            %strong
-              %i.fi.fi-map
-              RE-MAP
-          &nbsp;
-          %i.fi.fi-info{"data-tooltip"=>true, :title=>"With this function you can re-position this entry on the map. Click the button and then click on the map, where you would like to set as the correct place"}
-        %p#remap
-          = link_to add_new_entry_link(@place), :class =>"button small", title: "Add another entry to the exact same place" do
-            %strong
-              %i.fi.fi-plus
-              Add another entry
-          &nbsp;
-          %i.fi.fi-info{"data-tooltip"=>true, :title=>"With this function you can add another entry to the exact same place or location. "}
+        .grid-x.grid-padding-x
+          .large-4.medium-12.small-5.cell
+            %p#remap.clear
+              = link_to map_layer_path(@place.layer.map,@place.layer,remap: true, place_id: @place.id), :class =>"button small", title: "Reposition this place on the map" do
+                %strong
+                  %i.fi.fi-map
+                  RE-MAP
+              &nbsp;
+              %i.fi.fi-info{"data-tooltip"=>true, :title=>"With this function you can re-position this entry on the map. Click the button and then click on the map, where you would like to set as the correct place"}
+          .large-8.medium-12.small-7.cell
+            %p#remap
+              = link_to add_new_entry_link(@place), :class =>"button small", title: "Add another entry to the exact same place" do
+                %strong
+                  %i.fi.fi-plus
+                  Add another entry
+              &nbsp;
+              %i.fi.fi-info{"data-tooltip"=>true, :title=>"With this function you can add another entry to the exact same place or location. "}
   .grid-x.grid-padding-x
     .large-12.cell
       = f.error_notification
@@ -104,7 +120,13 @@
         - # = f.input :tag_list, label: 'Tags', input_html: {value: f.object.tag_list.join(", "), placeholder: 'Tags, seperate with comma'}
         = f.input :tag_list, input_html: { class: 'tags', multiple: "multiple",  placeholder: 'Type a tag or select from list' }, collection: @map.places.all_tags, value_method: :name
         %p.hint To add a tag, just type into the field and hit return. You can add multiple tags. If you start typing you will see most used tags as a proposal
+        - if @map.iconset
+          %hr
 
+          = link_to iconset_path(@map.iconset) do
+            = @map.iconset.title
+          = f.association :icon, :collection => @map.iconset.icons, :label_method => lambda { |icon| ("#{icon.title}".html_safe) if icon.title }, :value_method => :id, label: false, include_blank: true
+          %p.hint Select one item from list
 
     .large-6.medium-6.cell
       .form-inputs
@@ -125,6 +147,8 @@
           = link_to new_map_layer_place_image_path(@place.layer.map,@place.layer,@place), class: 'button' do
             %i.fi.fi-plus
             Add image
+          %p.hint
+            Please upload one image and describe its content and metadata. You can repeat this to add multiple images to this place.
         - images = Image.where(place_id: @place.id)
         - if images.count > 0
           %p

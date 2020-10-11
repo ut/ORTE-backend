@@ -1,29 +1,57 @@
+- content_for(:title) { "Iconsets" }
 
-#table-wraper
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to settings_path, :class=>'close_link' do
+      %i.fi.fi-x
+  %p.small
+    %a{:href => settings_path, :title => 'Settings'}
+      %i.fi-widget.fi-21
+      Settings
 
-  %h1 Listing iconsets
+  %h1 Icon sets
 
   %table
-    %thead
-      %tr
-        %th Title
-        %th Image
-        %th
-        %th
-        %th
-
     %tbody
       - @iconsets.each do |iconset|
         %tr
           %td
-            %h4= iconset.title
+            - if iconset.file.attached?
+              = link_to url_for(iconset.file) do
+                - if iconset.file.content_type == 'image/svg+xml'
+                  = image_tag rails_blob_url(iconset.file), class: "thumbnail thumbnail-svg thumbnail-svg-small"
+                - elsif iconset.file.image?
+                  = image_tag iconset.file.variant(resize: "60x60").processed, class: "thumbnail"
+            - else
+              No preview/default image
+          %td
+            %h4
+              = link_to iconset_path(iconset) do
+                = iconset.title
             - if iconset.text.present?
               %p= iconset.text
-          %td= iconset.image
-          %td= link_to 'Show', iconset
-          %td= link_to 'Edit', edit_iconset_path(iconset)
-          %td= link_to 'Destroy', iconset, method: :delete, data: { confirm: 'Are you sure?' }
+            - if iconset.icons.count > 0
+              %p Set with #{iconset.icons.count} Icon(s)
+            - if iconset.maps.count > 0
+              %p
+                This set is used at
+                - iconset.maps.each do |m|
+                  = link_to map_path(m) do
+                    = m.title
 
+          %td
+            = link_to edit_iconset_path(iconset), :class => 'button' do
+              %i.fi.fi-pencil
+              Edit
+        %tr
+          %td{colspan: 3}
+            - if iconset.icons.count > 0
+              - iconset.icons.each do |icon|
+                - if icon.file.attached?
+                  - if icon.file.content_type == 'image/svg+xml'
+                    = image_tag rails_blob_url(icon.file), class: "thumbnail thumbnail-svg thumbnail-svg-small"
+                  - elsif icon.file.image?
+                    = image_tag icon.file.variant(resize: "60x60").processed, class: "thumbnail"
   %p
     = link_to new_iconset_path, :class=>'button' do
       %i.fi-plus.fi-24

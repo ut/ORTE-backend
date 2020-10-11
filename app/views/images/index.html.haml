@@ -20,13 +20,13 @@
             - if image.title.present?
               %h4
                 = image.title
-            - elsif image.file.attached? 
+            - elsif image.file.attached?
               %p
                 %tt= image.file.filename
             - else
               %h4
                 No Name
-            - if image.file.attached? 
+            - if image.file.attached?
               = link_to url_for(image.file) do
                 = image_tag url_for(image.file)
             = image.alt
@@ -38,16 +38,16 @@
               = image.creator
               %br
             - if image.licence.present?
-              %strong Licence: 
+              %strong Licence:
               = image.licence
               %br
             - if image.source.present?
               %string Source
-              = image.source   
-            - if image.preview 
+              = image.source
+            - if image.preview
               Previewimage
               %i.fi-star.fi-24
-            = image.sorting         
+            = image.sorting
           %td
             = link_to edit_map_layer_place_image_path(image.place.layer.map,image.place.layer,image.place,image), :class => 'button' do
               %i.fi.fi-pencil

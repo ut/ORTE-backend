@@ -2,15 +2,62 @@
   .grid-x
     .large-12.cell
       = f.error_notification
-  .grid-x
-    .large-3.cell
-      &nbsp;
-    .large-6.medium-12.cell
+      %p A set of icons, that can be used as markers on the map
+      %p.shy Icons shall be PNG or SVG files.
+  .grid-x.grid-padding-x
+    .large-4.medium-12.cell
       .form-inputs
+        %h5 Description
+
         = f.input :title
-        = f.input :text
-        = f.input :image
+        = f.input :text, label: 'Short description'
+        %hr
+        %h5 Leaflet placement settings
+        .grid-x.grid-padding-x
+          .large-6.medium-6.cell
+            = f.input :icon_anchor, input_html: { placeholder: '[0,0]'}
+            = f.input :icon_size, input_html: { placeholder: '[0,0]'}
+            = f.input :popup_anchor, input_html: { placeholder: '[0,0]'}
+          .large-6.medium-6.cell
+            = f.input :class_name, label: 'Style', collection: class_name_collection
+
+    .large-8.medium-12.cell
+      .form-inputs
+        %h5 Icons
+        %hr
+        .grid-x.grid-padding-x
+          .large-5.medium-6.cell
+            %p Preview & default icon
+          .large-7.medium-6.cell
+            - if @iconset.file.attached?
+              %p
+                = link_to url_for(@iconset.file) do
+                  - if @iconset.file.content_type == 'image/svg+xml'
+                    = image_tag rails_blob_url(@iconset.file), class: "thumbnail thumbnail-svg thumbnail-svg-small"
+                  - elsif @iconset.file.image?
+                    = image_tag @iconset.file.variant(resize: "60x60").processed, class: "thumbnail"
+            = f.input :file, label: false
+        %hr
+        = f.fields_for :icons do |i|
+          .grid-x.grid-padding-x
+            .large-4.medium-6.cell
+              = i.input :title, label: "Name/Category"
+            .large-7.medium-6.cell
+              - if i.object.file.attached?
+                = link_to url_for(i.object.file) do
+                  - if i.object.file.content_type == 'image/svg+xml'
+                    = image_tag rails_blob_url(i.object.file), class: "thumbnail thumbnail-svg thumbnail-svg-small"
+                  - elsif i.object.file.image?
+                    = image_tag i.object.file.variant(resize: "60x60").processed, class: "thumbnail"
+              = i.input :file
+            .larg-1.medium-1.cell
+              - if i.object.id
+                = i.check_box :_destroy
+                = i.label :delete
+          %hr
+
+  .grid-x
+    .large-12.cell
+      %hr
       .form-actions
         = f.button :submit, :class => "button"
-    .large-3.cell
-      &nbsp;

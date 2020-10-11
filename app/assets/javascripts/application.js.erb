@@ -177,18 +177,13 @@
     }).addTo(map);
 
     // layers: show all places
-
     if ( $('body').attr('id') === 'layers' )  {
       ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,'layers');
-
     }
     if ( $('body').attr('id') === 'places' )  {
       ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,'places');
-
     }
     if ( $('body').attr('id') === 'maps' )  {
-      // todo: omit/handle layer!
-      // each layer different color!
       ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,'maps');
     }
 

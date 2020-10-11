@@ -287,10 +287,11 @@ p.hint.text-left {
   text-align: left;
 }
 
-div#switch {
+div.switch {
     height: initial;
     position: static;
     margin-bottom: 0;
+    vertical-align: -10px;
     .switch-paddle {
       width: 7rem;
     }

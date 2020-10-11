@@ -1,42 +1,10 @@
 # frozen_string_literal: true
 
 class IconsController < ApplicationController
-  before_action :set_icon, only: %i[show edit update destroy]
-
-  # GET /icons
-  # GET /icons.json
-  def index
-    @icons = Icon.all
-  end
-
-  # GET /icons/1
-  # GET /icons/1.json
-  def show; end
-
-  # GET /icons/new
-  def new
-    @icon = Icon.new
-  end
+  before_action :set_icon, only: %i[edit update destroy]
 
   # GET /icons/1/edit
   def edit; end
-
-  # POST /icons
-  # POST /icons.json
-  def create
-    @icon = Icon.new(icon_params)
-    @iconset = @icon.iconset
-
-    respond_to do |format|
-      if @icon.save
-        format.html { redirect_to iconset_url(@iconset), notice: 'Icon was successfully created.' }
-        format.json { render :show, status: :created, location: @icon }
-      else
-        format.html { render :new }
-        format.json { render json: @icon.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # PATCH/PUT /icons/1
   # PATCH/PUT /icons/1.json
@@ -73,6 +41,6 @@ class IconsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def icon_params
-    params.require(:icon).permit(:title, :image, :iconset_id)
+    params.require(:icon).permit(:title, :iconset_id )
   end
 end

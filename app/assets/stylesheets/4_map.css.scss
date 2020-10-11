@@ -109,3 +109,75 @@
       }
     }
 }
+
+/* iconset settings */
+
+
+body.iconset .leaflet-control-layers-toggle{
+    display:none;
+}
+body.iconset #map.leaflet-container a {
+    color: #1a1a1a;
+}
+
+
+body.iconset #map .marker-icon {
+    background-color: rgba(255,255,255,1); border-radius: 0; padding: 2px;
+    height: 30px; width: 30px;
+    border: 0px solid #1a1a1a;
+    box-shadow: 0 0 4px #000;
+    position: relative;
+}
+
+body.iconset #map .marker-icon.marker-icon-featured {
+    box-shadow: 0 0 4px #c00 !important;
+    color: #c00;
+}
+
+
+body.iconset #map .marker-icon:after, body.iconset #map .marker-icon:before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+body.iconset #map .marker-icon:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #fff;
+    border-width: 6px;
+    margin-left: -6px;
+}
+body.iconset #map .marker-icon:before {
+    border-color: rgba(26, 26, 26, 0);
+    border-top-color: #1a1a1a;
+    border-width: 8px;
+    margin-left: -8px;
+}
+body.iconset #map .marker-icon.marker-icon-featured:before {
+    border-color: rgba(26, 26, 26, 0);
+    border-top-color: #c00;
+    border-width: 8px;
+    margin-left: -8px;
+}
+
+
+body.iconset #map .leaflet-popup-content-wrapper, body.iconset  #map  .leaflet-popup-tip {
+    background: rgba(255,255,255,1);
+    color: #333;
+    border: 2px solid #1a1a1a;
+    box-shadow: 0 0 0  #1a1a1a;
+    border-radius: 0;
+    padding: 0;
+    a {
+        color: #1a1a1a;
+    }
+    a.edit_link i {
+        border: 1px solid #1a1a1a;
+    }
+}
+body.iconset #map .leaflet-popup-tip-container { display: none; }

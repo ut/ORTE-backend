@@ -1,0 +1,109 @@
+function DrawIconset(map,layer_id,marker_layers,params,iconset,places) {
+    var c = 0;
+    console.log("places: "+places.length);
+
+    $.each(places, function(key,place) {
+      console.log("Place ID "+place.id+"//"+layer_id+"//////");
+      console.log(place.title+" @ "+place.lat+"/"+place.lon);
+
+      var icon_link = '';
+      if ( place.icon_link ) {
+        icon_link = place.icon_link;
+      }
+      if ( icon_link.length === 0 ) {
+        if ( place.icon_name ) {
+          icon_link = '<strong>'+place.icon_name.slice(0,1) +'</strong>';
+        } else {
+          icon_link = '<strong>?</strong>';
+        }
+      }
+      var klass = 'marker-icon';
+      if ( place.featured ) {
+        klass = klass + " marker-icon-featured";
+      }
+      if ( place.icon_class ) {
+        klass = klass + " " + place.icon_class;
+      }
+
+
+      var divicon= L.divIcon({
+          html: '<div class="'+klass+'">'+icon_link+'</div>',
+          iconAnchor:[15,50],
+          iconSize:null,
+          popupAnchor:[0,-35] });
+      var divmarker = new L.marker([place.lat, place.lon], {customId:"context"+c, icon: divicon}).addTo(marker_layers);
+
+
+      // layercluster
+      var marker = L.marker([place.lat, place.lon], {icon: divicon})
+      marker_layers.addLayer(marker);
+
+      // popup
+      var content = '';
+      if ( place.images && place.images[0] ) {
+        $.each(place.images, function(kkey, image) {
+          content += "<img src='"+image.image_url+"' />";
+        });
+      }
+      if ( place.imagelink2 ) {
+        content += "<img src='"+place.imagelink2+"' />";
+      } else if ( place.imagelink ) {
+        content += "<img src='"+place.imagelink+"' />";
+      }
+      content += '<div class="leaflet-popup-content-text">';
+      if ( place.date ) {
+        content += "<p>"+place.date;
+        if ( place.address ) {
+          content += " // "+place.address;
+        }
+        content += "</p>";
+      }
+      // console.log(content);
+      content += "<h4>";
+      if ( place.show_link ) {
+        content += place.show_link;
+        if ( place.published !== true ) {
+          content += " <i class='fi-lock fi-18'></i>";
+        }
+        if ( place.featured === true ) {
+          content += " <i class='fi-star fi-18'></i>";
+        }
+      }
+      content += "</h4>";
+      var teaser = place.teaser.replace(/<[^>]*>?/gm, ''); // remove html
+      teaser = teaser.replace(/(?:\r\n|\r|\n)/g, '<br>'); // line breaks
+      if ( teaser.length > 400 ) {
+        teaser = place.teaser.trim()    // remove leading and trailing spaces
+                .substring(0, 400).split(" ").slice(0, -1).join(" ") + "...";
+      }
+      content += "<p>"+teaser;
+      if ( place.edit_link ) {
+        content += place.edit_link;
+      }
+      content += "</p>";
+      content += '</div>';
+
+      marker.bindPopup(content).on('click', function(){
+      // map.panTo(marker.getLatLng());
+      map.panToOffset(marker.getLatLng(),[0,60]);
+
+
+        if ( $('#addresslookup_address').hasClass('hide') ) {
+          // ShowLookUpField();
+        } else {
+          ClearLookUpField();
+        }
+      });
+      c++;
+    });
+    console.log(c+" Marker added to map!");
+
+    // thanks to https://github.com/louh - Allow for offset on center of map
+    L.Map.prototype.panToOffset = function (latlng, offset, options) {
+        var x = this.latLngToContainerPoint(latlng).x - offset[0]
+        var y = this.latLngToContainerPoint(latlng).y - offset[1]
+        var point = this.containerPointToLatLng([x, y])
+        return this.setView(point, this._zoom, { pan: options })
+    }
+
+}

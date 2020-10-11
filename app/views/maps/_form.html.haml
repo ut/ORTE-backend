@@ -5,11 +5,26 @@
   .grid-x
     .large-12.cell
       .form-inputs
-        %p
-          = f.input :title
-          = f.input :subtitle
-          = tinymce
-          = f.input :text, :label => 'Description', :input_html => {:rows => 8, class: 'large-text tinymce' }
+
+        .grid-x.grid-padding-x
+          .large-8.medium-6.small-6.cell
+            = f.input :title
+            = f.input :subtitle
+          .large-4.medium-6.small-6.cell
+            %h6 Status
+            - if @map && @map.created_at
+              %p
+                Created:
+                = l(@map.created_at)
+                %br
+                Layers:
+                = @map.layers.count
+            %p
+              = f.input :published, :label => 'Publish'
+        .grid-x.grid-padding-x
+          .large-12.medium-12.small-12.cell
+            = tinymce
+            = f.input :text, :label => 'Description', :input_html => {:rows => 8, class: 'large-text tinymce' }
         .grid-x.grid-padding-x
           .large-6.medium-6.small-6.cell
             %p
@@ -19,9 +34,13 @@
                 = f.association :group, as: :hidden, :input_html => {:value => current_user.group.id}
                 %i.fi-torsos-all.fi-21
                 = current_user.group.title
+            %p.shy User group, that has access to this map
           .large-6.medium-6.small-6.cell
             %p
-              = f.input :published, :label => 'Publish'
+              = f.association :iconset
+            %p.shy
+              Set of icons for this map
+              %i.fi.fi-info{"data-tooltip"=>true, :title=>"You can select one of these iconsets, which will be used to display your places on the map. If none is selected, coloured circles are used as the default icons."}
         - if admin? && params[:action] == 'edit'
           %hr
           %p

@@ -6,8 +6,7 @@ RSpec.describe 'iconsets/edit', type: :view do
   before(:each) do
     @iconset = assign(:iconset, Iconset.create!(
                                   title: 'MyString',
-                                  text: 'MyText',
-                                  image: 'MyString'
+                                  text: 'MyText'
                                 ))
   end
 
@@ -19,7 +18,6 @@ RSpec.describe 'iconsets/edit', type: :view do
 
       assert_select 'textarea[name=?]', 'iconset[text]'
 
-      assert_select 'input[name=?]', 'iconset[image]'
     end
   end
 end

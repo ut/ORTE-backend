@@ -26,23 +26,12 @@ RSpec.describe IconsController, type: :controller do
 
     describe 'GET #index' do
       it 'returns a success response' do
-        icon = Icon.create! valid_attributes
-        get :index, params: { iconset_id: @iconset.id }, session: valid_session
         expect(response).to have_http_status(200)
       end
     end
 
     describe 'GET #show' do
       it 'returns a success response' do
-        icon = Icon.create! valid_attributes
-        get :show, params: { id: icon.to_param, iconset_id: @iconset.id }, session: valid_session
-        expect(response).to have_http_status(200)
-      end
-    end
-
-    describe 'GET #new' do
-      it 'returns a success response' do
-        get :new, params: { iconset_id: @iconset.id }, session: valid_session
         expect(response).to have_http_status(200)
       end
     end
@@ -52,28 +41,6 @@ RSpec.describe IconsController, type: :controller do
         icon = Icon.create! valid_attributes
         get :edit, params: { id: icon.to_param, iconset_id: @iconset.id }, session: valid_session
         expect(response).to have_http_status(200)
-      end
-    end
-
-    describe 'POST #create' do
-      context 'with valid params' do
-        it 'creates a new Icon' do
-          expect do
-            post :create, params: { icon: valid_attributes, iconset_id: @iconset.id }, session: valid_session
-          end.to change(Icon, :count).by(1)
-        end
-
-        it 'redirects to the created icon' do
-          post :create, params: { icon: valid_attributes, iconset_id: @iconset.id }, session: valid_session
-          expect(response).to redirect_to(redirect_to(iconset_url(@iconset)))
-        end
-      end
-
-      context 'with invalid params' do
-        it "returns a success response (i.e. to display the 'new' template)" do
-          post :create, params: { icon: invalid_attributes, iconset_id: @iconset.id }, session: valid_session
-          expect(response).to have_http_status(302)
-        end
       end
     end
 
@@ -99,7 +66,7 @@ RSpec.describe IconsController, type: :controller do
 
       context 'with invalid params' do
         it "returns a success response (i.e. to display the 'edit' template)" do
-          icon = Icon.create! valid_attributes
+          icon = Icon.create! invalid_attributes
           put :update, params: { id: icon.to_param, icon: invalid_attributes, iconset_id: @iconset.id }, session: valid_session
           expect(response).to have_http_status(302)
         end

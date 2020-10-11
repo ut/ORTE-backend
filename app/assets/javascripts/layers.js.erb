@@ -29,21 +29,39 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,leve
         } else {
           places = data.places;
         }
-        DrawMarkers(map,data.id,text_layers,image_layers,marker_layers,params,data.color,clustercolor,places);
-        $('.marker-cluster-small').addClass('marker-layer-'+data.id);
+        if ( data.iconset ) {
+          console.log("DRAW ICONSET");
+          $('body').addClass('iconset');
+          var marker_layers = L.featureGroup();
+          DrawIconset(map,data.id,marker_layers,params,data.iconset,places);
+          $('.marker-cluster-small').addClass('marker-layer-'+data.id);
+        } else {
+          console.log("DRAW MARKER");
+          DrawMarkers(map,data.id,text_layers,image_layers,marker_layers,params,data.color,clustercolor,places);
+          $('.marker-cluster-small').addClass('marker-layer-'+data.id);
+
+        }
         marker_meta_layers.addLayer(marker_layers);
 
       } else  {
         $.each(data.layers, function(key,data) {
           console.log("Render places of layer "+key+" (\""+data.title+"\") on map");
-          var marker_layers = L.markerClusterGroup({
-            maxClusterRadius: 20,
-            iconCreateFunction: function(cluster) {
-                return L.divIcon({ html: '<div class="marker-cluster marker-cluster-small marker-cluster-layer-'+data.id+'"><div>' + cluster.getChildCount() + '</div></div>' });
-              }
-          });
-          clustercolor = data.color;
-          DrawMarkers(map,data.id,text_layers,image_layers,marker_layers,params,data.color,clustercolor,data.places);
+          if ( data.iconset ) {
+            console.log("DRAW ICONSET");
+            $('body').addClass('iconset');
+            var marker_layers = L.featureGroup();
+            DrawIconset(map,data.id,marker_layers,params,data.iconset,data.places);
+            $('.marker-cluster-small').addClass('marker-layer-'+data.id);
+          } else {
+            var marker_layers = L.markerClusterGroup({
+              maxClusterRadius: 20,
+              iconCreateFunction: function(cluster) {
+                  return L.divIcon({ html: '<div class="marker-cluster marker-cluster-small marker-cluster-layer-'+data.id+'"><div>' + cluster.getChildCount() + '</div></div>' });
+                }
+            });
+            clustercolor = data.color;
+            DrawMarkers(map,data.id,text_layers,image_layers,marker_layers,params,data.color,clustercolor,data.places);
+          }
           marker_meta_layers.addLayer(marker_layers);
 
         });

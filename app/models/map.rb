@@ -2,6 +2,7 @@
 
 class Map < ApplicationRecord
   belongs_to :group
+  belongs_to :iconset, optional: true
   has_many :layers
   has_many :places, through: :layers
 

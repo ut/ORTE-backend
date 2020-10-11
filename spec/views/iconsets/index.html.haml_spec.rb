@@ -7,13 +7,11 @@ RSpec.describe 'iconsets/index', type: :view do
     assign(:iconsets, [
              Iconset.create!(
                title: 'Title1',
-               text: 'MyText',
-               image: 'Image'
+               text: 'MyText'
              ),
              Iconset.create!(
                title: 'Title2',
-               text: 'MyText',
-               image: 'Image'
+               text: 'MyText'
              )
            ])
   end

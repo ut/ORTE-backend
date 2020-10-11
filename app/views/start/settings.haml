@@ -22,6 +22,13 @@
             %a{:href => edit_profile_path, :title => 'Settings'}
               %i.fi-torso.fi-21
               Edit your profile
+      %hr
+      %ul.menu
+        - if user_signed_in?
+          %li
+            %a{:href => iconsets_path, :title => 'Icon sets'}
+              %i.fi-marker.fi-21
+              Icon sets
       - if admin?
         %hr
         %ul.menu

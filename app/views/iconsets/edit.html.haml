@@ -1,7 +1,23 @@
-%h1 Editing iconset
+- content_for(:title) { "Icon sets (Edit)" }
 
-= render 'form'
 
-= link_to 'Show', @iconset
-\|
-= link_to 'Back', iconsets_path
+#form-wrapper.large-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to admin_groups_path, :class=>'close_link' do
+      %i.fi.fi-x
+  %p.small
+    %a{:href => settings_path, :title => 'Settings'}
+      %i.fi-widget.fi-21
+      Settings
+    \&mdash;
+    %a{:href => iconsets_path, :title => 'Iconsets'}
+      %i.fi-marker.fi-21
+      Icon sets
+  %h1 Editing iconset
+
+
+
+
+  = render 'form'
+  %hr
+  = link_to 'All icon sets', iconsets_path
