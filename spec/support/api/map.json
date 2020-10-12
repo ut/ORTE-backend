@@ -365,6 +365,36 @@
                       "examples": [
                         3
                       ]
+                    },
+                    "icon_link": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/icon_link",
+                      "type": "null",
+                      "title": "The Icon Link Schema",
+                      "default": "",
+                      "examples": [
+                        "http://test.domain/path/to/the/icon/file.png"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "icon_class": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/icon_class",
+                      "type": "null",
+                      "title": "The Icon Class Schema",
+                      "default": "",
+                      "examples": [
+                        "marker-klass"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "icon_name": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/icon_name",
+                      "type": "null",
+                      "title": "The Icon Name Schema",
+                      "default": "",
+                      "examples": [
+                        "Name"
+                      ],
+                      "pattern": "^(.*)$"
                     }
                   }
                 }

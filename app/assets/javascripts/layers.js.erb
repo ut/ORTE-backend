@@ -112,7 +112,7 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,leve
           southwest = L.latLng(southwest_array[0],southwest_array[1]);
           bounds = L.latLngBounds(northeast, southwest);
         }
-        map.fitBounds(bounds, {maxZoom: 12, minZoom: 2});
+        map.fitBounds(bounds, {maxZoom: 16, minZoom: 2});
         console.log("fit to bounds done");
 
 
