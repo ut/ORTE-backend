@@ -190,6 +190,7 @@
                     "zip",
                     "city",
                     "country",
+                    "featured",
                     "layer_id"
                   ],
                   "properties": {
@@ -355,6 +356,15 @@
                       "default": "",
                       "examples": [
                         ""
+                      ]
+                    },
+                    "featured": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/featured",
+                      "type": "null",
+                      "title": "The Featured Schema",
+                      "default": false,
+                      "examples": [
+                        true
                       ]
                     },
                     "layer_id": {

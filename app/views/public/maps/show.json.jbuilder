@@ -17,7 +17,7 @@ json.map do
         json.array! layer.places.published do |place|
           next unless place.published
 
-          json.call(place, :id, :title, :teaser, :link, :imagelink, :imagelink2, :published, :startdate, :enddate, :lat, :lon, :location, :address, :zip, :city, :text, :country, :layer_id, :icon_link, :icon_class, :icon_name)
+          json.call(place, :id, :title, :teaser, :link, :imagelink, :imagelink2, :published, :startdate, :enddate, :lat, :lon, :location, :address, :zip, :city, :text, :country, :featured, :layer_id, :icon_link, :icon_class, :icon_name)
         end
       end
     end
