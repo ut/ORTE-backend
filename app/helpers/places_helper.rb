@@ -32,7 +32,15 @@ module PlacesHelper
 
   def image_link(image)
     if image.file.attached?
-      polymorphic_url(image.file)
+      # polymorphic_url(image.file)
+      polymorphic_url(image.file.variant(resize: "800x800").processed)
+    end
+  end
+
+  def audio_link(audio)
+    if audio.attached?
+      # polymorphic_url(image.file)
+      audio_tag rails_blob_url(audio), autoplay: true, controls: true
     end
   end
 

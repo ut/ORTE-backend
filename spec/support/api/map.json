@@ -180,6 +180,7 @@
                     "link",
                     "imagelink",
                     "imagelink2",
+                    "audiolink",
                     "published",
                     "startdate",
                     "enddate",
@@ -255,6 +256,15 @@
                       "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/imagelink2",
                       "type": "null",
                       "title": "The Imagelink Schema",
+                      "default": null,
+                      "examples": [
+                        null
+                      ]
+                    },
+                    "audiolink": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/audiolink",
+                      "type": "null",
+                      "title": "The Audiolink Schema",
                       "default": null,
                       "examples": [
                         null

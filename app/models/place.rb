@@ -77,6 +77,12 @@ class Place < ApplicationRecord
     end
   end
 
+  def audiolink
+    if self.audio
+      ApplicationController.helpers.audio_link(self.audio)
+    end
+  end
+
 
 
   def full_address
