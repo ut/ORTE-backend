@@ -127,6 +127,10 @@ body.iconset #map .marker-icon {
     border: 0px solid #1a1a1a;
     box-shadow: 0 0 4px #000;
     position: relative;
+
+    img {
+        width: 100%;
+    }
 }
 
 body.iconset #map .marker-icon.marker-icon-featured {

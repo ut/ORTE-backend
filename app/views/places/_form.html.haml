@@ -159,15 +159,18 @@
                 .image-toolbar
                   = link_to map_layer_place_path(@place.layer.map,@place.layer,@place), class: 'button button-right tiny sortable_handle' do
                     %i.fi-arrows-out
-                - if img.preview.present?
-                  = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail thumbnail-preview" do
-                    = image_tag url_for(img.file)
-                - else
-                  = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
-                    - if img.file.attached?
+                - if img.file.attached?
+                  - if img.preview.present?
+                    = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail thumbnail-preview" do
                       = image_tag url_for(img.file)
-                    - else
-                      Invalid Image. Please click me and try again.
+                    = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
+                      = image_tag url_for(img.file)
+                - else
+                  = link_to edit_map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
+                    %p
+                      Oups, image file is missing.
+                      %br
+                      Please click here and upload an image file.
         %hr
         %label Audio
         - if @place.audio && @place.audio.attached?
