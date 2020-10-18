@@ -5,9 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [0.41] - PENDING
+## [0.41] - 2020-10-11
 
 ### Added
+- [Feature/MVC] Define a set of icons and connect it to a map, dispay it as map markers
 - [Feature] Search for title/teaser/text of all places of one map
 - [Images] Better display of metadata and infos
 - [Images] Click on image shows large version in a modal

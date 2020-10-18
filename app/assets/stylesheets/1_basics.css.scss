@@ -244,6 +244,10 @@ div.input-group {
     -moz-appearance: none;
     -webkit-appearance: none;
     padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+    @media screen and (max-width: 39.9375em) {
+      padding: 0.3rem 1.5rem 0.3rem 0.3rem;
+      font-size: 1rem;
+    }
   }
 
   div.input-group-button a.button {

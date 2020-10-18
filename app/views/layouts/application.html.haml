@@ -66,5 +66,9 @@
           - if controller_name == 'maps' && params[:action] == 'show' && @map
             = link_to public_map_path(@map,:format => :json ), :title => "Public link for this map as JSON", class: 'small' do
               Public JSON
+          - if user_signed_in?
+            %span.show-for-small-only
+              %a{:href => settings_path, :title => 'Settings'}
+                %i.fi-widget.fi-21
 
 

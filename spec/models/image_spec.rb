@@ -9,7 +9,7 @@ RSpec.describe Image, type: :model do
 
   describe 'Attachment' do
     it 'is valid  ' do
-      subject.file.attach(io: File.open(Rails.root.join('public', 'apple-touch-icon.png')), filename: 'attachment.png', content_type: 'image/png')
+      subject.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.png', content_type: 'image/png')
       expect(subject.file).to be_attached
     end
   end

@@ -29,7 +29,7 @@ main {
   main {
       padding: 5px;
       top: 0;
-      margin:  40px 0 0 5px;
+      margin:  10px 0 0 5px;
       min-height: none;
       right: 0;
       left: 0;
@@ -38,6 +38,12 @@ main {
   }
   #layers main {
     margin-top: 5px;
+  }
+}
+
+body#start main {
+  @media screen and (max-width: 39.9375em) {
+    margin-top: 40px;
   }
 }
 
@@ -137,6 +143,13 @@ input#addresslookup_address.hide {
       padding: 0.5rem 0.3rem 0.3rem;
     }
   }
+}
+#info-wrapper {
+
+  @media screen and (max-width: 39.9375em) {
+
+  }
+
 }
 #form-wrapper {
   max-width: unset;

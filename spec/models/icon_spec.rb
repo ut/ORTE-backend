@@ -10,7 +10,7 @@ RSpec.describe Icon, type: :model do
 
   xit 'icon_linktag' do
     i = Icon.new
-    i.file.attach(io: File.open(Rails.root.join('public', 'apple-touch-icon.png')), filename: 'attachment.png', content_type: 'image/png')
+    i.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.png', content_type: 'image/jpeg')
     expect(i.icon_linktag).to eq("#{rails_blob_path(i.file)}")
   end
 

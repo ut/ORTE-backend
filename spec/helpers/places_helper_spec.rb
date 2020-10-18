@@ -18,15 +18,15 @@ RSpec.describe PlacesHelper, type: :helper do
   describe 'image_link' do
     it 'it returns an polymorphic image link' do
       i = Image.new
-      i.attach(io: File.open(Rails.root.join('public', 'apple-touch-icon.png')), filename: 'attachment.png', content_type: 'image/png')
-      expect(helper.image_link(i)).to eq("http://test.host#{rails_blob_path(i.file)}")
+      i.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.jpg', content_type: 'image/jpeg')
+      expect(helper.image_link(i)).to eq("http://test.host#{polymorphic_path(i.file.variant(resize: "800x800").processed)}")
     end
   end
 
   describe 'icon_link' do
     it 'it returns an polymorphic icon link' do
       i = Icon.new
-      i.file.attach(io: File.open(Rails.root.join('public', 'apple-touch-icon.png')), filename: 'attachment.png', content_type: 'image/png')
+      i.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.jpg', content_type: 'image/jpeg')
       expect(helper.icon_link(i.file)).to eq("<img src=\"http://test.host#{rails_blob_path(i.file)}\">")
     end
   end

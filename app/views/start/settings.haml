@@ -8,13 +8,19 @@
     .large-12.medium-12.cell
       %h1= Settings
       %p
+        Hello,
         = @user.email
-        \|
+
+      %p.small.shy
+        Your group:
         %i.fi-torsos-all.fi-21
         = @user.group.title
-      %p.small
-        Last login
+        %br
+        Last login:
         = l(@user.last_sign_in_at)
+        \|
+        = link_to destroy_user_session_path, method: :delete, :id => 'logout', :title => "#{t('.sign_out')}", :class=>'logout' do
+          Logout
       %hr
       %ul.menu
         - if user_signed_in?
@@ -22,6 +28,10 @@
             %a{:href => edit_profile_path, :title => 'Settings'}
               %i.fi-torso.fi-21
               Edit your profile
+        %li
+          = link_to info_path, {title: 'About this project'} do
+            %i.fi-info.fi-21
+            About ORTE
       %hr
       %ul.menu
         - if user_signed_in?

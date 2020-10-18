@@ -12,7 +12,7 @@ FactoryBot.define do
     sorting { 2 }
     preview { false }
     trait :with_file do
-      file { [fixture_file_upload(Rails.root.join('public', 'apple-touch-icon.png'), 'image/png')] }
+      file { [fixture_file_upload(Rails.root.join('spec', 'support', 'files', 'test.jpg'), 'image/jpeg')] }
     end
     trait :without_file do
       file { [] }

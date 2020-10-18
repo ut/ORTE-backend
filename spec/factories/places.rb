@@ -39,7 +39,7 @@ FactoryBot.define do
     end
     trait :with_images do
       # deprecated
-      images { [fixture_file_upload(Rails.root.join('public', 'apple-touch-icon.png'), 'image/png')] }
+      images { [fixture_file_upload(Rails.root.join('spec', 'support', 'files', 'test.jpg'), 'image/jpeg')] }
     end
   end
 end

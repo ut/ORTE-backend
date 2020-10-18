@@ -157,6 +157,31 @@
 
     L.control.layers(overlays).addTo(map);
 
+    UserZoomLevel(map);
+    UserMapBounds(map);
+
+    if ( $('#selection').data('map-id') ) {
+      var last_map_id = localStorage.getItem('Map');
+      var new_map_id = $('#selection').data('map-id');
+      if ( $('#selection').data('layer-id') ) {
+        var last_layer_id = localStorage.getItem('Layer');
+        var new_layer_id = $('#selection').data('layer-id');
+      }
+      if ( parseInt(last_map_id) !== parseInt(new_map_id) ) {
+        console.log (last_map_id +" !== "+ new_map_id );
+        localStorage.setItem('Map',new_map_id);
+        localStorage.setItem('SetCustomExtent',false);
+      } else if ( (new_layer_id ) && ( parseInt(last_layer_id) !== parseInt(new_layer_id) )) {
+        console.log (last_layer_id +"!=="+ new_layer_id );
+        localStorage.setItem('Layer',new_layer_id);
+        localStorage.setItem('SetCustomExtent',false);
+      } else {
+        localStorage.setItem('SetCustomExtent','true');
+      }
+    }
+    if ( $('#selection').data('layer-id') ) {
+      localStorage.setItem('Layer',$('#selection').data('layer-id'));
+    }
 
     L.control.locate({
       position: 'bottomright',

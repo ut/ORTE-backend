@@ -18,7 +18,6 @@
   %table
     %thead
       %tr
-        %th.show-for-medium Date
         %th Place
         %th.show-for-large
           %i.fi-eye.fi-24
@@ -28,15 +27,15 @@
     %tbody
       - @places.sort_by(&:startdate).each do |place|
         %tr
-          %td.show-for-medium
-            = smart_date_display(place.startdate, place.enddate)
           %td
+            = smart_date_display(place.startdate, place.enddate)
             %p.show-for-small-only
               = smart_date_display(place.startdate, place.enddate)
             - images = Image.preview(place.id)
             - if images.count > 0
               - images.each do |img|
-                = image_tag img.variant(resize: "120x120").processed, class: "thumbnail"
+                - if img.attached?
+                  = image_tag img.variant(resize: "120x120").processed, class: "thumbnail"
             %h4
               = link_to map_layer_place_path(place.layer.map,place.layer,place) do
                 = place.title
@@ -77,6 +76,7 @@
               %i.fi-photo.fi-21
               = images.count
               Images
+              %br
             = link_to new_map_layer_place_image_path(place.layer.map,place.layer,place), :class => "button" do
               %i.fi-plus.fi-21
               Images

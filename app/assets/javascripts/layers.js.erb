@@ -106,16 +106,45 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,leve
         var southwest = bounds.getSouthWest();
         if ( $('#selection').data('map-extent-northeast') ) {
           console.log("fit to custom extent");
+          /*
           var northeast_array = $('#selection').data('map-extent-northeast').split(",").map(Number);
+          console.log(northeast_array);
           var southwest_array = $('#selection').data('map-extent-southwest').split(",").map(Number);
+          console.log(southwest_array);
           northeast = L.latLng(northeast_array[0],northeast_array[1]);
           southwest = L.latLng(southwest_array[0],southwest_array[1]);
+          */
+          var northeast_array = $('#selection').data('map-extent-northeast');
+          console.log(northeast_array);
+          var southwest_array = $('#selection').data('map-extent-southwest');
+          console.log(southwest_array);
           bounds = L.latLngBounds(northeast, southwest);
         }
-        map.fitBounds(bounds, {maxZoom: 16, minZoom: 2});
-        console.log("fit to bounds done");
 
+        // set map center after last user action
+        var northeast_array = localStorage.getItem('UserMapBoundsNE');
+        console.log("set map bounds to user values NE " + northeast_array);
+        var southwest_array = localStorage.getItem('UserMapBoundsSW');
+        console.log("set map bounds to user values SW " + southwest_array);
+        console.log("get map bounds if any");
+        if ( ( localStorage.getItem('SetCustomExtent') === 'true' ) && ( northeast_array ) ) {
+          var boundsX = L.latLngBounds(northeast_array.split(","), southwest_array.split(","));
+          console.log("set map bounds to user values " + bounds);
+          map.fitBounds(boundsX, {maxZoom: 16, minZoom: 2});
+        } else {
+          map.fitBounds(bounds, {maxZoom: 16, minZoom: 2});
+          console.log("fit to bounds done");
+        }
 
+        // set map zoom level after last user action
+        /* not needed for now
+        var zl_after_fitbounds = map.getZoom();
+        var zl = localStorage.getItem('UserZoomLevel');
+        console.log("get zoom level if any " + zl);
+        if ( zl && ( zl_after_fitbounds < zl )) {
+          console.log("set zoom level to " + zl);
+          // map.setZoom(zl);
+        } */
         // set custom extent
         var params = getParams();
         if ( params.setbound )  {
@@ -280,7 +309,7 @@ function DrawMarkers(map,layer_id,text_layers,image_layers,marker_layers,params,
 
       marker.bindPopup(content).on('click', function(){
         // map.panTo(marker.getLatLng());
-        map.panToOffset(marker.getLatLng(),[0,60]);
+        // map.panToOffset(marker.getLatLng(),[0,60]);
 
 
         if ( $('#addresslookup_address').hasClass('hide') ) {
