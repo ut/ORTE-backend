@@ -1,0 +1,40 @@
+header {
+
+  div.input-group {
+    margin-bottom: 0;
+    margin-top: 8px;
+  }
+
+  .menu input {
+    display: inline-block;
+    height: 25px;
+    background: transparent;
+    border: 1px solid #898901;
+    font-size: 12px;
+    color: #999;
+    padding: 0rem 0.4rem;
+    width: 150px;
+    margin: 0;
+  }
+  .menu input:focus {
+    background-color: #ddd;
+    background-color: transparent;
+    color: #aaa;
+    border: 1px solid #aa0;
+    box-shadow: 0 0 1px #A8A800;
+  }
+  .menu ::placeholder {
+    font-size: 12px;
+    color: #898901;
+    color: #A8A800;
+  }
+  .button.small {
+    display: none;
+    padding: 0 0.25rem;
+    height: 25px !important;
+    background-color: black;
+    border: 0 solid black;
+  }
+
+
+}

@@ -1,6 +1,6 @@
-= simple_form_for :q, url: search_map_layers_path(@map), method: "GET", html: { class: 'form-inline' } do |f|
+= simple_form_for :q, url: search_map_layers_path(@map), method: "POST", html: { class: 'form-inline' } do |f|
   .input-group
     .input-group-field
-      = f.input :query, label: false, input_html: { value: "#{@query}", placeholder: 'Search a place'}
+      = f.input :query, label: false, input_html: { value: "#{@query}", placeholder: 'Search this map'}
     .input-group-button
       = f.submit "Search", class: "button small"
