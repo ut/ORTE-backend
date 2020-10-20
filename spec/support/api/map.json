@@ -415,6 +415,106 @@
                         "Name"
                       ],
                       "pattern": "^(.*)$"
+                    },
+                    "images": {
+                      "$id": "#/properties/map/properties/layer/items/properties/places/properties/images",
+                      "type": "array",
+                      "title": "The Images Schema",
+                      "items": {
+                        "$id": "#/properties/map/properties/layer/items/properties/places/items/images/otem",
+                        "type": "object",
+                        "title": "The Items Schema",
+                        "required": [
+                          "id",
+                          "title",
+                          "source",
+                          "creator",
+                          "alt",
+                          "sorting",
+                          "image_linktag",
+                          "image_url"
+                        ],
+                        "properties": {
+                          "id": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/id",
+                            "type": "integer",
+                            "title": "The Id Schema",
+                            "default": 0,
+                            "examples": [
+                              4
+                            ]
+                          },
+                          "title": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/title",
+                            "type": "string",
+                            "title": "The Title Schema",
+                            "default": "",
+                            "examples": [
+                              "Session am Deich"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "source": {
+                            "$id": "#/properties/source/properties/layer/items/properties/places/items/properties/title",
+                            "type": "string",
+                            "title": "The Source Schema",
+                            "default": "",
+                            "examples": [
+                              "The projects archive"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "creator": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/creator",
+                            "type": "string",
+                            "title": "The Creator Schema",
+                            "default": "",
+                            "examples": [
+                              "Photographer"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "alt": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/alt",
+                            "type": "string",
+                            "title": "The Alt Schema",
+                            "default": "",
+                            "examples": [
+                              "Some people at the session"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "sorting": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/sorting",
+                            "type": "string",
+                            "title": "The Sorting Schema",
+                            "default": "",
+                            "examples": [
+                              "5"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "image_linktag": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/image_linktag",
+                            "type": "string",
+                            "title": "The Image Linktag Schema",
+                            "default": "",
+                            "examples": [
+                              ""
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "image_url": {
+                            "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/image_url",
+                            "type": "null",
+                            "title": "The Image URL Schema",
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }

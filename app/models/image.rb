@@ -15,6 +15,13 @@ class Image < ApplicationRecord
   scope :sorted_by_place, ->(place_id) { where('place_id': place_id).order(sorted: :asc) }
   scope :preview, ->(place_id) { where('place_id': place_id, 'preview': true) }
 
+  def image_url
+    ApplicationController.helpers.image_url(file)
+  end
+  def image_linktag
+    ApplicationController.helpers.image_linktag(file,title)
+  end
+
   private
 
   def check_file_presence

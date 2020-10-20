@@ -31,13 +31,23 @@ RSpec.describe PlacesHelper, type: :helper do
     end
   end
 
+  describe 'icon_name' do
+    it 'it returns the icon name' do
+      expect(helper.icon_name('Test')).to eq('Test')
+    end
+  end
+
   describe 'icon_class' do
     it 'it returns an polymorphic icon link' do
       expect(helper.icon_class('circle','Test')).to eq("icon_circle icon_test")
     end
   end
 
-
-
-
+  describe 'audio_link' do
+    it 'it returns an polymorphic audio link' do
+      p = Place.new
+      p.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.mp3')), filename: 'attachment.mp3', content_type: 'audio/mpeg')
+      expect(helper.audio_link(p.audio)).to eq("<audio autoplay=\"autoplay\" controls=\"controls\" src=\"http://test.host#{rails_blob_path(p.audio)}\"></audio>")
+    end
+  end
 end

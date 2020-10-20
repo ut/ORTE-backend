@@ -163,6 +163,7 @@
                   - if img.preview.present?
                     = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail thumbnail-preview" do
                       = image_tag url_for(img.file)
+                  - else
                     = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
                       = image_tag url_for(img.file)
                 - else
