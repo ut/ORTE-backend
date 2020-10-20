@@ -38,11 +38,11 @@ Rails.application.configure do
   # config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
 
-  config.action_controller.default_url_options = {host: 'orte.rekoder.de' }
-  
+  config.action_controller.default_url_options = { host: 'orte.rekoder.de', :protocol => Settings.app_host_protocol }
+
   config.action_controller.asset_host = 'orte.rekoder.de'
 
- config.action_mailer.default_url_options = { host: 'orte.rekoder.de' }
+  config.action_mailer.default_url_options = { host: 'orte.rekoder.de', :protocol => Settings.app_host_protocol }
 
 
 

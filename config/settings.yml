@@ -5,6 +5,7 @@ defaults: &defaults
   app_version:       0.4
   app_credits:       ""
   app_host:          "127.0.0.1:3000"
+  app_host_protocol: 'http'
   app_url:           "http://127.0.0.1:3000"
   app_domain:        "127.0.0.1"
   github_url:        "https://github.com/ut/ORTE-backend"
@@ -29,6 +30,7 @@ localtest:
 staging:
   <<: *defaults
   app_host:          'orte.rekoder.de'
+  app_host_protocol: 'https'
   app_url:           'https://orte.rekoder.de'
   relative_url_root:  ""
   secure:             'true'

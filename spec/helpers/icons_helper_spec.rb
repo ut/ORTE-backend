@@ -15,7 +15,7 @@ RSpec.describe IconsHelper, type: :helper do
     it 'it returns an image link tag' do
       i = Icon.new
       i.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.png', content_type: 'image/jpeg')
-      expect(helper.icon_linktag(i.file)).to eq("<img src=\"#{rails_blob_path(i.file)}\">")
+      expect(helper.icon_linktag(i.file)).to eq("<img src=\"http://test.host#{rails_blob_path(i.file)}\">")
     end
   end
 end

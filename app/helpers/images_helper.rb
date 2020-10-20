@@ -6,7 +6,7 @@ module ImagesHelper
   end
   def image_linktag(file,title='')
     if file.attached?
-      "<img src=\"#{polymorphic_path(file)}\" title=\"#{(title.present? ? title : '')}\">".html_safe
+      "<img src=\"#{polymorphic_url(file)}\" title=\"#{(title.present? ? title : '')}\">".html_safe
     end
   end
 end

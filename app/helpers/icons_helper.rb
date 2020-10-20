@@ -8,7 +8,7 @@ module IconsHelper
   end
   def icon_linktag(file)
     if file.attached?
-      "<img src=\"#{polymorphic_path(file)}\">".html_safe
+      "<img src=\"#{polymorphic_url(file)}\">".html_safe
     end
   end
 end
