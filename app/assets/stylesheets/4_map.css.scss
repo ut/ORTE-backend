@@ -1,5 +1,8 @@
 
 /* leaflet overrides */
+#map {
+  background: #fefefe;
+}
 #map .leaflet-top {
     top: 40px;
 }
@@ -38,6 +41,7 @@
 }
 #map.leaflet-container a {
     color: darken(#c6c600,10%);
+
 }
 
 #map .leaflet-bar a:first-child,

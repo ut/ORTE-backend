@@ -1,6 +1,6 @@
 - content_for(:title) { @map.title }
 
-#selection{:data => { 'url' => "/maps/#{@map.id}.json", 'map_id' => "#{@map.id}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}" }}
+#selection{:data => { 'url' => "/maps/#{@map.id}.json", 'map_id' => "#{@map.id}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}", 'map-basemap-url' => "#{@map.basemap_url}", 'map-basemap-attribution' => "#{@map.basemap_attribution}" }}
   - if params[:setbound]
     #form-wrapper.small-wrapper
       .grid-x

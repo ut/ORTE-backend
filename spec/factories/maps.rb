@@ -6,6 +6,8 @@ FactoryBot.define do
     subtitle { 'MyString' }
     text { 'MyString' }
     published { false }
+    basemap_url { 'MyBasemapUrl' }
+    basemap_attribution { 'Basemap made by' }
     group
     trait :invalid do
       title { nil }

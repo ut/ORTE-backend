@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_142900) do
+ActiveRecord::Schema.define(version: 2020_10_27_173549) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(version: 2020_10_11_142900) do
     t.string "southwest_corner"
     t.text "text"
     t.integer "iconset_id"
+    t.string "basemap_url"
+    t.string "basemap_attribution"
     t.index ["group_id"], name: "index_maps_on_group_id"
   end
 

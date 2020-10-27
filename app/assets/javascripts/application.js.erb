@@ -160,6 +160,27 @@
     UserZoomLevel(map);
     UserMapBounds(map);
 
+
+    var custom_base_layer = '';
+    var custom_basemap_url = '';
+    var custom_basemap_attribution = '';
+    if ( $('#selection').data('map-basemap-url') ) {
+      custom_basemap_url = $('#selection').data('map-basemap-url');
+      if ( $('#selection').data('map-basemap-attribution') ) {
+        custom_basemap_attribution = $('#selection').data('map-basemap-attribution');
+      }
+      custom_base_layer = L.tileLayer(custom_basemap_url, {
+        attribution: custom_basemap_attribution
+      }).addTo(map);
+    } else {
+      var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri <span class="show-for-large">&mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community</a>'
+    }).addTo(map);
+    }
+
+    if ( $('#selection').data('layer-id') ) {
+      localStorage.setItem('Layer',$('#selection').data('layer-id'));
+    }
     if ( $('#selection').data('map-id') ) {
       var last_map_id = localStorage.getItem('Map');
       var new_map_id = $('#selection').data('map-id');
@@ -179,9 +200,7 @@
         localStorage.setItem('SetCustomExtent','true');
       }
     }
-    if ( $('#selection').data('layer-id') ) {
-      localStorage.setItem('Layer',$('#selection').data('layer-id'));
-    }
+
 
     L.control.locate({
       position: 'bottomright',
@@ -197,9 +216,7 @@
          position:'topright'
     }).addTo(map);
 
-    var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri <span class="show-for-large">&mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community</a>'
-    }).addTo(map);
+
 
     // layers: show all places
     if ( $('body').attr('id') === 'layers' )  {

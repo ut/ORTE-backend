@@ -41,29 +41,48 @@
             %p.shy
               Set of icons for this map
               %i.fi.fi-info{"data-tooltip"=>true, :title=>"You can select one of these iconsets, which will be used to display your places on the map. If none is selected, coloured circles are used as the default icons."}
+        %hr
+        .grid-x.grid-padding-x
+          .large-6.medium-6.small-12.cell
+
+            %p
+              = f.input :basemap_url, :input_html => {:placeholder => 'https://server/directory/{z}/{y}/{x}'}
+            %p.shy
+              URL for an alternative basemap
+              %i.fi.fi-info{"data-tooltip"=>true, :title=>"Default are Esri satellite images. Here you can efine a basemap for this map. It must have the following syntax: 'https://server/directory/{z}/{y}/{x}"}
+          .large-6.medium-6.small-12.cell
+            %p
+              = f.input :basemap_attribution, :input_html => {:placeholder => ''}
+            %p.shy
+              Attribution for this basemap
+              %i.fi.fi-info{"data-tooltip"=>true, :title=>"Basemap are made by someone, you should credit them here. Licences of most providers like Openstreetmap require to mention them properly."}
+
         - if admin? && params[:action] == 'edit'
           %hr
-          %p
-            Map extend
           .grid-x.grid-padding-x
-            .large-6.medium-6.small-6.cell
-              %p.hint
-                The map extend defines the focus where the map is zoomed.
-              %p.hint
-                Per default the map zooms to an extend, so all places are visible.
-                If you want to set a custom map extend, you can define it here.
-            .large-6.medium-6.small-6.cell
-              %p#setbound.clear
-                = link_to map_path(@map, setbound: true), :class =>"button small" do
-                  %strong Set custom map extend
-              - if @map.northeast_corner.present?
-                .grid-x.grid-padding-x1
-                  .large-6.medium-6.small-12.cell
-                    %p
-                      = f.input :northeast_corner, :label => 'North-East'
-                  .large-6.medium-6.small-12.cell
-                    %p
-                      = f.input :southwest_corner,  :label => 'South-West'
+            .large-12.medium-12.small-12.cell
+
+              %p
+                Map extend
+              .grid-x.grid-padding-x
+                .large-6.medium-6.small-6.cell
+                  %p.hint
+                    The map extend defines the focus where the map is zoomed.
+                  %p.hint
+                    Per default the map zooms to an extend, so all places are visible.
+                    If you want to set a custom map extend, you can define it here.
+                .large-6.medium-6.small-6.cell
+                  %p#setbound.clear
+                    = link_to map_path(@map, setbound: true), :class =>"button small" do
+                      %strong Set custom map extend
+                  - if @map.northeast_corner.present?
+                    .grid-x.grid-padding-x1
+                      .large-6.medium-6.small-12.cell
+                        %p
+                          = f.input :northeast_corner, :label => 'North-East'
+                      .large-6.medium-6.small-12.cell
+                        %p
+                          = f.input :southwest_corner,  :label => 'South-West'
         %hr
         - # = f.input :script
       .form-actions
@@ -78,4 +97,9 @@
       %i.fi.fi-x
       Delete map
   %br
-  %p.shy Note: Only admins can delete a map. You are an admin. But you only can destroy this map once you've deleted all places and layers associated link_to this map :#
+  %p.shy
+    Note: Only admins can delete a map. You are an admin.
+    %br
+    But you can delete this map only if you've deleted all places and layers associated this map :#
+    %br
+    Then at this place a delete button will be available.
