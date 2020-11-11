@@ -1,0 +1,30 @@
+- videos = Video.where(place_id: @place.id)
+- if videos.count > 0
+  %p
+    Videos:
+  .grid-x#sortable{data: { map: @place.layer.map.id, layer: @place.layer.id, place: @place.id }}
+    - videos.order('sorting ASC').each_with_index do |video,i|
+      .video.ui-state-default{id: "video_#{video.id}"}
+        .video-toolbar
+          = link_to map_layer_place_path(@place.layer.map,@place.layer,@place), class: 'button button-right button-move tiny sortable_handle', title: 'Change sort order' do
+            %i.fi-arrows-out
+          = link_to map_layer_place_video_path(@place.layer.map,@place.layer,@place,video), class: "button button-right button-show tiny", title: 'See details'  do
+            %i.fi-eye
+          = link_to edit_map_layer_place_video_path(@place.layer.map,@place.layer,@place,video), class: "button button-right button-edit tiny", title: 'Delete video'  do
+            %i.fi-pencil
+        - if video.file.attached?
+          - if video.preview.present?
+            = link_to map_layer_place_video_path(@place.layer.map,@place.layer,@place,video), class: "thumbnail thumbnail-preview" do
+              = video_tag url_for(video.file), controls: true
+          - else
+            = link_to map_layer_place_video_path(@place.layer.map,@place.layer,@place,video), class: "thumbnail" do
+              = video_tag url_for(video.file), controls: true, width:200
+          %br
+          = video.title
+
+        - else
+          = link_to edit_map_layer_place_video_path(@place.layer.map,@place.layer,@place,video), class: "thumbnail" do
+            %p
+              Oups, video file is missing.
+              %br
+              Please click here and upload an video file.

@@ -32,7 +32,19 @@
           - else
             %p
               No image uploaded, please do so
-
+    - videos = Video.where(place_id: @place.id)
+    - if videos.count > 0
+      - textcol = 8
+      .cell.small-4.medium-4
+        %div
+          - videos.each do |video|
+            - if video.file.attached?
+              - if video.preview.present?
+                %p{"data-open": "reveal#{video.id}"}
+                  = video_tag video.file.variant(resize: "300x300").processed
+              - else
+                %p{"data-open": "reveal#{video.id}"}
+                  = video_tag url_for(video.file), controls: true, width:150
     - else
       - textcol = 12
     .cell{class: "small-#{textcol} medium-#{textcol}"}

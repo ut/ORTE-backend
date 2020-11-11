@@ -1,0 +1,59 @@
+= simple_form_for([@map,@layer,@place,@video]) do |f|
+  .grid-x
+    .large-12.cell
+      = f.error_notification
+      = f.association :place, as: :hidden, :input_html => { :value => @place.id }
+
+  .grid-x
+    .large-2.cell
+      &nbsp;
+    .large-8.medium-12.cell
+      .form-inputs
+        = f.input :title
+        %hr
+        .grid-x.grid-padding-x
+          .large-6.medium-6.cell
+            = f.input :file, as: :file, input_html: { accept: ('video'), multiple: false }, label: "Video (MP4)"
+            - if params[:action] == 'edit' && @video.file.attached?
+              = link_to url_for(@video.file) do
+                = video_tag url_for(@video.file)
+            %p.shy
+              Please check that your Video is not larger than 2000px
+          .large-6.medium-6.cell
+            .grid-x.grid-padding-x
+              .large-7.medium-7.cell
+                #switch.switch.inline.hide
+                  %label Preview?
+                  %input{:name=>"video[preview]", :class => "switch-input", :id => "video_preview", :type => "checkbox", :checked => @video.preview }
+                  %label.switch-paddle{:for=>"video_preview"}
+                    %span.show-for-sr
+                      Preview
+                    %span.switch-active{:aria-hidden=>"true"} Preview
+                    %span.switch-inactive{:aria-hidden=>"true"} Preview
+                %p.shy.hide Show this video in the popup and in listings?
+              .large-5.medium-5.cell
+                = f.input :sorting, size: 4
+                %p.shy Sorting order (1-99)
+
+
+        %hr
+        .grid-x.grid-padding-x
+          .large-6.medium-6.cell
+            = f.input :creator
+            %p.shy Who is the creator (director, camera, animator,...) of this video?
+            = f.input :licence
+            %p.shy Under which licence the video is and/or shall be published? (CC, Public Domain, Rights reserved)
+            = f.input :source
+            %p.shy Origin of this video
+          .large-6.medium-6.cell
+            = f.input :alt, label: "Alternate Text"
+            %p.shy Please provide a short description for screenreader
+
+            = f.input :caption
+            %p.shy Do you want to add a caption?
+
+
+      .form-actions
+        = f.button :submit, :class => "button"
+    .large-2.cell
+      &nbsp;

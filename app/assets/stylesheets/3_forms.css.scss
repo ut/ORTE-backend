@@ -69,22 +69,24 @@ form .image {
 
 }
 
-.image-toolbar {
-  position: relative;
-  float: right;
-  right: 16px;
+.image-toolbar, .video-toolbar {
+  position: absolute;
+  margin: 3px 0 0 3px;
   a.button {
-    position: absolute;
-    padding: 0.2rem;
+    padding: 0.55em 0.75em;
+
   }
   a.button.button-right {
-    margin-right: 10px;
+    margin-right: 6px;
   }
+
   .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
 }
-a.thumbnail {
-
-}
+  a.thumbnail {
+    border: solid 4px transparent;
+    margin: 0 10px 2px 0;
+    padding: 3px;
+  }
 
 
 

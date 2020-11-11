@@ -5,7 +5,7 @@
 
 Simple, straightforward backend for creating and managing places/POIs (or in german "Orte") and additional informations of a web-based map. Output is a public available API w/JSON and exportable as CSV/JSON.
 
-Based on Ruby on Rails 5, Postgres, jQuery, Leaflet and Foundation 6.
+Based on Ruby on Rails 5, MySQL/MariaDB, jQuery, Leaflet and Foundation 6.
 
 This application is work in progress. Contributions are welcome (see below).
 
@@ -18,6 +18,13 @@ This application uses [Nominatim](https://nominatim.openstreetmap.org/), a searc
 ## Installation
 
 Basic steps for a local installation on your machine:
+
+### Requirements
+
+* Webserver (Apache, NGINX)
+* Ruby 2.6+, RVM, ...
+* MySQL/Maria DB
+* ffmpeg (for the video upload feature), ImageMagick (fpr the image upload feature)
 
 ### Get repository
 
@@ -45,20 +52,18 @@ $ bundle exec rails db:seed
 
 ### Run
 
-
 ```bash
-$ bundlex exec rails s
+$ bundle exec rails s
 ```
 
 ## Credits
 
-Code + Design by Ulf Treger <ulf.treger@googlemail.com> with kind support from:
+Code + Design by Ulf Treger <ulf.treger@googlemail.com> with kind support from and collaboration with:
 
-* Pragma Shift Projects, Hamburg (code donation)
-* Treffentotal 2018, Hamburg (acceptance testing and first use public case with a map at [map.treffentotal.de](https://map.treffentotal.de), which gets its geolocations from ORTE backend via JSON)
-* and from participants of recent workshops of [city/data/explosion](https://citydataexplosion.tumblr.com/) at Kunst- und Kulturverein Spedition, Bremen.
-
-
+* [Pragma Shift](https://www.pragma-shift.net/), Hamburg (code donation),
+* Treffentotal 2018, Hamburg (first use public case with a map at [map.treffentotal.de](https://map.treffentotal.de), which gets its geolocations from ORTE backend via JSON),
+* Participants of recent workshops of [city/data/explosion](https://citydataexplosion.tumblr.com/) at Kunst- und Kulturverein Spedition, Bremen,
+* and members of the working group "Queer narratives, mappped" 💖 
 
 ## Feedback & Contributions
 

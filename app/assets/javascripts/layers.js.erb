@@ -105,7 +105,7 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,leve
         var northeast = bounds.getNorthEast();
         var southwest = bounds.getSouthWest();
         if ( $('#selection').data('map-extent-northeast') ) {
-          console.log("fit to custom extent");
+          console.log("Fit to custom map extent");
           /*
           var northeast_array = $('#selection').data('map-extent-northeast').split(",").map(Number);
           console.log(northeast_array);
@@ -115,25 +115,26 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,leve
           southwest = L.latLng(southwest_array[0],southwest_array[1]);
           */
           var northeast_array = $('#selection').data('map-extent-northeast');
-          console.log(northeast_array);
+          console.log("Map custom extend: NE "+  northeast_array);
           var southwest_array = $('#selection').data('map-extent-southwest');
-          console.log(southwest_array);
+          console.log("Map custom extend: SW "+  southwest_array);
           bounds = L.latLngBounds(northeast, southwest);
+          bounds = L.latLngBounds(northeast_array.split(","), southwest_array.split(","));
         }
 
         // set map center after last user action
-        var northeast_array = localStorage.getItem('UserMapBoundsNE');
-        console.log("set map bounds to user values NE " + northeast_array);
-        var southwest_array = localStorage.getItem('UserMapBoundsSW');
-        console.log("set map bounds to user values SW " + southwest_array);
-        console.log("get map bounds if any");
         if ( ( localStorage.getItem('SetCustomExtent') === 'true' ) && ( northeast_array ) ) {
+          var northeast_array = localStorage.getItem('UserMapBoundsNE');
+          console.log("set map bounds to user values NE " + northeast_array);
+          var southwest_array = localStorage.getItem('UserMapBoundsSW');
+          console.log("set map bounds to user values SW " + southwest_array);
           var boundsX = L.latLngBounds(northeast_array.split(","), southwest_array.split(","));
-          console.log("set map bounds to user values " + bounds);
+          console.log("Fit map bounds to user values " + bounds);
           map.fitBounds(boundsX, {maxZoom: 16, minZoom: 2});
         } else {
           map.fitBounds(bounds, {maxZoom: 16, minZoom: 2});
-          console.log("fit to bounds done");
+          console.log("Fit map bounds to custom map values");
+          console.log(bounds);
         }
 
         // set map zoom level after last user action
@@ -196,8 +197,8 @@ function DrawMarkers(map,layer_id,text_layers,image_layers,marker_layers,params,
     });
 
     $.each(places, function(key,place) {
-      console.log("Place ID "+place.id+"//"+layer_id+"//////");
-      console.log(place.title+" @ "+place.lat+"/"+place.lon);
+      // console.log("Place ID "+place.id+"//"+layer_id+"//////");
+      // console.log(place.title+" @ "+place.lat+"/"+place.lon);
       if ( color ) {
         if ( place.published === true ) {
           var opacity="0.7"
@@ -207,8 +208,6 @@ function DrawMarkers(map,layer_id,text_layers,image_layers,marker_layers,params,
         if (color.indexOf('#') == -1) {
           color = '#'+color;
         }
-        console.log("--------------");
-        console.log(color);
         var svg = "<svg height='30' width='30' xmlns='http://www.w3.org/2000/svg'><circle cx='15' cy='15' r='15' fill='"+color+"' fill-opacity='"+opacity+"' shape-rendering='geometricPrecision'></circle></svg>";
         var url = encodeURI("data:image/svg+xml," + svg).replace(new RegExp('#', 'g'),'%23');
         var icon = new CustomLargeIcon({iconUrl: url});

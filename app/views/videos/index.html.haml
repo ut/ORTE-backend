@@ -1,0 +1,57 @@
+#table-wrapper
+
+  %h1 Videos
+
+  %table
+    %thead
+      %tr
+        %th Video
+        %th Metadata
+        %th Sorting + Preview?
+        %th
+
+    %tbody
+      - @videos.each do |video|
+        %tr
+          %td.img_col{style: 'width: 200px'}
+            %p.shy
+              =link_to map_layer_place_path(video.place.layer.map.id,video.place.layer.id,video.place.id) do
+                = video.place.title
+            - if video.title.present?
+              %h4
+                = video.title
+            - elsif video.file.attached?
+              %p
+                %tt= video.file.filename
+            - else
+              %h4
+                No Name
+            - if video.file.attached?
+              = link_to url_for(video.file) do
+                = video_tag url_for(video.file)
+            = video.alt
+            %br
+            = video.caption
+          %td
+            - if video.creator.present?
+              %strong Creator:
+              = video.creator
+              %br
+            - if video.licence.present?
+              %strong Licence:
+              = video.licence
+              %br
+            - if video.source.present?
+              %string Source
+              = video.source
+            - if video.preview
+              Previewvideo
+              %i.fi-star.fi-24
+            = video.sorting
+          %td
+            = link_to edit_map_layer_place_video_path(video.place.layer.map,video.place.layer,video.place,video), :class => 'button' do
+              %i.fi.fi-pencil
+              Edit
+            = link_to map_layer_place_video_path(video.place.layer.map,video.place.layer,video.place,video), method: :delete, data: { confirm: 'Are you sure?' }, :class => 'button warning' do
+              %i.fi.fi-x
+              Destroy

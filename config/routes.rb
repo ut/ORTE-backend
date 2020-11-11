@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       end
       resources :places do
         resources :images
+        resources :videos
         member do
           delete :delete_image_attachment
           post :sort

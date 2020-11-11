@@ -149,29 +149,16 @@
             Add image
           %p.hint
             Please upload one image and describe its content and metadata. You can repeat this to add multiple images to this place.
-        - images = Image.where(place_id: @place.id)
-        - if images.count > 0
-          %p
-            Images
-          .grid-x#sortable{data: { map: @place.layer.map.id, layer: @place.layer.id, place: @place.id }}
-            - images.order('sorting ASC').each_with_index do |img,i|
-              .image.ui-state-default{id: "image_#{img.id}"}
-                .image-toolbar
-                  = link_to map_layer_place_path(@place.layer.map,@place.layer,@place), class: 'button button-right tiny sortable_handle' do
-                    %i.fi-arrows-out
-                - if img.file.attached?
-                  - if img.preview.present?
-                    = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail thumbnail-preview" do
-                      = image_tag url_for(img.file)
-                  - else
-                    = link_to map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
-                      = image_tag url_for(img.file)
-                - else
-                  = link_to edit_map_layer_place_image_path(@place.layer.map,@place.layer,@place,img), class: "thumbnail" do
-                    %p
-                      Oups, image file is missing.
-                      %br
-                      Please click here and upload an image file.
+        = render 'places/form/images'
+        - if params[:action] == 'edit'
+          %hr
+          %label Videos
+          = link_to new_map_layer_place_video_path(@place.layer.map,@place.layer,@place), class: 'button' do
+            %i.fi.fi-plus
+            Add video
+          %p.hint
+            Please upload one video and describe its content and metadata. You can repeat this to add multiple videos to this place.
+        = render 'places/form/videos'
         %hr
         %label Audio
         - if @place.audio && @place.audio.attached?

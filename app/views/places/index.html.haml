@@ -19,8 +19,6 @@
     %thead
       %tr
         %th Place
-        %th.show-for-large
-          %i.fi-eye.fi-24
         %th
           &nbsp;
 
@@ -39,6 +37,12 @@
             %h4
               = link_to map_layer_place_path(place.layer.map,place.layer,place) do
                 = place.title
+              - if place.published
+                %i.fi-eye.fi-21{title: 'Published'}
+              - else
+                %i.fi-lock.fi-21{title: 'Not published'}
+              - if place.featured
+                %i.fi-star.fi-21{title: 'Feature'}
             %p
               = link_to place.link do
                 = place.link
@@ -60,12 +64,6 @@
             %p.hint.text-left
               - if place.lat
                 #{place.lat[0..6]}/#{place.lon[0..5]}
-
-          %td.show-for-large
-            - if place.published
-              %i.fi-check.fi-21
-            - else
-              %i.fi-lock.fi-21
           %td
             = link_to edit_map_layer_place_path(place.layer.map,place.layer,place), :class => "button" do
               %i.fi-pencil.fi-21
@@ -77,9 +75,20 @@
               = images.count
               Images
               %br
+            - videos = Video.where(place_id: place.id)
+            - if videos.count > 0
+              %i.fi-projection-screen.fi-21
+              = videos.count
+              Videos
+              %br
             = link_to new_map_layer_place_image_path(place.layer.map,place.layer,place), :class => "button" do
               %i.fi-plus.fi-21
-              Images
+              Image
+            %br
+            = link_to new_map_layer_place_image_path(place.layer.map,place.layer,place), :class => "button" do
+              %i.fi-plus.fi-21
+              Video
+
             %br
             = link_to map_layer_place_path(place.layer.map,place.layer,place), method: :delete, data: { confirm: 'Are you sure?' }, :class => "button warning" do
               %i.fi-trash.fi-21

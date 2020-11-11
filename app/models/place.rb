@@ -13,6 +13,7 @@ class Place < ApplicationRecord
   has_one_attached :audio
 
   has_many :images
+  has_many :videos
 
   validates :title, presence: true
   validate :check_audio_format

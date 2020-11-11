@@ -134,6 +134,16 @@ a.thumbnail.thumbnail-preview {
   border: solid 4px orange;
 }
 
+a.button.button-right {
+    margin-right: 4px;
+}
+a.button.button-right.button.tiny {
+    font-size: 0.8rem;
+}
+a.button.button-right.button-view.button.tiny {
+}
+/* -------------------- */
+
 select {
   margin: 0;
   -moz-appearance: none;

@@ -179,16 +179,22 @@
     }
 
     if ( $('#selection').data('layer-id') ) {
-      localStorage.setItem('Layer',$('#selection').data('layer-id'));
+      // localStorage.setItem('Layer',$('#selection').data('layer-id'));
     }
     if ( $('#selection').data('map-id') ) {
       var last_map_id = localStorage.getItem('Map');
       var new_map_id = $('#selection').data('map-id');
+      var last_layer_id = '';
+      var new_layer_id = '';
       if ( $('#selection').data('layer-id') ) {
-        var last_layer_id = localStorage.getItem('Layer');
-        var new_layer_id = $('#selection').data('layer-id');
+        last_layer_id = localStorage.getItem('Layer');
+        new_layer_id = $('#selection').data('layer-id');
       }
-      if ( parseInt(last_map_id) !== parseInt(new_map_id) ) {
+      console.log("Check SetCustomExtent");
+      if ( ( last_map_id.length === 0 ) && ( last_layer_id.length === 0 ) ) {
+        console.log ("No last ids stored");
+        localStorage.setItem('SetCustomExtent',false);
+      } else if ( parseInt(last_map_id) !== parseInt(new_map_id) ) {
         console.log (last_map_id +" !== "+ new_map_id );
         localStorage.setItem('Map',new_map_id);
         localStorage.setItem('SetCustomExtent',false);
@@ -197,6 +203,7 @@
         localStorage.setItem('Layer',new_layer_id);
         localStorage.setItem('SetCustomExtent',false);
       } else {
+        console.log("Allow SetCustomExtent");
         localStorage.setItem('SetCustomExtent','true');
       }
     }

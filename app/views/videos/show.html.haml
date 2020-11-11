@@ -1,0 +1,72 @@
+#form-wrapper
+  %p#notice= notice
+  %p
+    - if @video.file.attached?
+      = link_to url_for(@video.file) do
+        = video_tag url_for(@video.file), controls: true
+    - else
+      No Video
+  %p
+    %b Place:
+    = link_to map_path(@video.place.layer.map) do
+      = @video.place.layer.map.title
+    \>
+    = link_to map_layer_path(@video.place.layer.map,@video.place.layer) do
+      = @video.place.layer.title
+    \>
+    = link_to map_layer_place_path(@video.place.layer.map,@video.place.layer,@video.place)  do
+      = @video.place.title
+
+  - if @video.title
+    %h3= @video.title
+  .card.card-video-info
+    %p
+      - if @video.file.attached?
+        %b File:
+        = link_to url_for(@video.file) do
+          %tt= @video.file.filename
+    - if @video.alt.present?
+      %p
+        %b Alt:
+        = @video.alt
+    - if @video.caption.present?
+      %p
+        %b Caption:
+        = @video.caption
+    - if @video.source.present?
+      %p
+        %b Source:
+        = link_to @video.source do
+          = @video.source
+    %p
+      %b Creator:
+      - if @video.creator.present?
+        = @video.creator
+      - else
+        Unknown
+      \|
+      %b Licence:
+      - if @video.licence.present?
+        = @video.licence
+      - else
+        Unknown
+    %p
+      - if @video.sorting.present?
+        %b Sorting:
+        = @video.sorting
+      - if @video.sorting.present? && @video.preview.present?
+        \|
+      - if @video.preview
+        %b Preview:
+        %i.fi-star.fi-24
+
+  = link_to edit_map_layer_place_video_path(@place.layer.map,@place.layer,@place,@video), class: "button"  do
+    %i.fi.fi-pencil
+    Edit
+  &nbsp;
+  = link_to map_layer_place_video_path(@place.layer.map,@place.layer,@place,@video), method: :delete, data: { confirm: 'Are you sure to delete this video?' }, :class => 'button warning' do
+    %i.fi.fi-trash
+    Delete
+  &nbsp;
+  = link_to edit_map_layer_place_path(@place.layer.map,@place.layer,@place), class: "button"  do
+    Back to place

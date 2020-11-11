@@ -1,0 +1,19 @@
+#form-wrapper
+	%h1 New video
+
+	%p
+		Add an video for
+
+		%strong
+			#{@place.layer.map.title}
+		\>
+		%strong
+			#{@place.layer.title}
+		\>
+		%strong
+			#{@place.title}
+
+
+	= render 'form'
+
+	= link_to 'Back to place', edit_map_layer_place_path(@place.layer.map,@place.layer,@place), class: 'button secondary'

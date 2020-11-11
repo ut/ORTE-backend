@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_27_173549) do
+ActiveRecord::Schema.define(version: 2020_11_01_175955) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -171,6 +171,21 @@ ActiveRecord::Schema.define(version: 2020_10_27_173549) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "videos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "title"
+    t.string "licence"
+    t.text "source"
+    t.string "creator"
+    t.bigint "place_id"
+    t.string "alt"
+    t.string "caption"
+    t.integer "sorting"
+    t.boolean "preview"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["place_id"], name: "index_videos_on_place_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "icons", "iconsets"
   add_foreign_key "images", "places"
@@ -179,4 +194,5 @@ ActiveRecord::Schema.define(version: 2020_10_27_173549) do
   add_foreign_key "places", "layers"
   add_foreign_key "taggings", "tags"
   add_foreign_key "users", "groups"
+  add_foreign_key "videos", "places"
 end
