@@ -88,8 +88,11 @@
             = link_to new_map_layer_place_image_path(place.layer.map,place.layer,place), :class => "button" do
               %i.fi-plus.fi-21
               Video
-
             %br
-            = link_to map_layer_place_path(place.layer.map,place.layer,place), method: :delete, data: { confirm: 'Are you sure?' }, :class => "button warning" do
+            - if place.images.count > 0 || place.videos.count > 0
+              - warning = 'Are you sure to delete this place and all attached images and/or videos?'
+            - else
+              - warning = 'Are you sure to delete this place?'
+            = link_to map_layer_place_path(place.layer.map,place.layer,place), method: :delete, data: { confirm:warning }, :class => "button warning" do
               %i.fi-trash.fi-21
               Destroy

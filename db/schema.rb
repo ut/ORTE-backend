@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.integer "record_id", null: false
-    t.integer "blob_id", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
 
   create_table "icons", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
-    t.integer "iconset_id"
+    t.bigint "iconset_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["iconset_id"], name: "index_icons_on_iconset_id"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.string "licence"
     t.text "source"
     t.string "creator"
-    t.integer "place_id"
+    t.bigint "place_id"
     t.string "alt"
     t.string "caption"
     t.integer "sorting"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.string "title"
     t.string "subtitle"
     t.boolean "published"
-    t.integer "map_id"
+    t.bigint "map_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "color"
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.string "title"
     t.string "subtitle"
     t.boolean "published"
-    t.integer "group_id"
+    t.bigint "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "script"
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.string "city"
     t.string "country"
     t.boolean "published"
-    t.integer "layer_id"
+    t.bigint "layer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "imagelink"
@@ -165,7 +165,7 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "role", default: "user"
-    t.integer "group_id"
+    t.bigint "group_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -186,6 +186,13 @@ ActiveRecord::Schema.define(version: 2020_11_01_175955) do
     t.index ["place_id"], name: "index_videos_on_place_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "icons", "iconsets"
+  add_foreign_key "images", "places"
+  add_foreign_key "layers", "maps"
+  add_foreign_key "maps", "groups"
+  add_foreign_key "places", "layers"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "users", "groups"
   add_foreign_key "videos", "places"
 end

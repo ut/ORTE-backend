@@ -10,10 +10,10 @@ class Place < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  has_one_attached :audio
+  has_one_attached :audio, :dependent => :destroy
 
-  has_many :images
-  has_many :videos
+  has_many :images, :dependent => :destroy
+  has_many :videos, :dependent => :destroy
 
   validates :title, presence: true
   validate :check_audio_format
