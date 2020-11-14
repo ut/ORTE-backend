@@ -191,7 +191,7 @@
         new_layer_id = $('#selection').data('layer-id');
       }
       console.log("Check SetCustomExtent");
-      if ( ( last_map_id.length === 0 ) && ( last_layer_id.length === 0 ) ) {
+      if ( ( last_map_id == null ) && ( last_layer_id == null ) ) {
         console.log ("No last ids stored");
         localStorage.setItem('SetCustomExtent',false);
       } else if ( parseInt(last_map_id) !== parseInt(new_map_id) ) {
