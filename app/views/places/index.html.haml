@@ -23,7 +23,7 @@
           &nbsp;
 
     %tbody
-      - @places.sort_by(&:startdate).each do |place|
+      - @places.sort_by{ |e| e.startdate.nil? ? Date.new : e.startdate }.each do |place|
         %tr
           %td
             = smart_date_display(place.startdate, place.enddate)
