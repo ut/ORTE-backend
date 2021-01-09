@@ -1,0 +1,34 @@
+- content_for(:title) { "Layers of #{@map.title}" }
+
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Images:
+    = link_to map_layer_path(@map,@layer) do
+      = @layer.title
+    %hr
+  - @layer.places.each_slice(4) do | batch |
+    .grid-x.grid-padding-x.grid-images
+      - batch.each do | place |
+        .cell.small-12.medium-3.large-3
+          %div.gallery
+            = link_to map_layer_place_path(@map,@layer,place) do
+              = place.title
+            %hr
+
+            - if place.images.count > 0
+              - place.images.each do |img|
+                - if img.attached?
+                  - if img.preview.present?
+                    %p{"data-open": "reveal#{img.id}"}
+                      = link_to map_layer_place_image_path(place.layer.map,place.layer,place,img), class: "thumbnail thumbnail-preview" do
+                        = image_tag img.file.variant(resize: "200x200").processed
+                  - else
+                    %p{"data-open": "reveal#{img.id}"}
+                      = link_to map_layer_place_image_path(place.layer.map,place.layer,place,img), class: "thumbnail" do
+                        = image_tag img.file.variant(resize: "200x200").processed
+            - else
+              %p.small.shy No images (yet)
+

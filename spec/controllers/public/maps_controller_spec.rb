@@ -60,7 +60,7 @@ RSpec.describe Public::MapsController, type: :controller do
         place = FactoryBot.create(:place, layer_id: layer.id, published: true)
         get :show, params: { id: map.to_param, format: 'json' }, session: valid_session
         # puts response.body
-        expect(response).to match_response_schema('map')
+        expect(response).to match_response_schema('map','json')
       end
 
       it 'returns an 403 + error response for unpublished resources' do

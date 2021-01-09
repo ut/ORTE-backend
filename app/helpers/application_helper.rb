@@ -25,8 +25,12 @@ module ApplicationHelper
       end
     elsif startdate > enddate
       "#{startdate.strftime("%d.%m.%y, %H:%M")}"
-    elsif  startdate == enddate
-      "#{startdate.strftime("%d.%m.%y, %H:%M")}"
+    elsif startdate == enddate
+      if startdate.strftime("%H:%M") == '00:00'
+        "#{startdate.strftime("%d.%m.%y")}"
+      else
+        "#{startdate.strftime("%d.%m.%y, %H:%M")}"
+      end
     elsif startdate.to_date == enddate.to_date
       "#{startdate.strftime("%d.%m.%y, %H:%M")} ‒ #{enddate.strftime("%H:%M")}"
     else

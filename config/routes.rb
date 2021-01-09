@@ -26,6 +26,9 @@ Rails.application.routes.draw do
       collection do
         post :search
       end
+      member do
+        get :images, only: [:index]
+      end
       resources :places do
         resources :images
         resources :videos
@@ -43,7 +46,9 @@ Rails.application.routes.draw do
   end
 
   namespace :public do
-    resources :maps, only: [:show, :index], :defaults => { :format => :json }
+    resources :maps, only: [:show, :index], :defaults => { :format => :json } do
+      resources :layers, only: [:show], :defaults => { :format => :json }
+    end
   end
 
 end

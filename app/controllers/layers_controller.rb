@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LayersController < ApplicationController
-  before_action :set_layer, only: %i[show edit update destroy]
+  before_action :set_layer, only: %i[images show edit update destroy]
 
   protect_from_forgery except: :show
 
@@ -12,6 +12,10 @@ class LayersController < ApplicationController
   def index
     @map = Map.sorted.by_user(current_user).find(params[:map_id])
     @layers = @map.layers
+  end
+
+  def images
+    @map = Map.sorted.by_user(current_user).find(params[:map_id])
   end
 
   def search

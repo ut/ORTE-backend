@@ -48,6 +48,19 @@ body#start main {
 }
 
 /* -------------------- */
+
+#layers #table-wrapper {
+    max-width: unset;
+}
+#layers .grid-x.grid-images {
+
+
+  div.gallery {
+    background: white;
+    padding: 10px;
+  }
+}
+/* -------------------- */
 form#addresslookup {
 
   width: auto;
@@ -124,7 +137,11 @@ input#addresslookup_address.hide {
   }
 
 }
-
+#selection-reveal-hint {
+  text-shadow: 1px 1px 3px white;
+  display: inline-block;
+  background-color: rgba(255,255,255,0.2);
+}
 #info-wrapper,
 #table-wrapper,
 #form-wrapper {

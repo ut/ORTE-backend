@@ -1,6 +1,9 @@
 - content_for(:title) { "Tags of #{@map.title}" }
 
 #table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
   %h3
     = link_to map_path(@map) do
       = @map.title

@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rails', '~> 5.2.4.4'
-gem 'puma', '~> 4'
+gem 'puma', '~> 5'
 # seg fault with sassc 2.3.0
 gem 'sassc', '~> 2.2.1'
 gem 'sassc-rails'
@@ -58,7 +58,7 @@ group :staging, :production do
   gem 'passenger'
 end
 
-gem 'coveralls_reborn', '~> 0.15', require: false
+gem 'coveralls_reborn', '~> 0', require: false
 
 group :development, :test, :localtest do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -81,7 +81,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3'
   gem 'web-console', '>= 3.3.0'
 
   gem 'capistrano-bundler'
