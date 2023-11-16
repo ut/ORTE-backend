@@ -7,7 +7,7 @@ load File.expand_path('../deploy/tagit.rb', __FILE__)
 require File.expand_path('../deploy/cap_notify', __FILE__)
 
 set :application, Rails.application.credentials.dig(:deploy, :orte, :application)
-set :repo_url, "git@github.com:a-thousand-channels/ORTE-backend.git"
+set :repo_url, "git@github.com:ut/ORTE-backend.git"
 set :deploy_to, "/home/orte-deploy/#{fetch(:application)}-#{fetch(:stage)}"
 set :ssh_options, forward_agent: true, verify_host_key: :always
 set :keep_releases, 3
