@@ -55,6 +55,9 @@ Style/Documentation:
 Style/FloatDivision:
   Enabled: false
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either  
+  
 Style/IdenticalConditionalBranches:
   Exclude:
     - app/helpers/application_helper.rb

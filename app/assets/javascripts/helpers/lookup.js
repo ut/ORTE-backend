@@ -183,52 +183,57 @@ function reverseLookupNominatim(map, latlng, lat, lon, url) {
                 $('#selection-hint').addClass('active');
                 return;
             }
-            // if results
-            var items = [];
-            // empty container
-            $('#resonse').html(' ');
-            console.log(data);
-            console.log('Reverse Lookup :: Data '+data.display_name);
-           var location = '';
-            if (data.name && data.name.length > 0 && data.name != data.address.road) {
-                location = data.name;
+            
+            var items = []; var full_address = ''; var href = '';
+            if ( data &&  data.error == 'Unable to geocode') {
+                console.log('Reverse Lookup :: No result');
+                href = url + '?lat=' + lat + '&lon=' + lon;
+            } else { 
+                // results
+                // empty container
+                $('#resonse').html(' ');
+                console.log(data);
+                console.log('Reverse Lookup :: Data '+data.display_name);
+                var location = '';
+                if (data.name && data.name.length > 0 && data.name != data.address.road) {
+                    location = data.name;
+                }
+                var road = '';
+                if (data.address.road) {
+                    road = data.address.road || '';
+                }
+                var postcode = '';
+                if (data.address.postcode) {
+                    postcode = data.address.postcode || '';
+                }
+                var city = '';
+                if (data.address.city) {
+                    city = data.address.city;
+                } else if (data.address.town) {
+                    city = data.address.town;
+                } else if (data.address.village) {
+                    city = data.address.village;
+                } else if (data.address.municipality) {
+                    city = data.address.municipality;
+                } else if (data.address.state) {
+                    city = data.address.state
+                }
+                var suburb = '';
+                if (data.address.suburb) {
+                    suburb = " (" + (data.address.suburb  || '') + ")";
+                }
+                var house_number = '';
+                if (data.address.house_number) {
+                    house_number = ' ' + ( data.address.house_number || '');
+                }
+                var address = '';
+                if ( road && house_number) {
+                    address = road + " " + house_number + ", ";
+                }
+                full_address = location + ( location ? '<br />' : '' ) + address + postcode + '&nbsp;' + city + suburb;
+                href = url + '?location=' + location + '&address=' + road + house_number + '&zip=' + postcode + '&city=' + city + suburb +'&lat=' + lat + '&lon=' + lon;
             }
-            var road = '';
-            if (data.address.road) {
-                road = data.address.road || '';
-            }
-            var postcode = '';
-            if (data.address.postcode) {
-                postcode = data.address.postcode || '';
-            }
-            var city = '';
-            if (data.address.city) {
-                city = data.address.city;
-            } else if (data.address.town) {
-                city = data.address.town;
-            } else if (data.address.village) {
-                city = data.address.village;
-            } else if (data.address.municipality) {
-                city = data.address.municipality;
-            } else if (data.address.state) {
-                city = data.address.state
-            }
-            var suburb = '';
-            if (data.address.suburb) {
-                suburb = " (" + (data.address.suburb  || '') + ")";
-            }
-            var house_number = '';
-            if (data.address.house_number) {
-                house_number = ' ' + ( data.address.house_number || '');
-            }
-            var address = '';
-            if ( road && house_number) {
-                address = road + " " + house_number + ", ";
-            }
-            var full_address = location + ( location ? '<br />' : '' ) + address + postcode + '&nbsp;' + city + suburb;
-            var href = url + '?location=' + location + '&address=' + road + house_number + '&zip=' + postcode + '&city=' + city + suburb +'&lat=' + lat + '&lon=' + lon;
-            // that would be a direct call
-            // window.location = href;
+          
 
             // show found place instead
             items.push("<li id='1'><a href='" + href + "'>" + full_address + "</a></li>");

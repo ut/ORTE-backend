@@ -31,6 +31,12 @@
     font-size: 30px;
     line-height: 1.2;
     padding-left: 8px;
+
+    font-size: 44px;
+    line-height: 1.3;
+    padding-left: 6px;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;    
 }
 #map .leaflet-control-layers-toggle {
     background-image: none;
@@ -67,6 +73,12 @@
     @media screen and (max-width: 39.9375em) {
       bottom: 50px;
     }
+}
+.leaflet-control-locate.leaflet-bar.leaflet-control {
+  .fi-marker {
+    font-size: 130%;
+    line-height: 1.6;
+  }
 }
 .leaflet-container {
   font: 12px/1.5 "worksans-light","Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
