@@ -101,8 +101,9 @@
       %div
         %strong
           =h @place.teaser.html_safe
-      %div
-        =h @place.text.html_safe
+      - if @place.text.present?
+        %div
+          =h @place.text.html_safe
       %p
         - if @place.link
           =link_to @place.link do

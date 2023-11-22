@@ -6,9 +6,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
     if ( layer_type === 'image' ) {
       marker_size = 15;
     }
-    console.log("Drawing "+places.length+" markers for layer "+layer_id+" of type "+layer_type+" at level "+level); 
-    console.log("Layer type is "+layer_type);
-    console.log("Marker size is "+marker_size);
+    console.log("Drawing "+places.length+" markers for layer "+layer_id+" of type "+layer_type+" at level "+level + "(Marker size is "+marker_size+")");
     console.log("Setting show_annotations_on_map set to "+show_annotations_on_map);
     var CustomLargeIcon = L.Icon.extend({
         options: {
@@ -201,7 +199,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
       };
       c++;
     });
-    console.log(c+" Marker added to map!");
+    // console.log(c+" Marker added to map!");
 
     // thanks to https://github.com/louh - Allow for offset on center of map
     L.Map.prototype.panToOffset = function (latlng, offset, options) {
