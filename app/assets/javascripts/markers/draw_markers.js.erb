@@ -17,9 +17,9 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
     });
     var CustomSmallIcon = L.Icon.extend({
         options: {
-            iconSize:     [20, 20],
+            iconSize:     [marker_size, marker_size],
             iconAnchor:   [10, 10],
-            popupAnchor:  [-1, -8]
+            popupAnchor:  [-1, -15]
         }
     });
 
@@ -39,7 +39,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
 
     $.each(places, function(key,place) {
       console.log("Place ID " + place.id + " at Layer " + layer_id + " // Title: " + place.title);
-      var opacity = '0.4';
+      var opacity = '0.5';
       var stroke = 'transparent';
       var stroke_width = '0';
       var stroke_opacity = '0';
@@ -49,7 +49,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
           opacity= '0.7';
         }
         if ( $('#selection').data('place-id') === place.id ) {
-          opacity = '0.7';
+          opacity = '0.8';
           stroke = '#000000';
           this_color = '#ffff00';
           stroke_width = '2'
@@ -60,7 +60,12 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
         }
         var svg = "<svg height='"+marker_size+"' width='"+marker_size+"' xmlns='http://www.w3.org/2000/svg'><circle cx='"+marker_size/2+"' cy='"+marker_size/2+"' r='"+marker_size/2+"' fill='"+this_color+"' fill-opacity='"+opacity+"' stroke='"+stroke+"' stroke-width='"+stroke_width+"' stroke-opacity='"+stroke_opacity+"'  shape-rendering='geometricPrecision'></circle></svg>";
         var url = encodeURI("data:image/svg+xml," + svg).replace(new RegExp('#', 'g'),'%23');
-        var icon = new CustomLargeIcon({iconUrl: url});
+        var icon;
+        if ( layer_type === 'image' ) {
+         icon = new CustomSmallIcon({iconUrl: url});
+        } else {
+         icon = new CustomLargeIcon({iconUrl: url});
+        }
       } else {
         if ( parseInt(place.id) === parseInt(params.place) ) {
           var icon = redIcon;

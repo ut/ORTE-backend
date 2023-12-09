@@ -170,6 +170,16 @@
                         ],
                         "pattern":"^(.*)$"
                      },
+                     "teaser":{
+                        "$id":"#/properties/map/properties/layer/items/properties/teaser",
+                        "type":"string",
+                        "title":"The Teaser Schema",
+                        "default":"",
+                        "examples":[
+                           ""
+                        ],
+                        "pattern":"^(.*)$"
+                     },
                      "text":{
                         "$id":"#/properties/map/properties/layer/items/properties/text",
                         "type":"string",

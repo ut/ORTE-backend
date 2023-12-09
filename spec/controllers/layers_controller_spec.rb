@@ -222,7 +222,7 @@ RSpec.describe LayersController, type: :controller do
           valid_image_layer_attributes.merge!(images_files: images_files)
         end
 
-        it 'creates a new Layer', focus: true do
+        it 'creates a new Layer' do
           expect do
             post :create, params: { map_id: @map.friendly_id, layer: valid_image_layer_attributes }, session: valid_session
           end.to change(Layer, :count).by(1)

@@ -356,6 +356,7 @@ jQuery(function ($) {
     // TODO: reset baselayer if custom was set or changed server-side
 
     if ( localStorage.baselayer == 'Openstreetmap') {
+      $('#map').addClass('darken-icons')
       Openstreetmap_layer.addTo(map);
     } else if ( localStorage.baselayer == 'Satellite') {
       Esri_WorldImagery_layer.addTo(map);
@@ -366,6 +367,7 @@ jQuery(function ($) {
   } else {
     console.log("No custom base layer defined");
     if ( localStorage.baselayer == 'Openstreetmap') {
+      $('#map').addClass('darken-icons')
       Openstreetmap_layer.addTo(map);
     } else {
       Esri_WorldImagery_layer.addTo(map);
@@ -402,6 +404,11 @@ jQuery(function ($) {
   }
   map.on('baselayerchange', function(e){
     console.log("Baselayer change to " + e.name);
+    if ( e.name == 'Openstreetmap') {
+      $('#map').addClass('darken-icons')
+    } else {
+      $('#map').removeClass('darken-icons')
+    }
     localStorage.baselayer = e.name;
   })
    map.on('overlayadd', function(e){
