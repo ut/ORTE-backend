@@ -56,6 +56,7 @@ $ sudo mysql -u root
 > CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
 > GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost';
 > CREATE DATABASE orte CHARACTER SET utf8 COLLATE utf8_general_ci;
+> CREATE DATABASE orte_test CHARACTER SET utf8 COLLATE utf8_general_ci;
 > exit;
 $ bundle exec rails db:schema:load
 $ bundle exec rails db:seed

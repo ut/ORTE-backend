@@ -1,7 +1,7 @@
 defaults: &defaults
   app_name:          "ORTE Backend"
   app_shortname:     "ORTE"
-  app_tagline:       "Putting places (and events) on a map"
+  app_tagline:       "Putting places (and events) on a map!"
   app_version:       '0.72'
   app_credits:       ""
   app_host:          "127.0.0.1:3000"
