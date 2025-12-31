@@ -29,13 +29,25 @@ Rails.application.routes.draw do
   resources :iconsets do
     resources :icons, only: [:edit, :destroy, :update]
   end
+
+  resources :import_mappings, only: [:new, :create, :show] do
+    post :apply_mapping, on: :member
+    get :import_preview, on: :member
+  end
+
   resources :maps do
+    member do
+      get :import
+      post :import_preview
+      post :importing
+    end
     resources :tags, only: [:index, :show]
     resources :relations
     resources :people
     resources :layers do
       collection do
         post :search
+        get :fetch_layers, to: 'layers#fetch_layers'
       end
       member do
         get :pack
@@ -43,6 +55,9 @@ Rails.application.routes.draw do
         get :annotations
         get :relations
         get :images
+        get :import
+        post :import_preview
+        post :importing
       end
       resources :places do
         resources :images
@@ -81,10 +96,14 @@ Rails.application.routes.draw do
 
   namespace :public do
     resources :maps, only: [:show, :allplaces, :index], :defaults => { :format => :json } do
-      resources :layers, only: [:show], :defaults => { :format => :json }
+      resources :layers, only: [:show], :defaults => { :format => :json } do
+        resources :places, only: [:show], :defaults => { :format => :json }
+      end
+      resources :tags, only: [:index], :defaults => { :format => :json }
       member do
         get :allplaces
       end
+
     end
   end
 end

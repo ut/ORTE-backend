@@ -8,6 +8,5 @@
   "daemonize": true,
   // Tell Passenger to run the app as the given user. Only has effect
   // if Passenger was started with root privileges.
-  "user": "orte-deploy",
-  "nodejs": "/home/orte-deploy/.nvm/versions/node/v14.21.3/bin/node"
+  "user": "orte-deploy"
 }

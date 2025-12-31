@@ -64,6 +64,16 @@
             ],
             "pattern": "^(.*)$"
           },
+          "sources": {
+            "$id": "#/properties/map/properties/layer/items/properties/sources",
+            "type": "string",
+            "title": "The Sources Schema",
+            "default": "",
+            "examples": [
+              ""
+            ],
+            "pattern": "^(.*)$"
+          },
           "credits": {
             "$id": "#/properties/map/properties/layer/items/properties/credits",
             "type": "string",
@@ -187,6 +197,7 @@
                 "title",
                 "teaser",
                 "text",
+                "sources",
                 "link",
                 "imagelink",
                 "imagelink2",
@@ -252,6 +263,15 @@
                     ""
                   ]
                 },
+                "sources": {
+                  "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/sources",
+                  "type": "string",
+                  "title": "The Sources Schema",
+                  "default": "",
+                  "examples": [
+                    ""
+                  ]
+                },
                 "link": {
                   "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/link",
                   "type": "string",
@@ -300,7 +320,7 @@
                 },
                 "startdate": {
                   "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/startdate",
-                  "type": "string",
+                  "type": ["string", "null"],
                   "title": "The Startdate Schema",
                   "default": "",
                   "examples": [
@@ -310,7 +330,7 @@
                 },
                 "enddate": {
                   "$id": "#/properties/map/properties/layer/items/properties/places/items/properties/enddate",
-                  "type": "string",
+                  "type": ["string", "null"],
                   "title": "The Enddate Schema",
                   "default": "",
                   "examples": [

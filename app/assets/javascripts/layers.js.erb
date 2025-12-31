@@ -11,81 +11,152 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
 
   // how to set data.id dynamically?
   var data_id = 1;
+
+  var marker_display_mode = $('#selection').data('map-marker-display-mode');
+  var layer_color = $('#selection').data('layer-color');
+
+  var maxClusterRadius = 30;
+  if ( marker_display_mode == 'single' ) {
+    // cluster is used here to show entries on the very same coordinates
+    maxClusterRadius = 0;
+  }
+  console.log("level", level);
+
+  if ( $('#selection').data('ltype') === 'geojson' ) {    
+    const layer_json_url = $('#selection').data('url')
+    $.getJSON(layer_json_url, function(data) {
+      ShowGeoJsonForLayer(map,data.geojson);
+      
+      $('.loader_wrapper').hide(300);
+    })
+    return;
+  }
+
+  /* -------------------------------------------- */
   var markerclusterSettings = {
-          maxClusterRadius: 30,
-          showCoverageOnHover: false,
-          animate: true,
-          iconCreateFunction: function(cluster) {
-              return L.divIcon({
-                html: '<div class="marker-cluster marker-cluster-small marker-cluster-layer-' + data_id + '"><div>' + cluster.getChildCount() + '</div></div>',
-                className: "leaflet-data-markercluster",
-                iconAnchor  : [15, 15],
-                iconSize    : [30, 30],
-                popupAnchor : [0, -28]
-              });
-            },
-
-
-          spiderLegPolylineOptions: { weight: 0, color: '#efefef', opacity: 0.5 },
-
-          elementsPlacementStrategy: "clock",
-          helpingCircles: true,
-          clockHelpingCircleOptions: {
-            weight: 40,
-            opacity: 0,
-            color: "#000000",
-            fill: "#333",
-            fillOpacity: 0.2
-          },
-
-          spiderfyDistanceSurplus: 28,
-          spiderfyDistanceMultiplier: 1,
-
-          spiderfiedClassName: 'spiderfied-places',
-
-          elementsMultiplier: 1.4,
-          firstCircleElements: 10,
-          spiderfyShapePositions: function(count, centerPt) {
-                var distanceFromCenter = 50,
-                    markerDistance = 105,
-                    lineLength = markerDistance * (count - 1),
-                    lineStart = centerPt.y - lineLength / 4,
-                    res = [],
-                    i;
-
-                res.length = count;
-
-                for (i = count - 1; i >= 0; i--) {
-                    res[i] = new Point(centerPt.x + distanceFromCenter, lineStart + markerDistance * i);
+            maxClusterRadius: maxClusterRadius,
+            showCoverageOnHover: false,
+            animate: true,
+            iconCreateFunction: function(cluster) {
+              if ( marker_display_mode == 'cluster' ) {
+                return L.divIcon({
+                  html: '<div class="marker-cluster marker-cluster-small marker-cluster-layer-' + data_id + '"><div>' + cluster.getChildCount() + '</div></div>',
+                  className: "leaflet-data-markercluster",
+                  iconAnchor  : [15, 15],
+                  iconSize    : [30, 30],
+                  popupAnchor : [0, -28]
+                });
+              } else {
+                console.log("Cluster: Zigzgag",cluster.getChildCount());     
+                console.log("Cluster: Childmarkers", cluster.getAllChildMarkers());
+                if ( cluster.getAllChildMarkers()[0].data ) {
+                  console.log("Cluster: Childmarker Data", cluster.getAllChildMarkers()[0].data.color);
+                }
+                // TODO: add color from data
+                // TODO: build array of colors of all Childmarkers
+                let childmarker_colors = [];
+                cluster.getAllChildMarkers().forEach(function(marker) {
+                  if ( marker.data ) {
+                    childmarker_colors.push(marker.data.color);
+                  }
+                });
+                // check if all values of childmarker_colors are the same
+                let check_all_same = childmarker_colors.every( (val, i, arr) => val === arr[0] );
+                console.log("All colors are the same: ", check_all_same);
+                let cluster_color;
+                if ( childmarker_colors.length > 0 && check_all_same ) {
+                  cluster_color = childmarker_colors[0]
                 }
 
-                return res;
-            }
-  };
+                // TODO: if all the same: use this color!
+                // TODO: if different: use default color
+
+                let cluster_viz = ( marker_display_mode === 'zigzag cluster, w/gradient' ? cluster_small_with_gradient : cluster_small(cluster_color) );
+                if ( cluster.getChildCount() >= 10 ) {
+                  cluster_viz = ( marker_display_mode === 'zigzag cluster, w/gradient' ? cluster_xlarge_with_gradient : cluster_xlarge(cluster_color) );
+                } else if ( cluster.getChildCount() >= 6 ) {
+                  cluster_viz = ( marker_display_mode === 'zigzag cluster, w/gradient' ? cluster_large_with_gradient : cluster_large(cluster_color) );
+                } else if ( cluster.getChildCount() >= 3 ) {
+                  cluster_viz = ( marker_display_mode === 'zigzag cluster, w/gradient' ? cluster_medium_with_gradient : cluster_medium(cluster_color) );
+                } 
+                if ( layer_color && layer_color.length > 0 ) {
+                  cluster_viz = cluster_viz.replace(/rgba\(255, 0, 153, 0.8\)/g, layer_color); 
+                }
+                
+                let rnd_rotate = Math.floor(Math.random()*25) * 15;
+                return L.divIcon({
+                  html: '<div class="marker-cluster marker-cluster-small marker-cluster-layer-' + data_id + '" style="transform: rotate('+rnd_rotate+'deg);">' + cluster_viz + '</div>',
+                  className: "leaflet-data-markercluster",
+                  iconAnchor  : [15, 15],
+                  iconSize    : [30, 30],
+                  popupAnchor : [0, -28]
+                });
+              }
+            },
+            spiderLegPolylineOptions: { weight: 0, color: '#efefef', opacity: 0.5 },
+            elementsPlacementStrategy: "clock",
+            helpingCircles: true,
+            clockHelpingCircleOptions: {
+              weight: 40,
+              opacity: 0,
+              color: "#000000",
+              fill: "#333",
+              fillOpacity: 0.2
+            },
+
+            spiderfyDistanceSurplus: 28,
+            spiderfyDistanceMultiplier: 1,
+
+            spiderfiedClassName: 'spiderfied-places',
+
+            elementsMultiplier: 1.4,
+            firstCircleElements: 10,
+            spiderfyShapePositions: function(count, centerPt) {
+                  var distanceFromCenter = 50,
+                      markerDistance = 105,
+                      lineLength = markerDistance * (count - 1),
+                      lineStart = centerPt.y - lineLength / 4,
+                      res = [],
+                      i;
+
+                  res.length = count;
+
+                  for (i = count - 1; i >= 0; i--) {
+                      res[i] = new Point(centerPt.x + distanceFromCenter, lineStart + markerDistance * i);
+                  }
+
+                  return res;
+              }
+    };
 
   if(typeof layer_json_url !== 'undefined') {
 
     console.log("Drawing placemarks w/data from "+layer_json_url + " at level "+level);
+    // Initialize an array to hold markers
+    window.markers = [];    
 
     var request = $.getJSON(layer_json_url, function(data) {
 
+      $('.loader_wrapper').hide(300);
       console.log("-----------------------------");
-      console.log(data);
+      console.log("Data from layer_json_url",data);
 
       // read params, place id is given, render this place special
       console.log("Check for url params");
       var params = getParams();
 
       var clustercolor = '#445';
+      
       if ( level !== 'maps') {
         console.log("Render places of one layer");
-        console.log(data);
-        if ( $('#selection').data('map-marker-display-mode') == 'single' ) {
-          var marker_layers =  L.featureGroup();
+        if ( marker_display_mode == 'single' ) {
+          // var marker_layers =  L.featureGroup();
+          var marker_layers = L.markerClusterGroup(markerclusterSettings);
         } else {
           var marker_layers = L.markerClusterGroup(markerclusterSettings);
         }
         clustercolor = data.color;
+        clustercolor = 'rgba(255, 0, 153, 0.8)';
         var places = [];
         if (level === 'places') {
           places = data.places;
@@ -101,32 +172,43 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
           $('.marker-cluster-small').addClass('marker-layer-'+data.id);
         } else {
           console.log("DRAW MARKER");
-          drawMarkers(map,data.id,data.ltype,level,String(false),text_layers,image_layers,marker_layers,params,data.color,clustercolor,places);
+          drawMarkers(map,data.id,data.ltype,level,String(false),text_layers,image_layers,marker_layers,params,data.color,places);
           $('.marker-cluster-small').addClass('marker-layer-'+data.id);
         }
-        drawCurves(map,data.id,curve_layers,marker_layers,data.color,clustercolor,places_with_relations,data.relations_bending,data.relations_coloring);
+        drawCurves(map,data.id,curve_layers,marker_layers,data.color,places_with_relations,data.relations_bending,data.relations_coloring);
         marker_meta_layers.addLayer(marker_layers);
 
+      // show map with all layers
       } else  {
         // layers combined
         var all_places = [];
-        var layers_count = data.layers.length;
-
-        $.each(data.layers, function(key,data) {
-          all_places.push(...data.places);
+        $.each(data.layers, function(key,layer) {
+          all_places.push(...layer.places);
+          console.log("Layer "+key+" ("+layer.title+") has "+layer.places.length+" places");
+          if ( layer.geojson ) {
+            console.log("layer with geojson",layer.id)
+            let geoJsonLayer = ShowGeoJsonForLayer(map, layer.geojson);
+            marker_meta_layers.addLayer(geoJsonLayer);
+          }
+            
         });
         var show_annotations_on_map = data.show_annotations_on_map;
 
-        if ( $('#selection').data('map-marker-display-mode') == 'single' ) {
-          marker_layers =  L.featureGroup();
+        if ( marker_display_mode == 'single' ) {
+          // marker_layers =  L.featureGroup();
+          marker_layers = L.markerClusterGroup(markerclusterSettings);
         } else {
           marker_layers = L.markerClusterGroup(markerclusterSettings);
         }
         console.log("###############################");
+        /* cluster on map level */
         $.each(all_places, function(key,data) {
           clustercolor = 'rgba(0, 54, 193, 0.9)';
-          console.log(data);
-          drawMarkers(map,data.id,data.layer_type,level,show_annotations_on_map,text_layers,image_layers,marker_layers,params,data.layer_color,clustercolor,[data]);
+          clustercolor = 'rgba(50, 54, 153, 0.9)';
+
+          clustercolor = '#ff0099';
+          clustercolor = 'rgba(255, 0, 153, 0.8)';
+          drawMarkers(map,data.id,data.layer_type,level,show_annotations_on_map,text_layers,image_layers,marker_layers,params,data.layer_color,[data]);
         });
         marker_meta_layers.addLayer(marker_layers);
 
@@ -147,13 +229,17 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
             // drawMarkers(map,data.id,level,false,text_layers,image_layers,marker_layers,params,data.color,clustercolor,data.places);
           }
           */
-          console.log("Places_with_relations: "+data.places_with_relations.length);
-          drawCurves(map,data.id,curve_layers,marker_layers,data.color,clustercolor,data.places_with_relations, data.relations_bending,data.relations_coloring);
+          if ( data.places_with_relations ) {
+            console.log("Places_with_relations: "+data.places_with_relations.length);
+            drawCurves(map,data.id,curve_layers,marker_layers,data.color,data.places_with_relations, data.relations_bending,data.relations_coloring);
+          }
           marker_meta_layers.addLayer(marker_layers);
         });
-
       }
-
+      console.log('******************************');
+      console.log("Saved in window.markers: "+window.markers.length);
+      window.marker_layers = marker_layers;
+      
       var layer_style = '';
       $.each(data.layers, function(key,data) {
           layer_style += "#map .marker-cluster-layer-" + data.id;
@@ -170,8 +256,15 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
           "    background-color: transparent;" +
           "    border: 0px solid " + clustercolor + ";" +
           "    opacity: 0.9;" +
-          "    width: 40px;" +
-          "   height: 40px;" +
+          "    width: 36px;" +
+          "   height: 36px;" +
+          "   display: flex;" +
+          "   align-items: center;" +
+          "   justify-content: center;" +
+          "   flex-wrap: wrap;" +
+          "   flex-direction: row;" +
+          "   padding: 0 0 0 0;" +
+          "   line-height: 0;" +
           "}" +
           "#map .marker-cluster-medium div," +
           "#map .marker-cluster-small div {" +
@@ -184,6 +277,32 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
           layer_style +
       "</style>"
   );
+
+  if ( $('#selection').data('map-marker-display-mode') === 'single' ) {
+    const yearDivs = document.querySelectorAll(".year");
+    let startyear = $('#selection').data('map-timeline-minyear');
+    $('#selection').data('map-selected-year',startyear);
+    console.log("Timeline: Start year ", startyear, yearDivs.length,data);
+    if ( startyear && data.places_by_year && (data.places_by_year.length > 0) ) {
+
+      window.places_by_year = data.places_by_year;
+      console.log("places_by_year",data.places_by_year);
+      setupTimeline(data.places_by_year)
+      console.log("Timeline: Pre-select first year ", startyear, yearDivs.length);
+      // remove other layers from map 
+      map.removeLayer(curve_layers);
+      map.removeLayer(image_layers);
+      map.removeLayer(text_layers);
+
+      if ( yearDivs.length > 0 ) {
+        let el = document.getElementById('year'+startyear); 
+        console.log("Timeline: Year with places",startyear, el.getAttribute('data-places'))
+        SelectAndFilterByYear(el, yearDivs, startyear, el.getAttribute('data-places'));  
+      }
+    }      
+    BaseMapLayerChange(map,'update');
+  }
+    
 
         console.log("Fit to bounds routine");
         var bounds = marker_meta_layers.getBounds().pad(0.35);
@@ -203,14 +322,6 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
         }
         else if ( $('#selection').data('map-extent-northeast') ) {
           console.log("Fit to custom map extent");
-          /*
-          var northeast_array = $('#selection').data('map-extent-northeast').split(",").map(Number);
-          console.log(northeast_array);
-          var southwest_array = $('#selection').data('map-extent-southwest').split(",").map(Number);
-          console.log(southwest_array);
-          northeast = L.latLng(northeast_array[0],northeast_array[1]);
-          southwest = L.latLng(southwest_array[0],southwest_array[1]);
-          */
           var northeast_array = $('#selection').data('map-extent-northeast');
           console.log("Map custom extend: NE "+  northeast_array);
           var southwest_array = $('#selection').data('map-extent-southwest');
@@ -222,11 +333,11 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
         // set map center after last user action
         if ( ( localStorage.getItem('SetCustomExtent') === 'true' ) && ( northeast_array ) ) {
           northeast_array = localStorage.getItem('UserMapBoundsNE');
-          console.log("set map bounds to user values NE " + northeast_array);
+          console.log("Sset map bounds to user values NE " + northeast_array);
           southwest_array = localStorage.getItem('UserMapBoundsSW');
-          console.log("set map bounds to user values SW " + southwest_array);
+          console.log("Set map bounds to user values SW " + southwest_array);
           var boundsX = L.latLngBounds(northeast_array.split(","), southwest_array.split(","));
-          console.log("Fit map bounds to user values " + bounds);
+          console.log("Fit map bounds to user values ",boundsX);
           map.fitBounds(boundsX, {maxZoom: 16, minZoom: 2});
         } else {
           console.log("Fit map bounds now");
@@ -240,9 +351,9 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
         /* not needed for now
         var zl_after_fitbounds = map.getZoom();
         var zl = localStorage.getItem('UserZoomLevel');
-        console.log("get zoom level if any " + zl);
+        console.log("Get zoom level if any " + zl);
         if ( zl && ( zl_after_fitbounds < zl )) {
-          console.log("set zoom level to " + zl);
+          console.log("Set zoom level to " + zl);
           // map.setZoom(zl);
         } */
         // set custom extent
@@ -255,7 +366,6 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
           console.log(setbound_url);
           setbound_url = setbound_url.replace(/\?northeast=(.*?)&s/, '?northeast='+northeast.lat.toPrecision(5)+","+northeast.lng.toPrecision(5)+'&s');
           setbound_url = setbound_url.replace(/&southwest=(.*)/, '&southwest='+southwest.lat.toPrecision(5)+","+southwest.lng.toPrecision(5));
-          console.log(setbound_url);
 
           $("#setbound").attr('href', setbound_url);
 
@@ -266,22 +376,61 @@ function ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curv
             var new_bound = rect.getBounds();
             northeast = new_bound.getNorthEast();
             southwest = new_bound.getSouthWest();
-            console.log("get new bounds");
-            console.log(northeast);
+            console.log("Get new bounds", northeast);
             setbound_url = setbound_url.replace(/\?northeast=(.*?)&s/, '?northeast='+northeast.lat.toPrecision(5)+","+northeast.lng.toPrecision(5)+'&s');
             setbound_url = setbound_url.replace(/&southwest=(.*)/, '&southwest='+southwest.lat.toPrecision(5)+","+southwest.lng.toPrecision(5));
-            console.log(setbound_url);
             $("#setbound").attr('href', setbound_url);
           });
         }
     }).fail(function( jqxhr, textStatus, error ) {
       // display error only if != 'Not Found' (which is normal behaviour for edit mode)
-      if ( error !== 'Not Found') {
-      console.log( "Error: Could not load layer data (w/JSON) "+ error );
+      if ( error && ( error !== 'Not Found') ) {
+        console.log( "Error: Could not load layer data (w/JSON) "+ error );
         $('#flash_wrapper').append('<div id="flash" class="callout alert">Layer data could not be loaded. ('+error+')</div>');
       };
     });
   }
+}
+function ShowGeoJsonForLayer(map,geojson) {
+  console.log("Show GeoJSON for layer");
+  const geoJsonLayer = L.geoJSON(JSON.parse(geojson),
+  {
+    style: function(feature) {
+        let style_defaults = {
+          color: "#333",
+          weight: 5,
+          opacity: 0.65,
+          fillColor: "#333", 
+          fillOpacity: 0.15
+      };
+      // Use the style definitions from the GeoJSON if available
+      console.log("geojson defaults",style_defaults);
+      console.log("geojson feature",feature.properties);
+      // Mapping von GeoJSON-Properties zu Leaflet-Style
+      if (feature.properties) {
+        return {
+            color: feature.properties.stroke || style_defaults.color,
+            weight: feature.properties['stroke-width'] || style_defaults.weight,
+            opacity: feature.properties['stroke-opacity'] || style_defaults.opacity,
+            fillColor: feature.properties.fill || style_defaults.fillColor,
+            fillOpacity: feature.properties['fill-opacity'] || style_defaults.fillOpacity
+        };
+      }
+      return style_defaults;
+    },
+    pointToLayer: function(feature, latlng) {
+      return L.circleMarker(latlng);
+    },          
+    onEachFeature: function(feature, layer) {
+      if (feature.properties && feature.properties.name) {
+          console.log("GeoJSON feature name", feature.properties.name);
+          layer.bindTooltip(feature.properties.name);          
+      }
+    }
+  }).addTo(map);
+  
+  map.fitBounds(geoJsonLayer.getBounds().pad(0.35));  
+  return geoJsonLayer;
 }
 
 function getParams() {

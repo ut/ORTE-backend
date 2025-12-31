@@ -22,7 +22,7 @@ jQuery(function ($) {
         $('#background_color_preview').css('background', $(this).find('option:selected').data('backgroundcolor'));
     });
 
-    // input#color field
+    // input#color fieldf
     $('#background_color_preselector').on('change', function () {
         console.log(this.value);
         $('#layer_background_color').val(this.value);

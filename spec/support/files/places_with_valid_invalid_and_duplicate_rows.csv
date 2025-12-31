@@ -1,0 +1,7 @@
+id,title,teaser,text,annotations,startdate,enddate,lat,lon,location,address,zip,city,country
+347,Place 1,"Ein etwas versteckt gelegenes und daher wohl eher unbekanntes Fleckchen  Grün.","",,,,53.55,9.94,"","",22765,Hamburg (Altona-Nord),
+2480,Place 2,"Zusätzlich wurden zum Zweck der Feuerholzgewinnung zahlreiche der alten Alleebäume abgeholzt.","",,,,53.55,9.95, ,Norderreihe 2,22767,Hamburg (Altona-Altstadt),""
+345,Place 3,"Dieser Platz ist invalid","",,,,53.55,"", ,Norderreihe 2,22767,Hamburg (Altona-Altstadt),""
+"1","title1","row with valid data","text1","annotations1","2025-01-01","2025-01-02","1.2","9","Main Street"
+"2","title2","row with wrong lat","text2","annotations2","2025-01-02","2025-01-03","1,2","",""
+"3","","row without title","text2","annotations2","2025-01-02","2025-01-03","1.2","9",""

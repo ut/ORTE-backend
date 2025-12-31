@@ -12,9 +12,9 @@ class Public::SubmissionsController < ApplicationController
 
   def index; end
 
-  def switch_locale(&action)
+  def switch_locale(&)
     locale = extract_locale || I18n.default_locale
-    I18n.with_locale(locale, &action)
+    I18n.with_locale(locale, &)
   end
 
   def extract_locale

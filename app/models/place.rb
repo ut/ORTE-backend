@@ -3,8 +3,6 @@
 require 'csv'
 
 class Place < ApplicationRecord
-  # self.skip_time_zone_conversion_for_attributes = [:startdate,:startdate_date,:startdate_time]
-
   belongs_to :layer
   belongs_to :icon, optional: true
 
@@ -18,17 +16,23 @@ class Place < ApplicationRecord
   has_many :relations_froms, foreign_key: 'relation_from_id',
                              class_name: 'Relation',
                              dependent: :destroy
+  has_many :annotations
   accepts_nested_attributes_for :relations_tos, allow_destroy: true
   accepts_nested_attributes_for :relations_froms, allow_destroy: true
+  accepts_nested_attributes_for :annotations, reject_if: ->(a) { a[:title].blank? }, allow_destroy: true
 
   has_many :images, dependent: :destroy
   has_many :videos, dependent: :destroy
   has_many :submissions, dependent: :destroy
-  has_many :annotations
-  accepts_nested_attributes_for :annotations, reject_if: ->(a) { a[:title].blank? }, allow_destroy: true
 
-  validates :title, presence: true
   validate :check_audio_format
+  validates :title, presence: true
+  validates :lat, presence: true, format: { with: /\A-?\d+(\.\d+)?\z/, message: 'should be a valid latitude value' }
+  validates :lon, presence: true, format: { with: /\A-?\d+(\.\d+)?\z/, message: 'should be a valid longitude value' }
+  validates :lat, presence: true, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }
+  validates :lon, presence: true, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+
+  validates_uniqueness_of :id
 
   scope :sorted_by_startdate, -> { order(startdate: :asc) }
   scope :sorted_by_title, -> { order(title: :asc) }
@@ -46,19 +50,42 @@ class Place < ApplicationRecord
       self.startdate = "#{startdate_date} #{startdate_time}"
     elsif startdate_date.present?
       self.startdate = "#{startdate_date} 00:00:00"
+    # nil from factories, blank from post request
+    elsif startdate_date.nil? || startdate_date.blank?
+      self.startdate = nil
     end
     if enddate_date.present? && enddate_time.present?
       self.enddate = "#{enddate_date} #{enddate_time}"
     elsif enddate_date.present?
       self.enddate = "#{enddate_date} 00:00:00"
+    elsif enddate_date.nil? || startdate_date.blank?
+      self.enddate = nil
     end
+
+    clean_text_fields
+  end
+
+  def self.all_unique_tags
+    ActsAsTaggableOn::Tag.joins(:taggings)
+                         .where(taggings: { taggable_type: 'Place' })
+                         .distinct
   end
 
   def title_and_location
-    if !location.blank?
-      "#{title} (#{location})"
-    else
+    if location.blank?
       title
+    else
+      "#{title} (#{location})"
+    end
+  end
+
+  def title_subtitle_and_location
+    if location.blank?
+      title
+    elsif !subtitle.blank?
+      "#{title} — #{subtitle} (#{location})"
+    else
+      "#{title} (#{location})"
     end
   end
 
@@ -83,10 +110,6 @@ class Place < ApplicationRecord
     [x + long.to_f, y + lat.to_f]
   end
 
-  def layer_id
-    layer.id
-  end
-
   def layer_title
     layer.title
   end
@@ -103,20 +126,32 @@ class Place < ApplicationRecord
     layer.color
   end
 
+  def layer_color
+    layer.color
+  end
+
   def date
     ApplicationController.helpers.smart_date_display(startdate, enddate)
   end
 
+  def date_with_qualifier
+    if startdate_qualifier && enddate_qualifier && (startdate_qualifier != '' || enddate_qualifier != '')
+      ApplicationController.helpers.smart_date_display_with_qualifier(startdate, enddate, startdate_qualifier, enddate_qualifier)
+    else
+      date
+    end
+  end
+
+  def url
+    ApplicationController.helpers.url(layer.map.slug, layer.slug, id)
+  end
+
   def show_link
-    ApplicationController.helpers.show_link(title, layer.map.id, layer.id, id)
+    ApplicationController.helpers.show_link(title, layer.map_id, layer.id, id)
   end
 
   def edit_link
     ApplicationController.helpers.edit_link(layer.map.id, layer.id, id)
-  end
-
-  def layer_color
-    layer.color
   end
 
   def icon_name
@@ -132,8 +167,12 @@ class Place < ApplicationRecord
   end
 
   def imagelink2
-    i = Image.preview(id)
-    i.count.positive? ? ApplicationController.helpers.image_link(i.first) : ''
+    # used for on map display of the preview image
+    # this call is very costly for larger datasets, maybe a switch in the map settings could be establied?
+    # return '' unless images.exists?
+
+    i = images.filter { |image| image.place_id == id && image.preview }
+    i.any? ? ApplicationController.helpers.image_link(i.first) : ''
   end
 
   def audiolink
@@ -197,6 +236,17 @@ class Place < ApplicationRecord
   private
 
   def check_audio_format
-    errors.add(:audio, 'format must be MP3.') if audio.attached? && !audio.content_type.in?(%w[audio/mpeg])
+    return unless audio.attached? && !audio.content_type.in?(%w[audio/mpeg audio/x-m4a audio/mp4])
+
+    errors.add(:audio, 'Format must be MP3 or M4A')
+    audio.purge
+  end
+
+  def clean_text_fields
+    self.text = remove_4byte_characters(text) if text
+  end
+
+  def remove_4byte_characters(string)
+    string.each_char.select { |char| char.bytesize < 4 }.join
   end
 end

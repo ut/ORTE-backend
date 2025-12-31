@@ -4,10 +4,10 @@ defaults: &defaults
   app_tagline:       "Putting places (and events) on a map!"
   app_version:       '0.72'
   app_credits:       ""
-  app_host:          "127.0.0.1:3000"
-  app_host_protocol: 'http'
-  app_url:           "http://127.0.0.1:3000"
-  app_domain:        "127.0.0.1"
+  app_host:          <%= ENV['ORTE_HOST'] || '"127.0.0.1:3000"'%>
+  app_host_protocol: <%= ENV['ORTE_HOST_PROTOCOL'] || '"http"'%>
+  app_url:           <%= ENV['ORTE_URL'] || '"http://127.0.0.1:3000"'%>
+  app_domain:        <%= ENV['ORTE_DOMAIN'] || '"127.0.0.1"'%>
   github_url:        "https://github.com/a-thousand-channels/ORTE-backend"
   base_log_level:    <%= "#{Logger::DEBUG}" %>
   relative_url_root: ""
@@ -34,8 +34,3 @@ staging:
 
 production:
   <<: *defaults
-  app_host:          'www.example.com'
-  app_host_protocol: 'https'
-  app_url:           'https://www.example.com'
-  relative_url_root:  ""
-  secure:             'true'

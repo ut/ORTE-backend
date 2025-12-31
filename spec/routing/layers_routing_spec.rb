@@ -8,6 +8,14 @@ RSpec.describe LayersController, type: :routing do
       expect(get: '/maps/1/layers').to route_to('layers#index', map_id: '1')
     end
 
+    it 'routes to #import' do
+      expect(get: '/maps/1/layers/1/import').to route_to('layers#import', id: '1', map_id: '1')
+    end
+
+    it 'routes to #importing' do
+      expect(post: '/maps/1/layers/1/importing').to route_to('layers#importing', id: '1', map_id: '1')
+    end
+
     it 'routes to #new' do
       expect(get: '/maps/1/layers/new').to route_to('layers#new', map_id: '1')
     end

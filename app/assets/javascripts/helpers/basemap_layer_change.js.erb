@@ -1,0 +1,166 @@
+
+
+
+function BaseMapLayerChange(map,action) {
+  var custom_base_layer;
+  var custom_basemap_url;
+  var custom_basemap_attribution;
+    var Esri_WorldImagery_layer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri <span class="show-for-large">&mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community</a>',
+        minZoom: 0,
+        maxZoom: 18
+    });
+    var Openstreetmap_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 0,
+        maxZoom: 21,
+        attribution: 'OpenStreetMap + its contributors, CC-BY-SA'
+    });
+    var wmsLayerHamburg1925s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1925-1930',
+      attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
+    });
+    var wmsLayerHamburg1930s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1930-1940',
+      minZoom: 9,
+      maxZoom: 20, 
+      attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
+    });
+    var wmsLayerHamburg1980s = L.tileLayer.wms('https://geodienste.hamburg.de/HH_WMS_Historische_Karte_1_5000?', {
+      layers: 'jahrgang_1980-1990',
+      transparent: true,
+      minZoom: 9,
+      maxZoom: 20,     
+      attribution: 'Landesbetriebs Geoinformation und Vermessung (LGV) Hamburg, Datenlizenz Deutschland Namensnennung 2.0'
+    });    
+    if ( $('#selection').data('map-basemap-url') ) {
+      console.log("Custom base layer defined");
+      custom_basemap_url = $('#selection').data('map-basemap-url');
+      if ( $('#selection').data('map-basemap-attribution') ) {
+        custom_basemap_attribution = $('#selection').data('map-basemap-attribution');
+      } else {
+        custom_basemap_attribution = 'Attribution missing'
+      }
+      custom_base_layer = L.tileLayer(custom_basemap_url, {
+        attribution: custom_basemap_attribution,
+        minZoom: 0,
+        maxZoom: 21
+      });
+    } 
+
+    if ( action === 'setup') {
+      if ( $('#selection').data('map-basemap-url') ) {
+        var basemaps = {
+            Custom: custom_base_layer,
+            Satellite: Esri_WorldImagery_layer,
+            Openstreetmap: Openstreetmap_layer,
+        }
+      } else {
+          console.log("No custom base layer defined");
+          <% if Rails.env != "test" && Rails.application.credentials.token %>
+            let access_token = "<%= Rails.application.credentials.token[:mapbox] %>"
+            L.tileLayer("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg90?access_token="+access_token, {
+              attribution: "&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> Contributors",
+              minZoom: 19,
+              maxZoom: 21}).addTo(map);
+          <% end %>
+          var basemaps = {
+              "Satellite": Esri_WorldImagery_layer,
+              "Openstreetmap": Openstreetmap_layer,
+          };
+      
+      }   
+      if ( $('#selection').data('map-enable-historical-maps') === true ) {
+        console.log("HISTORICAL MAPS enabled");
+        basemaps["Historical HH 1925-1930"] = wmsLayerHamburg1925s;
+        basemaps["Historical HH 1930-1940"] = wmsLayerHamburg1930s;
+        basemaps["Historical HH 1980-1990"] = wmsLayerHamburg1980s;
+      }   
+    } 
+
+   
+    if ( localStorage.baselayer == 'Openstreetmap') {
+      Openstreetmap_layer.addTo(map);
+    } else if ( localStorage.baselayer == 'Satellite') {
+      Esri_WorldImagery_layer.addTo(map);
+    } else if ( localStorage.baselayer == 'Historical HH 1925-1930') {
+      wmsLayerHamburg1925s.addTo(map);  
+      MapboundsToHamburg(map);      
+    } else if ( localStorage.baselayer == 'Historical HH 1930-1940') {
+      wmsLayerHamburg1930s.addTo(map);
+      MapboundsToHamburg(map);
+    } else if ( localStorage.baselayer == 'Historical HH 1980-1990') {
+      wmsLayerHamburg1980s.addTo(map);    
+      MapboundsToHamburg(map);  
+    } else {
+      console.log("custom_base_layer",custom_base_layer)
+      map.removeLayer(Openstreetmap_layer);
+      map.removeLayer(Esri_WorldImagery_layer);
+      map.removeLayer(wmsLayerHamburg1925s);
+      map.removeLayer(wmsLayerHamburg1930s);
+      map.removeLayer(wmsLayerHamburg1980s);
+      if (custom_base_layer) {
+        custom_base_layer.addTo(map);
+      }
+    }     
+
+
+
+    // delete any class of $('#timeline-wrapper')
+    $('#timeline-wrapper').removeClass();
+    $('#map').removeClass('darken-icons');
+    $('#map').removeClass('darken-icons2');
+    $('#map').removeClass('darken-label');
+    console.log("BaseMapLayerChange localStorage.baselayer",localStorage.baselayer);
+    if ( localStorage.baselayer == 'Openstreetmap') {
+        $('#map').addClass('darken-icons');
+        $('#map').addClass('darken-icons2');
+        $('#timeline-wrapper').addClass('light');
+    } else if ( localStorage.baselayer == 'Satellite') {
+        
+    } else if ( localStorage.baselayer == 'Historical HH 1925-1930') {
+        // $('#map').addClass('darken-icons darken-label')
+        $('#map').addClass('darken-icons');
+        $('#timeline-wrapper').addClass('dark');
+    } else if ( localStorage.baselayer == 'Historical HH 1930-1940') {
+        // $('#map').addClass('darken-icons darken-label')
+        $('#map').addClass('darken-icons');
+        $('#timeline-wrapper').addClass('dark');
+    } else if ( localStorage.baselayer == 'Historical HH 1980-1990') {
+        // $('#map').addClass('darken-icons darken-label')
+        $('#map').addClass('darken-icons');
+        $('#timeline-wrapper').addClass('dark');
+    } else {
+        $('#map').removeClass('darken-icons');
+        $('#map').removeClass('darken-icons2');
+        $('#map').removeClass('darken-label');
+    }
+
+    if (( action !== 'setup') && ( $('#selection').data('data-map-enable-time-slider') == 'true' ) ) {
+        // refresh markers
+        let startyear = $('#selection').data('map-selected-year');
+        if ( startyear !== undefined ) {
+          console.log("BaseMapLayerChange: startyear",startyear);
+          const yearDivs = document.querySelectorAll(".year");
+          let el = document.getElementById('year'+startyear); 
+          if ( el && el.getAttribute('data-places') ) {
+            console.log("Timeline: Year with places",startyear, el.getAttribute('data-places'))
+            SelectAndFilterByYear(el, yearDivs, startyear, el.getAttribute('data-places'));  
+          }
+        }
+    }
+      
+  return basemaps;
+}
+
+function MapboundsToHamburg(map){ 
+  var minx = 9.721052;
+  var miny = 53.423000;
+  var maxx = 10.270569;
+  var maxy = 53.697028;
+
+  var centerLat = (miny + maxy) / 2.0002;
+  //* very quirky padding hack *//
+  var centerLng = (minx + maxx) / 2.015;
+
+  map.flyTo([centerLat, centerLng], 12);    
+}  

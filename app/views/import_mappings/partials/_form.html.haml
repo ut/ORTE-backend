@@ -1,0 +1,57 @@
+= simple_form_for @import_mapping do |f|
+  - if @import_mapping.errors.any?
+    .alert
+      #error_explanation
+        %p= "#{pluralize(@import_mapping.errors.count, "error")} prohibited this import mapping from being saved:"
+        %ul
+          - @import_mapping.errors.full_messages.each do |message|
+            %li= message
+  %table.table.table-striped
+    %thead
+      %tr
+        %th CSV column name
+        %th CSV preview
+        %th 
+          Model property
+          %i.fi.fi-info{"data-tooltip"=>true, :title=>"This column is used to map CSV columns to model properties."}
+        %th Parsers (see below)
+        %th 
+          Key
+          %i.fi.fi-info{"data-tooltip"=>true, :title=>"This column is used to identify unique records in the CSV file. If checked, this column will be used as a key for the import."}
+        %th 
+          Add row
+          %i.fi.fi-info{"data-tooltip"=>true, :title=>"This button allows you to add a new mapping row for the referring CSV column."}
+    %tbody#mapping
+      - @headers&.each_with_index do |header,index|
+        %tr
+          %td= header
+          %td
+            %tt
+              = @first_row.present? ? @first_row[index] : 'No data available'
+          - mapping = @import_mapping.mapping.find { |m| m['csv_column_name'] == header }
+          - unless mapping
+            - mapping = { 'csv_column_name' => header, 'model_property' => nil, 'parsers' => [], 'key' => false }
+            - @import_mapping.mapping << mapping
+          = f.fields_for :mapping, OpenStruct.new(mapping) do |mapping_form|
+            %td
+              = mapping_form.input :model_property, collection: @place_columns, label: false, input_html: { class: 'model-property-select' }
+            %td
+              = mapping_form.input :parsers, label: false, input_html: { class: 'parsers-input', value: "[]" }
+            %td
+              = mapping_form.input :key, as: :boolean, label: false, input_html: { class: 'key-input' }
+            %td
+              %button.duplicate-row{ class: 'button small', type: 'button' } 
+                %i.fi.fi-plus
+  = f.input :name, label: 'Name your mapping in order to re-use it later:', input_html: { class: 'import-mapping-name' }
+  = f.hidden_field :mapping, id: 'import_mapping_mapping'
+  = f.hidden_field :headers, value: @headers.to_json, name: 'headers'
+  = f.hidden_field :layer_id, value: @layer.id, name: 'layer_id' if @layer
+  = f.hidden_field :map_id, value: @map.id, name: 'map_id' if @map
+  = f.hidden_field :file_name, value: @file_name, name: 'file_name'
+  = f.hidden_field :col_sep, value: @col_sep, name: 'col_sep'
+  = f.hidden_field :quote_char, value: @quote_char, name: 'quote_char'
+  %div.checkbox-container
+    %label
+      %input{ type: 'checkbox', name: 'import_mapping[update_existing]', value: '1' }
+      Update existing mapping if name already exists
+  = f.submit 'Save mapping', class: 'button'

@@ -15,8 +15,8 @@ class Image < ApplicationRecord
   validate :check_file_format
 
   scope :sorted, -> { order(sorting: :asc) }
-  scope :sorted_by_place, ->(place_id) { where('place_id': place_id).order(sorting: :asc) }
-  scope :preview, ->(place_id) { where('place_id': place_id, 'preview': true) }
+  scope :sorted_by_place, ->(place_id) { where(place_id: place_id).order(sorting: :asc) }
+  scope :preview, ->(place_id) { where(place_id: place_id, preview: true) }
   scope :without_attached_file, -> { left_joins(:file_attachment).where('active_storage_attachments.id IS NULL') }
 
   def image_filename
@@ -54,7 +54,7 @@ class Image < ApplicationRecord
 
     full_path = ActiveStorage::Blob.service.path_for(file.key)
     exif_data = MiniMagick::Image.open(full_path.to_s)
-    exif_data.exif
+    exif_data.exif if exif_data&.exif
   end
 
   private

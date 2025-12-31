@@ -1,0 +1,81 @@
+- content_for(:title) { "Import for #{@layer.title}" }
+
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Import preview:
+    = link_to map_layer_path(@map,@layer) do
+      = @layer.title
+  %p
+    Map: #{@layer.map.title}
+    \|
+    Places: #{@layer.places.count}
+  .grid-x.grid-padding-x
+    .large-12.medium-12.small-12.cell
+      %hr
+      - if flash[:alert]
+        .alert.alert-danger
+          %p= flash[:alert]
+
+      - if @overwrite
+        %p.hint
+          Overwriting places with the same title is enabled.
+
+
+      - if !@errored_rows.empty?
+        .alert
+          %h3 Invalid entries
+          %p Some rows in the CSV are invalid and cannot be imported. Please review the errors below.
+
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Title
+                %th Reason
+                %th Messages
+            %tbody
+              - @errored_rows.each do |error_hash|
+                %tr
+                  %td= error_hash[:data]['title']
+                  %td.nobr= error_hash[:type]
+                  %td
+                    %tt= error_hash[:messages].join(', ')
+          - if @duplicate_rows.count > 0
+            %p.small If you want to replace duplicates, go back, tick the "Overwrite?" option and try again.
+            %p.small Otherwise edit your CSV file and remove those rows.
+          = link_to 'Back', :back, class: 'button secondary'            
+      - if @valid_rows.any?
+        .feedback
+          %h3 Entries to be imported
+          %p These #{@valid_rows.count} rows are validated and will be imported:
+          .table-wrapper
+            %table.table.table-striped
+              %thead
+                %tr
+                  - Imports::CsvImporter::PREVIEW_FIELDS.each do |field|
+                    %th= field.capitalize
+              %tbody
+                - @valid_rows.each do |row|
+                  %tr
+                    - Imports::CsvImporter::PREVIEW_FIELDS.each do |field|
+                      %td
+                        - if field == 'title'
+                          %span.nobr
+                            = row[field]
+                        - elsif ['lat', 'lon'].include?(field)
+                          = row[field].to_s[0..5]
+                        - elsif row[field]
+                          = row[field].html_safe
+
+        = simple_form_for :import, url: importing_map_layer_path(@map), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+          = hidden_field_tag :dry_run, false
+          = link_to 'Back', :back, class: 'button secondary'
+          = button_tag(type: 'submit', class: 'button') do
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24" style="vertical-align: -7px"><path d="M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z"></path></svg>
+            Confirm Import
+
+
+      - else
+        %p No valid rows found.

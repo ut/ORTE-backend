@@ -7,9 +7,9 @@ load File.expand_path('../deploy/tagit.rb', __FILE__)
 require File.expand_path('../deploy/cap_notify', __FILE__)
 
 set :application, Rails.application.credentials.dig(:deploy, :orte, :application)
-set :repo_url, "git@github.com:ut/ORTE-backend.git"
+set :repo_url, "git@github.com:a-thousand-channels/ORTE-backend.git"
 set :deploy_to, "/home/orte-deploy/#{fetch(:application)}-#{fetch(:stage)}"
-set :ssh_options, forward_agent: true, verify_host_key: :always
+set :ssh_options, forward_agent: true, verify_host_key: :never
 set :keep_releases, 3
 set :rvm_type, :user
 set :bundle_flags,    ''
@@ -31,7 +31,7 @@ set :passenger_restart_with_sudo, false
 set :passenger_environment_variables, {}
 set :passenger_restart_command, 'passenger-config restart-app'
 set :passenger_restart_options, -> { "#{deploy_to} --ignore-app-not-running" }
-set :rvm_ruby_version, 'ruby-3.2.2'
+set :rvm_ruby_version, 'ruby-3.3.7'
 set :passenger_rvm_ruby_version, fetch(:rvm_ruby_version)
 
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/master.key', 'config/settings.yml', 'config/cable.yml', 'Passengerfile.json', 'config/initializers/secure_headers.rb')

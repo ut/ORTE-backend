@@ -1,0 +1,75 @@
+#table-wrapper
+  %h1
+    Import-Mapping:
+    = @import_mapping.name
+  %table.table.table-striped
+    %thead
+      %tr
+        %th CSV Column name
+        %th Model Property
+        %th Parsers
+        %th Key
+    %tbody
+      -@import_mapping.mapping.each do |mapping|
+        %tr
+          %td= mapping['csv_column_name']
+          %td= mapping['model_property']
+          %td= mapping['parsers']
+          %td= mapping['key']
+
+  = simple_form_for :import, url: apply_mapping_import_mapping_path(@import_mapping), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+    %hr
+    %p
+      = f.input :map_id, collection: @maps, prompt: 'Select a Map', label: 'Map', input_html: { class: 'map-select', name: 'map_id' }, selected: @map&.id
+      - unless @map
+        %span.hint  Select the map to which the layer belongs.
+    %p
+      = f.input :layer_id, collection: @layers , prompt: 'Select a Layer', label: 'Layer', input_html: { class: 'layer-select', name: 'layer_id' }, selected: @layer&.id
+      - unless @layer
+        %span.hint  Select the layer to which the CSV data will be imported. If you want to import the data to different layers, the csv file must provide a layer_id for each place which has to be mapped to the layer_id model property. If you select a layer here, it will be used as a fallback in case a place has no provided layer_id.
+    %hr
+    - if @file_name
+      %p File to be imported: #{@file_name}
+      %p col_sep: #{@col_sep}
+      %p quote_char: #{@quote_char}
+    - else
+      %p
+        = f.input :file, as: :file, label: 'CSV File', input_html: { accept: '.csv' }
+        %span.hint  The format of the file must be CSV.
+        %p
+          .grid-x.grid-padding-x
+            .cell.medium-3
+              = f.input :column_separator, as: :radio_buttons, collection: ['Comma', 'Semicolon', 'Tab'], checked: 'Comma'
+            .cell.medium-3
+              = f.input :quote_char, as: :string, label: 'Quote Char', input_html: { value: '"' }
+
+    %hr
+    %p
+      = f.input :overwrite, as: :boolean, label: 'Overwrite'
+      %span.hint
+        Overwrite existing places with the same values in the fields that are set as keys in this mapping, which are:
+        = @import_mapping.keys.any? ? + @import_mapping.keys.map(&:to_s).join(', ') : 'None'
+    %hr
+    .form-actions
+      %p
+        = f.hidden_field :file_name, value: @file_name, name: 'file_name'
+        = f.hidden_field :col_sep, value: @col_sep, name: 'col_sep'
+        = f.hidden_field :quote_char, value: @quote_char, name: 'quote_char'
+        = f.submit "Generate CSV import preview with this mapping applied", class: "button"
+
+:javascript
+  $(document).on('change', '.map-select', function() {
+    var mapId = $(this).val();
+    $.ajax({
+      url: '/maps/' + mapId + '/layers/fetch_layers',
+      dataType: 'json',
+      success: function(data) {
+        var layerSelect = $('.layer-select');
+        layerSelect.empty();
+        layerSelect.append($('<option>').text('Select a Layer').attr('value', ''));
+        $.each(data, function(index, layer) {
+          layerSelect.append($('<option>').text(layer.title).attr('value', layer.id));
+        });
+      }
+    });
+  });

@@ -24,7 +24,7 @@ class ZipFileGenerator
   def write
     entries = Dir.entries(@input_dir) - %w[. ..]
 
-    FileUtils.rm_rf @output_file if File.exist?(@output_file)
+    FileUtils.rm_rf @output_file
     ::Zip::File.open(@output_file, create: true) do |zipfile|
       write_entries entries, '', zipfile
     end

@@ -1,22 +1,12 @@
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file.
-//
-// Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
-// about supported directives.
 //
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui
 //= require jquery-ui/widgets/sortable
 //= require foundation
-//= require i18n
-//= require i18n/translations
 //= require_directory ./public
 //= require leaflet/dist/leaflet
 //= require leaflet.markercluster/dist/leaflet.markercluster
@@ -53,6 +43,14 @@ jQuery(function ($) {
   $(window).on("resize", function() {
       map_resize();
   }).trigger("resize");
+
+  if ( $('#selection').length === 0 )  {
+    $('.loader_wrapper').hide(0);
+  }
+  if (!$('#selection').data('url') ) {
+    $('.loader_wrapper').hide(0);
+  }
+
 
   setTimeout(function(){
       $('#flash').slideUp(2000);
@@ -216,6 +214,14 @@ jQuery(function ($) {
       }
   });
 
+  // places > index: toggle timeline-list
+  $('#timeline-list-info').hide();
+  $('#timeline-list-body').hide();
+  $('#timeline-list-header').click(function(e){
+      e.preventDefault();
+      $('#timeline-list-info').toggle();
+      $('#timeline-list-body').toggle();
+  });
 
   // places > form: toggle layer dropdown
   $('#move_to_layer').click(function(e){
@@ -224,7 +230,7 @@ jQuery(function ($) {
       $('#layer_display').hide();
   });
   $('#layer_display_cancel').click(function(e){
-      $("#place_layer_id option:selected").removeAttr("selected");
+      // $("#place_layer_id option:selected").removeAttr("selected");
       $('#layer_selector').addClass('hide');
       $('#layer_display').show();
   });
@@ -255,8 +261,37 @@ jQuery(function ($) {
       $('#place_lon').prop('type','hidden');
       $('#edit_coordinates_cancel').hide();
       $('#edit_coordinates').show();
+  }); 
+  // places > form: toggle startdate qualifier
+  $('#define_startdate_qualifier_cancel').hide();
+  $('#place_startdate_qualifier').addClass('hidden');
+  $('#define_startdate_qualifier').click(function(e){
+    e.preventDefault();
+    $('select#place_startdate_qualifier').removeClass('hidden');
+    $('#define_startdate_qualifier').hide();
+    $('#define_startdate_qualifier_cancel').show();
   });
-
+  $('#define_startdate_qualifier_cancel').click(function(e){
+      e.preventDefault();
+      $('select#place_startdate_qualifier').addClass('hidden');
+      $('#define_startdate_qualifier_cancel').hide();
+      $('#define_startdate_qualifier').show();
+  }); 
+  // places > form: toggle enddate qualifier
+  $('#define_enddate_qualifier_cancel').hide();
+  $('#place_enddate_qualifier').addClass('hidden');
+  $('#define_enddate_qualifier').click(function(e){
+    e.preventDefault();
+    $('select#place_enddate_qualifier').removeClass('hidden');
+    $('#define_enddate_qualifier').hide();
+    $('#define_enddate_qualifier_cancel').show();
+  });
+  $('#define_enddate_qualifier_cancel').click(function(e){
+      e.preventDefault();
+      $('select#place_enddate_qualifier').addClass('hidden');
+      $('#define_enddate_qualifier_cancel').hide();
+      $('#define_enddate_qualifier').show();
+  });   
   // ---------------
 
   var text_layers = L.featureGroup();
@@ -317,73 +352,25 @@ jQuery(function ($) {
   userZoomLevel(map);
   userMapBounds(map);
 
-  var custom_base_layer;
-  var custom_basemap_url;
-  var custom_basemap_attribution;
-  var custom_background_color;
-  var Esri_WorldImagery_layer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri <span class="show-for-large">&mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community</a>',
-          minZoom: 0,
-          maxZoom: 18
 
-  });
-  var Openstreetmap_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 21,
-      attribution: 'OpenStreetMap + its contributors, CC-BY-SA'
-  });
+  var custom_background_color;
+  
+
 
   if ( $('#selection').data('map-background-color') ) {
       custom_background_color = $('#selection').data('map-background-color');
       $('#map').css('background', custom_background_color);
   }
   if ( $('#selection').data('map-basemap-url') ) {
-    custom_basemap_url = $('#selection').data('map-basemap-url');
-
-    if ( $('#selection').data('map-basemap-attribution') ) {
-      custom_basemap_attribution = $('#selection').data('map-basemap-attribution');
+  
+    if ( $('#selection').data('map-marker-display-mode') === 'zigzag cluster, w/gradient' ) {
+      $('#map').addClass('gradient-icons')
     }
-    custom_base_layer = L.tileLayer(custom_basemap_url, {
-      attribution: custom_basemap_attribution,
-      minZoom: 0,
-      maxZoom: 21
-    });
-    var basemaps = {
-        Custom: custom_base_layer,
-        Satellite: Esri_WorldImagery_layer,
-        Openstreetmap: Openstreetmap_layer
-    };
+  
 
-    // TODO: reset baselayer if custom was set or changed server-side
-
-    if ( localStorage.baselayer == 'Openstreetmap') {
-      $('#map').addClass('darken-icons')
-      Openstreetmap_layer.addTo(map);
-    } else if ( localStorage.baselayer == 'Satellite') {
-      Esri_WorldImagery_layer.addTo(map);
-    } else {
-      custom_base_layer.addTo(map);
-    }
-
-  } else {
-    console.log("No custom base layer defined");
-    if ( localStorage.baselayer == 'Openstreetmap') {
-      $('#map').addClass('darken-icons')
-      Openstreetmap_layer.addTo(map);
-    } else {
-      Esri_WorldImagery_layer.addTo(map);
-    }
-    <% if ( Rails.env != "test" && Rails.application.credentials.token ) %>
-       L.tileLayer("https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.jpg90?access_token=<%= Rails.application.credentials.token[:mapbox] %>", {
-                attribution: "&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> Contributors",
-                minZoom: 19,
-                maxZoom: 21
-      }).addTo(map);
-    <% end %>
-    var basemaps = {
-        "Satellite": Esri_WorldImagery_layer,
-        "Openstreetmap": Openstreetmap_layer,
-    };
-  }
+  } 
+  let basemaps = BaseMapLayerChange(map,'setup');
+  L.control.layers(basemaps,overlays,{position: 'topright'}).addTo(map);
 
   console.log("Check Overlay settings")
   if ( localStorage.overlayPlaces == 'true' ) {
@@ -404,12 +391,8 @@ jQuery(function ($) {
   }
   map.on('baselayerchange', function(e){
     console.log("Baselayer change to " + e.name);
-    if ( e.name == 'Openstreetmap') {
-      $('#map').addClass('darken-icons')
-    } else {
-      $('#map').removeClass('darken-icons')
-    }
     localStorage.baselayer = e.name;
+    BaseMapLayerChange(map,'update');
   })
    map.on('overlayadd', function(e){
     console.log("Overlay added");
@@ -448,7 +431,6 @@ jQuery(function ($) {
       }
     }
   });
-  L.control.layers(basemaps,overlays,{position: 'topright'}).addTo(map);
 
   if ( $('#selection').data('layer-id') ) {
     // localStorage.setItem('Layer',$('#selection').data('layer-id'));
@@ -498,7 +480,7 @@ jQuery(function ($) {
   // layers: show all places
   if ( $('body').attr('id') === 'layers' )  {
     ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curve_layers,'layers');
-  }
+}
   if ( $('body').attr('id') === 'places' )  {
     ShowPlacesForLayer(map,text_layers,image_layers,marker_meta_layers,curve_layers,'places');
   }
@@ -560,4 +542,3 @@ function scrollToAnchor(aid){
   var aTag = $("a[name='"+ aid +"']");
   $('html,body').animate({scrollTop: aTag.offset().top},'slow');
 }
-

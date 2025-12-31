@@ -158,3 +158,9 @@ a.thumbnail {
   border:  1px solid grey;
   background-color: #454545;
 }
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Abstand zwischen den Elementen */
+}

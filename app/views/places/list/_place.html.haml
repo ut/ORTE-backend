@@ -1,0 +1,76 @@
+.grid-x
+  .cell.small-6
+    = link_to map_layer_path(place.layer.map,place.layer) do
+      = place.layer.title
+  .cell.small-6.text-right
+    = smart_date_display(place.startdate, place.enddate)
+- images = Image.preview(place.id)
+- if images.count > 0
+  - images.each do |img|
+    - begin
+      - if img.attached?
+        %p
+        - if img.place.layer.rasterize_images  && img.itype == 'image'
+          = image_tag img.variant(resize: "250x250", "ordered-dither": "h4x4a").processed, title: img.title, alt: img.alt
+        - else
+          = image_tag img.variant(resize: "250x250").processed, title: img.title, alt: img.alt
+          %br
+          %small.nowrap
+            #{img.title}
+            - if img.alt.present?
+              %i.fi-info{title: img.alt}
+    - rescue
+      %p.shy (Image missing)
+%h4
+  - if place.uid.present?
+    = place.uid
+    \&mdash;
+  = link_to map_layer_place_path(place.layer.map,place.layer,place) do
+    = place.title
+  - if place.published
+    %i.fi-eye.fi-21{title: 'Published'}
+  - else
+    %i.fi-lock.fi-21{title: 'Not published'}
+  - if place.featured
+    %i.fi-star.fi-21{title: 'Feature'}
+- if place.subtitle.present?
+  %p= place.subtitle
+
+%p        
+  %i.fi-marker.fi-21            
+  = place.location
+  - if place.address.present?  
+    - if place.location.present?
+      %br
+    - if place.zip.present? && place.city.present?
+      #{place.address}, #{place.zip} #{place.city}
+    - elsif place.city.present?
+      #{place.address}, #{place.zip}
+    - else  
+      #{place.address}
+  - if place.link.present?
+    %br
+    = link_to place.link, {target: '_blank'} do
+      %i.fi-link.fi-21
+      Weblink
+- if place.annotations && place.annotations.count > 0
+  %p
+    = link_to map_layer_place_path(place.layer.map,place.layer,place) do
+      #{place.annotations.count} Annotations
+- if place.tags
+  %p
+    - place.tags.each do |tag|
+      %span.label.secondary.tag{class: "#{tag.name == params[:tag] ? 'active' : ""}", id: "tag-#{tag.id}", "data-tag-id" => tag.id}
+        = link_to map_path(@map, filter: tag.name) do
+          %i.fi-price-tag
+          = tag.name
+%p.shy.text-left
+  - if place.lat
+    #{place.lat[0..6]}, #{place.lon[0..5]}
+  \|
+  Created at
+  
+  - if place.created_at == place.updated_at
+    #{l(place.created_at)}
+  - else
+    #{l(place.created_at)}, edited at #{l(place.updated_at)}

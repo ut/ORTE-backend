@@ -2,6 +2,7 @@
 
 class SubmissionConfig < ApplicationRecord
   extend Mobility
+
   translates :title_intro,    type: :string
   translates :subtitle_intro, type: :string
   translates :intro,          type: :text
@@ -10,5 +11,5 @@ class SubmissionConfig < ApplicationRecord
 
   belongs_to :layer, optional: true
 
-  serialize :locales, Array
+  serialize :locales, type: Array
 end

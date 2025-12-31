@@ -1,20 +1,25 @@
 # This workflow will download a prebuilt Ruby version, install dependencies, and  run linters
 env:
   RUBY_VERSION: 3.2
-  MYSQL_HOST: 127.0.0.1
-  MYSQL_DB: orte_test
-  MYSQL_USER: root
-  MYSQL_PASSWORD: root
+  MARIADB_HOST: 127.0.0.1
+  MARIADB_DATABASE: orte_test
+  MARIADB_PASSWORD: orte00
+  MARIADB_USER: orte
+  MARIADB_ALLOW_EMPTY_PASSWORD: true
+  MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
 name: Linters & Rspec
 on:
   push:
     branches:
       - main
       - feature*
+      - feat/*       
+
   pull_request:
     branches:
       - main
       - feature*
+      - feat/*
 jobs:
   run-lint:
     name: Rubocop & Brakeman
@@ -27,24 +32,23 @@ jobs:
         with:
           bundler: default
           bundler-cache: true
-      - name: Install rubocop/brakeman
+      - name: Bundle install
         run: |
-          gem install rubocop
-          gem install brakeman
+          bundle install
       - name: Run security checks
         run: |
           bundle exec bundle audit --update
-          brakeman -q -w2
+          bundle exec brakeman -q -w2
       - name: Run linters
         run: |
-          rubocop --parallel
+          bundle exec rubocop --parallel
   run-rspec:
     name: RSpec
     needs: run-lint
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:5.7
+        image: mariadb:latest
         env:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: orte_test
@@ -66,11 +70,18 @@ jobs:
           mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS orte_test;'
           mysql -uroot -h127.0.0.1 -proot -e "CREATE USER 'orte'@'localhost' IDENTIFIED BY 'orte00';"
           mysql -uroot -h127.0.0.1 -proot -e "GRANT ALL PRIVILEGES ON orte_test.* TO 'orte'@'localhost';"
+      - name: Install Graphicsmagick
+        run: |
+          sudo apt update && sudo apt install graphicsmagick graphicsmagick-imagemagick-compat libpng-dev libjpeg-dev libtiff-dev -y
+      - name: Install Exiftool
+        run: |
+          sudo apt update && sudo apt install exiftool -y
       - name: Run tests
         env:
           RAILS_ENV: test
           COVERAGE: true
         run: |
+          bin/rails db:drop
           bin/rails db:setup
           bundler exec rspec spec
       - name: Upload coverage results

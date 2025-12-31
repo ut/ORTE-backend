@@ -35,7 +35,7 @@
             %i.fi-pricetag-multiple
             List of all tags
     .cell.medium-8
-      = render 'searchform', object: @map
+      = render 'layers/partials/searchform', object: @map
   %hr
   %p
     Searching all places of this map for "#{@query}"
@@ -47,11 +47,13 @@
 
   %div
     - @places.each do |place|
-      %div.cards
+      %div.card
         - if place.startdate.present?
           %p
             = smart_date_display(place.startdate, place.enddate)
-        %h5
+        %h3
+          - if place.uid 
+            = place.uid
           = link_to map_layer_place_path(@map,place.layer,place) do
             = place.title
         %p.small

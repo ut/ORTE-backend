@@ -3,7 +3,9 @@
 #form-wrapper
   - if params[:ltype] == 'image'
     %h1 Add image layer
+  - elsif params[:ltype] == 'geojson'
+    %h1 Add GeoJson layer
   - else
     %h1 Add layer
-  = render 'form'
+  = render 'layers/partials/form'
 

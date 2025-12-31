@@ -42,7 +42,8 @@
   %body{:id=>"#{id}", :class=>"#{klass}", "data-app-shortname"=>"#{Rails.application.config_for(:settings).app_shortname}"}
     %header
       = render 'layouts/navigation'
-
+    %div.loader_wrapper
+      %span.loader
     #map
       &nbsp;
     %main{role: "main"}

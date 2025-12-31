@@ -90,6 +90,10 @@
                 "country": {
                   "type": "text"
                 },
+                "tags": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
                 "images": {
                   "type": "array",
                   "items": [

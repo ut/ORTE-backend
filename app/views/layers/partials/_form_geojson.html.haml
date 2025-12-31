@@ -1,0 +1,37 @@
+= simple_form_for([@map, @layer]) do |f|
+  = f.hidden_field :ltype, value: @layer.ltype
+  .grid-x
+    .large-12.cell
+      = f.error_notification
+  .grid-x
+    .large-12.medium-12.cell
+      .form-inputs
+        .grid-x.grid-padding-x
+          .large-8.medium-7.small-6.cell
+            = f.input :title
+            = f.input :subtitle
+          .large-4.medium-5.small-6.cell
+            %p
+              = f.input :published, :label => 'Publish <i class="fi-eye fi-21"></i>'.html_safe
+            %p
+              - if admin? && params[:action] == 'edit'
+                = f.association :map, collection: Map.by_user(current_user), include_blank: false, :label => 'Map'
+              - else
+                Map:
+                =link_to map_path(@map) do
+                  #{@map.title}
+                = f.association :map, as: :hidden, :input_html => { :value => @map.id }
+        .grid-x.grid-padding-x
+          .large-12.medium-12.small-12.cell
+            = tinymce
+            = f.input :text, :label => 'Description', :input_html => {:rows => 8, class: 'large-text tinymce' }
+        %hr
+        .grid-x.grid-padding-x
+          .large-12.medium-12.small-12.cell
+            = f.input :geojson, :label => 'GeoJSON', :input_html => {:rows => 20, class: 'large-text', style: 'resize: none' }
+        %hr
+        = render partial: 'layers/partials/marker_color', locals: { f: f } 
+      %hr
+      .form-actions
+        %p
+          = f.button :submit, :class => "button"

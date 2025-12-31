@@ -9,7 +9,7 @@ RSpec.describe 'places/index', type: :view do
     @other_layer = FactoryBot.create(:layer, map_id: @map.id)
     place1 = FactoryBot.create(:place, layer_id: @layer.id, title: 'Title1')
     place2 = FactoryBot.create(:place, layer_id: @layer.id, title: 'Title2')
-    @places = [place1, place2]
+    @places = Kaminari.paginate_array([place1, place2]).page(1)
   end
 
   it 'renders a list of places' do

@@ -33,7 +33,7 @@
             &nbsp;
       %li
         - if @map && ( params[:action] == 'show' || params[:action] == 'index' )
-          = render 'layers/searchform', object: @map
+          = render 'layers/partials/searchform', object: @map
       %li
         = link_to info_path, {title: 'About this project'} do
           %i.fi-info.fi-21

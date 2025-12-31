@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :annotation do
-    title { 'MyString' }
-    text { 'MyText' }
-    published { '' }
-    sorting { 1 }
-    source { 'MyText' }
+    title { Faker::Mountain.name }
+    text { Faker::Commerce.department }
+    published { true }
+    sorting { Faker::Number.within(range: 1..20) }
+    source { Faker::Artist.name }
     place
     person
     trait :with_audio do

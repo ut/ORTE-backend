@@ -13,42 +13,84 @@ RSpec.describe Place, type: :model do
   end
 
   describe 'Audio attachment' do
-    it 'is attached' do
+    it '(mp3) is attached' do
       subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.mp3')), filename: 'test.mp3', content_type: 'audio/mpeg')
       expect(subject.audio).to be_attached
     end
-    it 'is invalid ' do
-      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.m4a')), filename: 'test.mp3', content_type: 'audio/mpeg')
-      # expect(subject.audio).not_to be_attached
+    it '(m4a) is attached' do
+      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.m4a')), filename: 'test.m4a', content_type: 'audio/x-m4a')
+      expect(subject.audio).to be_attached
+    end
+    it '(mp4) is not attached' do
+      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.mp4')), filename: 'test.mp4', content_type: 'video/mpeg')
       expect(subject).not_to be_valid
-      expect(subject.errors.full_messages).to include('Audio format must be MP3.')
+    end
+    it 'is invalid' do
+      subject.audio.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.mp4')), filename: 'test.ogg', content_type: 'audio/mpeg')
+      expect(subject).not_to be_valid
+      # expect(subject.errors.full_messages).to include('Format must be MP3 or M4')
     end
   end
 
-  describe 'Dates' do
-    it 'returns date' do
+  describe 'Fulldates w/before_save handling' do
+    it 'updates full date' do
       p = FactoryBot.create(:place, startdate: '2018-01-01', enddate: '2018-01-02')
-      expect(p.date).to eq('01.01.18 ‒ 02.01.18')
+      p.startdate_date = '2018-01-01'
+      p.enddate_date = '2018-12-31'
+      p.save!
+      p.reload
+      expect(p.startdate).to eq('2018-01-01 00:00:00.000')
+      expect(p.enddate).to eq('2018-12-31 00:00:00.000')
+    end
+
+    it 'removes full date with nil' do
+      p = FactoryBot.create(:place, startdate: '2018-01-01', enddate: '2018-01-02')
+      p.startdate_date = '2018-01-01'
+      p.enddate_date = nil
+      p.save!
+      p.reload
+      expect(p.startdate).to eq('2018-01-01 00:00:00.000')
+      expect(p.enddate).to eq(nil)
+    end
+
+    it 'removes full date with blank' do
+      p = FactoryBot.create(:place, startdate: '2018-01-01', enddate: '2018-01-02')
+      p.startdate_date = ''
+      p.enddate_date = '2018-01-02'
+      p.save!
+      p.reload
+      expect(p.startdate).to eq(nil)
+      expect(p.enddate).to eq('2018-01-02 00:00:00.000')
+    end
+  end
+
+  describe 'Dates for UI' do
+    it 'returns date range' do
+      p = FactoryBot.create(:place, startdate_date: '2018-01-01', enddate_date: '2018-01-02')
+      expect(p.date).to eq('01.01.2018 ‒ 02.01.2018')
     end
 
     it 'returns full startdate' do
       p = FactoryBot.create(:place, startdate_date: '2018-01-01', startdate_time: '20:30', enddate: '')
-      expect(p.date).to eq('01.01.18, 20:30')
+      expect(p.date).to eq('01.01.2018, 20:30')
     end
 
-    it 'returns full startdate without time' do
+    it 'returns year (with only startdate given)' do
       p = FactoryBot.create(:place, startdate_date: '2018-01-01', startdate_time: '', enddate: '')
       expect(p.date).to eq('2018')
     end
-
+    it 'returns year' do
+      p = FactoryBot.create(:place, startdate_date: '2018-01-01', startdate_time: '', enddate: '2018-12-31')
+      expect(p.date).to eq('2018')
+    end
     it 'returns full date range with time' do
       p = FactoryBot.create(:place, startdate_date: '2018-01-01', startdate_time: '12:00', enddate_date: '2018-01-01', enddate_time: '18:00')
-      expect(p.date).to eq('01.01.18, 12:00 ‒ 18:00')
+      expect(p.date).to eq('01.01.2018, 12:00 ‒ 18:00')
     end
 
     it 'returns full date range without time' do
       p = FactoryBot.create(:place, startdate_date: '2018-01-01', startdate_time: '', enddate_date: '2018-10-15')
-      expect(p.date).to eq('01.01.18 ‒ 15.10.18')
+      expect(p.date).to eq('01.01.2018 ‒ 15.10.2018')
     end
 
     it 'returns year range' do
@@ -124,9 +166,9 @@ RSpec.describe Place, type: :model do
     it 'is valid  ' do
       m = FactoryBot.create(:map)
       l = FactoryBot.create(:layer, map: m)
-      event_1_in_the_middle = FactoryBot.create(:place, layer: l, startdate: '2016-01-01 00:00:00')
-      event_2_earlier = FactoryBot.create(:place, layer: l, startdate: '2011-01-01 00:00:00')
-      event_3_latest = FactoryBot.create(:place, layer: l, startdate: '2021-01-01 00:00:00')
+      event_1_in_the_middle = FactoryBot.create(:place, layer: l, startdate_date: '2016-01-01 00:00:00')
+      event_2_earlier = FactoryBot.create(:place, layer: l, startdate_date: '2011-01-01 00:00:00')
+      event_3_latest = FactoryBot.create(:place, layer: l, startdate_date: '2021-01-01 00:00:00')
 
       places = l.places
       expect(places).to eq([event_1_in_the_middle, event_2_earlier, event_3_latest])
@@ -137,9 +179,9 @@ RSpec.describe Place, type: :model do
     it 'is valid  ' do
       m = FactoryBot.create(:map)
       l = FactoryBot.create(:layer, map: m)
-      event_1_in_the_middle = FactoryBot.create(:place, layer: l, startdate: '2016-01-01 00:00:00')
-      event_2_earlier = FactoryBot.create(:place, layer: l, startdate: '2011-01-01 00:00:00')
-      event_3_latest = FactoryBot.create(:place, layer: l, startdate: '2021-01-01 00:00:00')
+      event_1_in_the_middle = FactoryBot.create(:place, layer: l, startdate_date: '2016-01-01 00:00:00')
+      event_2_earlier = FactoryBot.create(:place, layer: l, startdate_date: '2011-01-01 00:00:00')
+      event_3_latest = FactoryBot.create(:place, layer: l, startdate_date: '2021-01-01 00:00:00')
 
       places = l.places.sorted_by_startdate
       expect(places).not_to eq([event_1_in_the_middle, event_2_earlier, event_3_latest])
@@ -214,14 +256,14 @@ RSpec.describe Place, type: :model do
     it 'is valid  ' do
       m = FactoryBot.create(:map)
       l = FactoryBot.create(:layer, map: m)
-      p1 = FactoryBot.create(:place, layer: l, address: 'An address1', location: 'A location', zip: '12345', city: 'City')
-      p2 = FactoryBot.create(:place, layer: l, address: 'An address2', location: 'A location', zip: '12345', city: 'City')
+      p1 = FactoryBot.create(:place, layer: l, address: 'An address1', location: 'A location', zip: '12345', city: 'City', country: 'Country')
+      p2 = FactoryBot.create(:place, layer: l, address: 'An address2', location: 'A location', zip: '12345', city: 'City', country: 'Country')
       a1 = FactoryBot.create(:annotation, place: p1, title: 'Annotation 1')
       a2 = FactoryBot.create(:annotation, place: p2, title: 'Annotation 2')
 
       other_map = FactoryBot.create(:map)
       other_layer = FactoryBot.create(:layer, map: other_map)
-      p3 = FactoryBot.create(:place, layer: other_layer, address: 'An address3', location: 'A location', zip: '12345', city: 'City')
+      p3 = FactoryBot.create(:place, layer: other_layer, address: 'An address3', location: 'A location', zip: '12345', city: 'City', country: 'Country')
       a3 = FactoryBot.create(:annotation, place: p3, title: 'Annotation 3')
       places = l.places
       csv_header = 'id,title,teaser,text,annotations,startdate,enddate,lat,lon,location,address,zip,city,country'

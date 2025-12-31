@@ -1,6 +1,32 @@
 - content_for(:title) { @map.title }
 
-#selection{:data => { 'url' => "/maps/#{@map.id}.json", 'map_id' => "#{@map.id}", 'map-center-lat' => "#{@map.mapcenter_lat}", 'map-center-lon' => "#{@map.mapcenter_lon}", 'map-zoom' => "#{@map.zoom}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}", 'map-basemap-url' => "#{@map.basemap_url}", 'map-basemap-attribution' => "#{@map.basemap_attribution}", 'map-background-color' => "#{@map.background_color}", 'map-popup-display-mode' => "#{@map.popup_display_mode}", 'map-marker_display_mode' => "#{@map.marker_display_mode}" }}
+- if @map.enable_time_slider
+  #flash1.callout.notice{"data-closable": true}
+    %button.close-button{"aria-label": "Dismiss alert", type: "button", "data-close": true}
+      %span{"aria-hidden": "true"}
+        &times;
+    %h5
+      Timeline (still in testing) 
+      %i.fi.fi-info{"data-tooltip"=>true, :title=>"This message will only be visible during the test phase :)" }
+    %p.hint
+      #{@places.count} places in #{@map_layers.count} layers, #{@places_with_dates.count} #{@places_with_dates.count > 1 ? 'places' : 'place'} with dates
+      - if @places_with_dates.count == 0
+        %br
+        <strong>Timeline will work only with places that have dates</strong>
+      %br
+      Timerange: 
+      #{@minyear}
+      \—
+      #{@maxyear}             
+      (#{@timespan} Years)
+      %br
+      - if @map.marker_display_mode == 'single'
+        Marker display mode is set to single ✓
+      - else 
+        Marker display mode is set to cluster x  (<em>Timeline will work only with single marker display mode enabled</em>)          
+
+
+#selection{:data => { 'url' => "/maps/#{@map.id}.json?filter=#{params[:filter]}&search=#{@search}", 'map_id' => "#{@map.id}", 'map-center-lat' => "#{@map.mapcenter_lat}", 'map-center-lon' => "#{@map.mapcenter_lon}", 'map-zoom' => "#{@map.zoom}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}", 'map-basemap-url' => "#{@map.basemap_url}", 'map-basemap-attribution' => "#{@map.basemap_attribution}", 'map-background-color' => "#{@map.background_color}", 'map-popup-display-mode' => "#{@map.popup_display_mode}", 'map-marker_display_mode' => "#{@map.marker_display_mode}", 'map-enable_historical_maps' => "#{@map.enable_historical_maps}", 'map-enable_time_slider' => "#{@map.enable_time_slider}", 'map-timeline-minyear' => "#{@minyear}", 'map-timeline-maxyear' => "#{@maxyear}", 'map-timeline-timespan' => "#{@timespan}" }}
   - if params[:setbound]
     #form-wrapper.small-wrapper
       .grid-x
@@ -33,15 +59,85 @@
               .input-group-label
                 = link_to map_layers_path(@map), :title => "Show all layers of this map"  do
                   <svg version="1.1" id="icons-layers" class="icons" xmlns:serif="http://www.serif.com/" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 68 68" style="enable-background:new 0 0 68 68;" xml:space="preserve"><g><path d="M66.4,25.4c-0.1-0.6-0.5-1-1-1.3L35.8,11.8c-0.6-0.2-1.2-0.2-1.7,0.2l-5.5,4.3L23,13.9c-0.6-0.2-1.2-0.2-1.7,0.2L2.3,29c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3L14.5,37l-3.6,2.8c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3l31.6,13.7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l17-16.1c0.4-0.4,0.6-1,0.5-1.5c-0.1-0.6-0.5-1-1-1.3L57,35.3l8.9-8.4C66.3,26.6,66.5,26,66.4,25.4z M6.6,29.9l16.1-12.4l2.9,1.2L15,26.8c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3l5.5,2.4l1.8,0.8l1.8,0.8l13.1,5.6L34.6,42l-13.5-5.8l-1.8-0.8l-1.8-0.8L6.6,29.9z M57.6,39.3L43.2,52.8l-28-12.1l2.8-2.2l16.2,7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l4.8-4.5l6.1,2.7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l5.4-5.1L57.6,39.3z M53.6,33.9l-1.3,1.3l-1.3,1.3l-3.5,3.3l-3.8-1.6l-1.7-0.7l-1.7-0.7l-12.7-5.5l-1.8-0.8l-1.8-0.8l-4.6-2l9.8-7.6l1.5-1.2l1.5-1.2l3.2-2.5l26.3,11L53.6,33.9z"/></g></svg>
-              = f.input "id", :collection => @map_layers.map { |l| ["#{l.title} (#{l.places.count})", "/maps/#{@map.id}/layers/#{l.id}", :class => "layer-#{l.id} input-group-field"] }, :label => false, :include_blank => 'Select a layer...', input_html: {:class => 'nav-selector'}
+              = f.input "id", :collection => @map_layers.map { |l| ["#{l.title} (#{l.ltype == 'geojson' ? 'GeoJSON' : l.places.count})", "/maps/#{@map.id}/layers/#{l.id}", :class => "layer-#{l.id} input-group-field"] }, :label => false, :include_blank => 'Select a layer...', input_html: {:class => 'nav-selector'}
               .input-group-button
                 = link_to new_map_layer_path(@map), :class => 'button secondary', :title => 'Create new layer' do
                   %i.fi-plus.fi-24
+        
         - else
           = link_to new_map_layer_path(@map), :class => 'button info' do
             %i.fi-plus
             Create a layer for this map
         %p#selection-hint
+
+  .grid-x
+    .cell.medium-12
+      #filter-wrapper.grid-x
+        .cell.medium-12   
+          %button.button.secondary.small#info-wrapper-button{type: "button", "data-toggle": "filter-wrapper-content"}
+            %i.fi-magnifying-glass.fi-18
+            %i.fi-italic.fi-24
+            %i.fi-filter.fi-18 
+          %div#filter-wrapper-content.grid-x{"data-toggler": ".expanded"}
+            %button.close-button{type: "button", "data-toggle": "filter-wrapper-content"}
+              %span{"aria-hidden": "true"}
+                &times;            
+            .cell.medium-12
+              .header
+                %h5 
+                  Search 
+                  - if @tags_count && @tags_count > 0
+                    \& filter             
+              = render 'maps/partials/search', object: @map         
+            .cell.medium-12 
+              - if @tags_count && @tags_count > 0
+                .cell.medium-12 
+                  %div.tags
+                    %h5.hide Tags
+                    - if @tags
+                      - @tags.each do |tag|
+                        - count = tag.taggings_count
+                        - next if @tags_count > 5 && count <= @tags_count_threshold && params[:show_tags] != 'all'
+                        %span.label.secondary.tag{class: "#{params[:filter]&.split(',')&.include?(tag.name) ? 'active' : ''}", id: "tag-#{tag.id}", "data-tag-id" => tag.id}
+                          = link_to map_path(@map, filter: (params[:filter] ? (params[:filter].split(',').include?(tag.name) ? (params[:filter].split(',') - [tag.name]).join(',') : "#{params[:filter]},#{tag.name}") : tag.name), search: @search) do
+                            %i.fi-price-tag
+                            = tag.name
+                            (#{count})
+                        
+
+                    - if ( params[:filter] && !params[:filter].empty? )
+                      %span.label.secondary.tag 
+                        = link_to map_path(@map, search: @search), {title: 'Show all places'} do
+                          %i.fi-x      
+                          All places
+                    - if @tags && @tags_count > 5
+                      - if params[:show_tags] != 'all'
+                        = link_to map_path(@map, filter: params[:filter], search: @search, show_tags: 'all'), {title: 'Show all tags'} do
+                          %strong{style: 'font-size: 23px; line-height: 1; padding-left: 3px'}
+                            \»
+                      - else
+                        = link_to map_path(@map, filter: params[:filter], search: @search, show_tags: ''), {title: 'Show all tags'} do
+                          %strong{style: 'font-size: 23px; line-height: 1; padding-left: 3px'}
+                            \« 
+                      
+              - if ( params[:filter] && !params[:filter].empty? ) || ( @search )
+                %hr
+                - if @places && @places.count > 0
+                  %p
+                    - if @search
+                      - if params[:filter] && !params[:filter].empty? 
+                        Searching places with #{@tag_names.count > 0 ? 'tags' : 'tag'} <tt>"#{@tag_names.join(', ')}"</tt>
+                      - else
+                        Searching all places 
+                      for <tt>"#{@search}"</tt>
+                    - elsif params[:filter] && !params[:filter].empty? 
+                      Filtering with #{@tag_names.count > 0 ? 'tags' : 'tag'} "#{@tag_names.join(', ')}"
+
+                    \— #{@places.count}&nbsp;#{@places.count == 1 ? 'place' : 'places'} found
+                - else  
+                  No places found
+                = render 'maps/partials/places_list'
+
 
 
 

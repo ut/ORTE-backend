@@ -14,15 +14,16 @@ json.map do
       json.call(place, :id, :title, :subtitle, :teaser, :link, :imagelink, :imagelink2, :audiolink, :published, :startdate, :enddate, :location, :address, :zip, :city, :text, :country, :featured, :shy, :icon_link, :icon_class, :icon_name, :layer_id, :layer_title, :layer_slug, :color)
       json.lat place.public_lat
       json.lon place.public_lon
+      json.tags place.tags.map(&:name).sort
       json.annotations place.annotations do |annotation|
         json.extract! annotation, :id, :title, :text, :person_name, :audiolink
       end
       json.images do
-        json.array! place.images.order('sorting ASC') do |image|
+        json.array!(place.images.sort_by { |image| [image.sorting ? 0 : 1, image.sorting] }) do |image|
           json.call(image, :id, :title, :source, :creator, :alt, :sorting, :image_linktag, :image_url)
         end
       end
-      if place.relations_froms.count.positive?
+      if place.relations_froms.size.positive?
         json.relations place.relations_froms do |relation|
           json.id relation.id
           json.from do

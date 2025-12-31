@@ -27,11 +27,30 @@ class Public::LayersController < ActionController::Base
                 else
                   @layer.places.published
                 end
+
+      if params[:filter_by_tags]
+        tags = params[:filter_by_tags].split(',')
+        filtered_place_ids = if params[:match_all].present? && params[:match_all] == 'true'
+                               Place.joins(:tags)
+                                    .where(id: @places)
+                                    .where(tags: { name: tags })
+                                    .group('places.id')
+                                    .having('COUNT(DISTINCT tags.id) = ?', tags.length)
+                                    .pluck(:id)
+                             else
+                               @places.tagged_with(tags, any: true).pluck(:id)
+                             end
+        @places = Place.where(id: filtered_place_ids)
+      end
+
+      @places = @places.includes(:images, :annotations, :tags, :icon,
+                                 audio_attachment: :blob,
+                                 relations_froms: { relation_from: [:layer], relation_to: [:layer] })
     end
 
     respond_to do |format|
       if @layer.present?
-        format.json { render :show }
+        format.json { render :show, locals: { map: @layer.map, layer: @layer, places: @places } }
         format.geojson { render :show, mime_type: Mime::Type.lookup('application/geo+json') }
         format.zip do
           zip_file = "orte-map-#{@layer.map.title.parameterize}-layer-#{@layer.title.parameterize}-#{I18n.l Date.today}.zip"

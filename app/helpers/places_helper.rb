@@ -7,6 +7,18 @@ module PlacesHelper
     { host: Rails.application.config_for(:settings).app_host, protocol: Rails.application.config_for(:settings).app_host_protocol }
   end
 
+  def qualifier_for_select
+    [['Exact date', 'exact'], ['Approx. date', 'circa']]
+  end
+
+  def app_config
+    @app_config ||= Rails.application.config_for(:settings)
+  end
+
+  def url(map_slug, layer_slug, id)
+    "#{app_config.app_host_protocol}://#{app_config.app_host}/maps/#{map_slug}/layers/#{layer_slug}/places/#{id}"
+  end
+
   def show_link(title, map_id, layer_id, id)
     " <a href=\"/maps/#{map_id}/layers/#{layer_id}/places/#{id}\">#{title}</a>"
   end
@@ -36,7 +48,7 @@ module PlacesHelper
 
     begin
       if image.place.layer.rasterize_images && image.itype == 'image'
-        polymorphic_url(image.file.variant(resize: '800x800', "ordered-dither": 'h8x8a').processed)
+        polymorphic_url(image.file.variant(resize: '800x800', 'ordered-dither': 'h8x8a').processed)
       else
         polymorphic_url(image.file.variant(resize: '800x800').processed)
       end

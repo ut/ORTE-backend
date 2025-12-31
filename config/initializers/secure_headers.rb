@@ -1,5 +1,3 @@
-# SecureHeaders::Configuration.default
-
 SecureHeaders::Configuration.default do |config|
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
@@ -17,42 +15,28 @@ SecureHeaders::Configuration.default do |config|
   config.x_permitted_cross_domain_policies = "none"
   # config.referrer_policy = %w(origin-when-cross-origin strict-origin-when-cross-origin)
   config.referrer_policy = %w(origin-when-cross-origin)
-  default_csp_config = {
+  config.csp = {
     # "meta" values. these will shape the header, but the values are not included in the header.
     preserve_schemes: true, # default: false. Schemes are removed from host sources to save bytes and discourage mixed content.
-
     # directive values: these values will directly translate into source directives
     default_src: %w(https: 'self' https://server.arcgisonline.com),
-    base_uri: %w('self' https://staging.orte.link https://orte.link),
-    block_all_mixed_content: true, # see http://www.w3.org/TR/mixed-content/
+    base_uri: %w('self'),
+    block_all_mixed_content: false, # see http://www.w3.org/TR/mixed-content/
     child_src: %w('self' 'unsafe-inline' https://player.vimeo.com https://www.youtube.com https://www.facebook.com), # if child-src isn't supported, the value for frame-src will be set.
-    connect_src: %w('self' https://nominatim.openstreetmap.org/search https://nominatim.openstreetmap.org/reverse https://staging.orte.link ws://staging.orte.link wss://staging.orte.link https://orte.link ws://orte.link wss://orte.link),
-    font_src: %w('self' 'unsafe-inline' https://staging.orte.link https://orte.link),
+    connect_src: %w('self' https://nominatim.openstreetmap.org/search https://nominatim.openstreetmap.org/reverse),
+    font_src: %w('self' 'unsafe-inline'),
     form_action: %w('self'),
     frame_ancestors: %w('none'),
     img_src: %w(* data:),
-    manifest_src: %w('self' https://staging.orte.link https://orte.link),
-    media_src: %w('self'  https://staging.orte.link https://orte.link),
+    manifest_src: %w('self'),
+    media_src: %w('self' ),
     object_src: %w('self' 'unsafe-eval'),
-    sandbox: true, # true and [] will set a maximally restrictive setting
+    sandbox: false, # true and [] will set a maximally restrictive setting
     plugin_types: %w(),
-    script_src: %w('self' 'unsafe-inline' https://staging.orte.link https://orte.link),
-    style_src: %w('self' 'unsafe-inline' https://staging.orte.link https://orte.link),
+    script_src: %w('self' 'unsafe-inline'),
+    style_src: %w('self' 'unsafe-inline'),
     worker_src: %w('self'),
-    upgrade_insecure_requests: true, # see https://www.w3.org/TR/upgrade-insecure-requests/
+    upgrade_insecure_requests: false, # see https://www.w3.org/TR/upgrade-insecure-requests/
     report_uri: %w()
   }
-
-  if Rails.env.development? || Rails.env.test? || Rails.env.staging?  || Rails.env.production?
-    config.csp = default_csp_config.merge({
-        default_src: %w('self' https://staging.orte.link https://orte.link),
-        font_src: %w('self' 'unsafe-inline' https://staging.orte.link https://orte.link),
-        script_src: %w('self' 'unsafe-inline' https://staging.orte.link https://orte.link),
-        block_all_mixed_content: false,
-        upgrade_insecure_requests: false,
-        sandbox: false
-    })
-  else
-    config.csp = default_csp_config
-  end
 end

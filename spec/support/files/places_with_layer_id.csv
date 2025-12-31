@@ -1,0 +1,9 @@
+title,lat,lon,level_id
+Place for first layer by id,53.65,9.96,1
+Place for second layer,53.64,9.96,2
+Place for first layer by slug,53.66,9.95,first_layer
+Place for layer of different map by slug,53.64,9.93,other_map_layer
+Place for layer of different map by id,53.64,9.93,77
+Place for non existing layer slug,53.64,9.94,not_existing_slug
+Place for non existing layer id,53.64,9.93,999
+Place without layer id,53.66,9.95,""

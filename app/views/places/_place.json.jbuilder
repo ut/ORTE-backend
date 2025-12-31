@@ -6,7 +6,7 @@ json.iconset place.layer.map.iconset, :title, :icon_anchor, :icon_size, :popup_a
 
 json.places do
   json[] do
-    json.extract! place, :id, :title, :teaser, :text, :link, :startdate, :enddate, :full_address, :location, :address, :zip, :city, :country, :published, :featured, :layer_id, :created_at, :updated_at, :date, :edit_link, :show_link, :imagelink2, :imagelink, :icon_link, :icon_class, :icon_name
+    json.extract! place, :id, :title, :teaser, :text, :sources, :link, :date, :date_with_qualifier, :startdate, :enddate, :full_address, :location, :address, :zip, :city, :country, :published, :featured, :layer_id, :created_at, :updated_at, :date, :edit_link, :show_link, :imagelink2, :imagelink, :icon_link, :icon_class, :icon_name
     json.lat place.public_lat
     json.lon place.public_lon
     json.images(place.images).order('sorting ASC') do |image|

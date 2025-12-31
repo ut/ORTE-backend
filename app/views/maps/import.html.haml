@@ -1,0 +1,30 @@
+- content_for(:title) { "Import for #{@map.title}" }
+
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to root_path, :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Import:
+    = link_to map_path(@map) do
+      = @map.title
+  .grid-x.grid-padding-x
+    .large-12.medium-12.small-12.cell
+      %hr
+      %p You can create many places for this map by importing a CSV file.
+
+      = simple_form_for :import, url: import_preview_map_path(@map), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+        %hr
+        %p
+          = f.input :file, :as => "file", :label => 'CSV File', input_html: { accept: '.csv' }
+          %span.hint  The format of the file must be CSV.
+        %p
+          .grid-x.grid-padding-x
+            .cell.medium-3
+              = f.input :column_separator, as: :radio_buttons, collection: ['Comma', 'Semicolon', 'Tab'], checked: 'Comma'
+            .cell.medium-3
+              = f.input :quote_char, as: :string, label: 'Quote Char', input_html: { value: '"' }
+        %hr
+        .form-actions
+          %p
+            = f.submit "Import CSV File", class: "button"

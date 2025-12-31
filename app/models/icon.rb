@@ -14,6 +14,6 @@ class Icon < ApplicationRecord
   private
 
   def check_file_format
-    errors.add(:file, 'format must be either SVG (preferred), PNG, GIF or JPEG.') if file.attached? && !file.content_type.in?(%w[image/png image/jpg image/gif image/svg+xml])
+    errors.add(:file, 'format must be either SVG (preferred), PNG, GIF or JPEG.') if file.attached? && !file.content_type.in?(%w[image/png image/jpg image/jpeg image/gif image/svg+xml])
   end
 end

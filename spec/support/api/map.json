@@ -264,11 +264,13 @@
                               "subtitle",
                               "teaser",
                               "text",
+                              "sources",
                               "link",
                               "imagelink",
                               "imagelink2",
                               "audiolink",
                               "published",
+                              "date_with_qualifier",
                               "startdate",
                               "enddate",
                               "lat",
@@ -282,7 +284,8 @@
                               "layer_id",
                               "shy",
                               "images",
-                              "annotations"
+                              "annotations",
+                              "tags"
                            ],
                            "properties":{
                               "id":{
@@ -342,6 +345,22 @@
                                     ""
                                  ]
                               },
+                              "tags":{
+                                 "$id":"#/properties/map/properties/tags",
+                                 "type":"array",
+                                 "items":{
+                                    "type":"string"
+                                 }
+                              },
+                              "sources":{
+                                 "$id":"#/properties/map/properties/layer/items/properties/places/items/properties/sources",
+                                 "type":"string",
+                                 "title":"The Sources Schema",
+                                 "default":"",
+                                 "examples":[
+                                    ""
+                                 ]
+                              },
                               "link":{
                                  "$id":"#/properties/map/properties/layer/items/properties/places/items/properties/link",
                                  "type":"string",
@@ -388,9 +407,19 @@
                                     true
                                  ]
                               },
+                              "date_with_qualifier":{
+                                 "$id":"#/properties/map/properties/layer/items/properties/places/items/properties/date_with_qualifier",
+                                 "type":["string", "null"],
+                                 "title":"The date_with_qualifier Schema",
+                                 "default":"",
+                                 "examples":[
+                                    "ca. 1980 - 2000"
+                                 ],
+                                 "pattern":"^(.*)$"
+                              },                              
                               "startdate":{
                                  "$id":"#/properties/map/properties/layer/items/properties/places/items/properties/startdate",
-                                 "type":"string",
+                                 "type":["string", "null"],
                                  "title":"The Startdate Schema",
                                  "default":"",
                                  "examples":[
@@ -400,7 +429,7 @@
                               },
                               "enddate":{
                                  "$id":"#/properties/map/properties/layer/items/properties/places/items/properties/enddate",
-                                 "type":"string",
+                                 "type":["string", "null"],
                                  "title":"The Enddate Schema",
                                  "default":"",
                                  "examples":[

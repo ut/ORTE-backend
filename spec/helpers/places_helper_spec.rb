@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe PlacesHelper, type: :helper do
+  let(:iconset) { create(:iconset) }
+
   describe 'default_url_options' do
     it 'it returns an array with hostname' do
       expect(helper.default_url_options).to eq({})
@@ -30,7 +32,9 @@ RSpec.describe PlacesHelper, type: :helper do
   describe 'icon_link' do
     it 'it returns an polymorphic icon link' do
       i = Icon.new
+      i.iconset = iconset
       i.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.jpg', content_type: 'image/jepg')
+      i.save!
       expect(helper.icon_link(i.file)).to eq("<img src=\"http://test.host#{rails_blob_path(i.file)}\">")
     end
   end
@@ -49,9 +53,10 @@ RSpec.describe PlacesHelper, type: :helper do
 
   describe 'audio_link' do
     it 'it returns an polymorphic audio link' do
-      p = Place.new
+      p = build(:place)
       uploaded = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'files', 'test.mp3'), 'audio/mpeg')
       p.audio.attach(uploaded)
+      p.save!
       expect(helper.audio_link(p.audio)).to eq("<audio controls=\"controls\" src=\"http://test.host#{rails_blob_path(p.audio)}\"></audio>")
     end
   end

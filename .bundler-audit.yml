@@ -1,0 +1,4 @@
+---
+ignore:
+  - CVE-2025-26803  # avoid update passenger, since some quirky use-of-outdated-turnout thing
+  - CVE-2022-31160  # pinpoint jquery-ui-rails to v7 

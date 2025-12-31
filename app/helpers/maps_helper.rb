@@ -7,7 +7,8 @@ module MapsHelper
   end
 
   def marker_display_mode_for_select
-    marker_display_modes = %w[cluster single]
+    # array with three values
+    marker_display_modes = ['cluster', 'zigzag cluster', 'zigzag cluster, w/gradient', 'single']
     marker_display_modes.each_with_object({}) { |e, m| m[e.capitalize] = e }
   end
 end

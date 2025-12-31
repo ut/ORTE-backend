@@ -1,9 +1,8 @@
 
-function drawCurves(map,layer_id,curve_layers,marker_layers,color,clustercolor,places_with_relations,bending,coloring) {
+function drawCurves(map,layer_id,curve_layers,marker_layers,clustercolor,places_with_relations,bending,coloring) {
 
   var boost = ( 2.9 * bending ) + 0.1;
   console.log("Boost: "+boost);
-  console.log("Iterate places_with_relations");
 
   $.each(places_with_relations, function(key,place) {
     $.each(place.relations, function(kkey,relation) {
@@ -12,8 +11,8 @@ function drawCurves(map,layer_id,curve_layers,marker_layers,color,clustercolor,p
       var point2 = [Number(relation.to.lat), Number(relation.to.lon)];
 
       var color = 'rgba(225,25,25,0.75)';
-      var color = '#'+Math.floor(Math.random()*16777215).toString(16);
-      var color = "hsl(" + Math.random() * 360 + ", 100%, 85%)";
+      color = '#'+Math.floor(Math.random()*16777215).toString(16);
+      color = "hsl(" + Math.random() * 360 + ", 100%, 85%)";
       // var color = clustercolor;
       if ( coloring == 'black') {
           color = '#000000'
@@ -26,7 +25,7 @@ function drawCurves(map,layer_id,curve_layers,marker_layers,color,clustercolor,p
           weight: 4,
           opacity: 0.5,
           className: 'curve_normal curve_'+relation.from.id,
-          animate: false
+          animate: true
       }
       var distance =  L.latLng(point1).distanceTo( L.latLng(point2));
       let distance_in_kms = ((distance) / 1000).toFixed(2);

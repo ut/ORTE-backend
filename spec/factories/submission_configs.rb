@@ -2,13 +2,13 @@
 
 FactoryBot.define do
   factory :submission_config do
-    title_intro { 'MyString' }
-    subtitle_intro { 'MyString' }
-    intro { 'MyText' }
-    title_outro { 'MyString' }
-    outro { 'MyText' }
-    start_time { '2021-04-29 12:48:46' }
-    end_time { '2021-04-29 12:48:46' }
+    title_intro { Faker::Space.planet }
+    subtitle_intro { Faker::Space.galaxy }
+    intro { Faker::Lorem.sentence }
+    title_outro { Faker::Lorem.sentence }
+    outro { Faker::Lorem.sentence }
+    start_time { Faker::Time.between(from: DateTime.now - 100.years, to: DateTime.now) }
+    end_time { Faker::Time.between(from: DateTime.now - 100.years, to: DateTime.now) }
     use_city_only { false }
     trait :invalid do
       title_intro { nil }

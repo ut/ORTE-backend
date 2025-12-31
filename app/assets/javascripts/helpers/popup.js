@@ -39,8 +39,14 @@ function PopupFullContent(place) {
         content += "<img src='" + place.imagelink + "' />";
     }
     content += '<div class="leaflet-popup-content-text">';
-    if (place.date) {
-        content += "<p>" + place.date;
+
+    var layer_title = place.layer_title;
+    if ( layer_title && ( layer_title.length > 30)) {
+        layer_title = layer_title.substring(0, 30) + "...";
+    }
+    content += "<p class='label' style='background-color: "+place.layer_color+"; color: #fff; font-weight: bold; font-size: 10pt;'>" + layer_title + "</p>";
+    if (place.date_with_qualifier) {
+        content += "<p>" + place.date_with_qualifier;
         if (place.address) {
             content += " // " + place.address;
         }
@@ -71,6 +77,9 @@ function PopupFullContent(place) {
         }
         content += "<p>" + teaser + "</p>";
     }
+    if (place.url) {
+        content += "<p><a href='" + place.url + "'>&gt;&gt;</a></p>";
+    }    
     if (place.edit_link) {
         content += "<p class='text-right'>" + place.edit_link + "</p>";
     }

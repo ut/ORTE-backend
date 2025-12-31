@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mariadb:lts
+    environment:
+      - MARIADB_DATABASE=orte
+      - MARIADB_USER=orte
+      - MARIADB_PASSWORD=orte00
+      - MARIADB_ALLOW_EMPTY_PASSWORD=true
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
+    ports:
+      - 127.0.0.1:3306:3306
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+    image: a-thousand-channels/orte-backend:latest
+    ports:
+      - 127.0.0.1:3000:3000
+    environment:
+      RAILS_DB_HOST: db
+      RAILS_DB_PASSWORD: orte00
+      RAILS_SERVE_STATIC_FILES: true
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+    depends_on:
+      db:
+        condition: service_healthy

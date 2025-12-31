@@ -5,7 +5,7 @@ defaults: &defaults
       label: "Print working directory"
     - cmd: "node -v"
       label: "Show node version"
-    - cmd: "git clone git@github.com:ut/ORTE-map-client.git tmp/CLIENT_PATH"
+    - cmd: "git clone git@github.com:a-thousand-channels/a1000c-map-client.git tmp/CLIENT_PATH"
       label: "Cloning the web client (from Repository)"
     - cmd: "cd tmp/CLIENT_PATH && yarn install"
       label: "Installing sources"

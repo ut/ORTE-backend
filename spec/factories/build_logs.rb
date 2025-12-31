@@ -4,9 +4,9 @@ FactoryBot.define do
   factory :build_log do
     map
     layer
-    output { 'MyString' }
-    size { 'MyString' }
-    version { 'MyString' }
+    output { Faker::Hacker.say_something_smart }
+    size { Faker::Hacker.adjective }
+    version { Faker::Hacker.noun }
     trait :changed do
       output { 'OtherString' }
     end

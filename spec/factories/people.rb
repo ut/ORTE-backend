@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :person do
-    name { 'MyString' }
-    info { 'MyText' }
+    name { Faker::FunnyName.name }
+    info { Faker::GreekPhilosophers.quote }
     map
     trait :invalid do
       name { nil }

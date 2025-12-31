@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :icon do
-    title { 'MyString' }
+    title { Faker::Lorem.word }
     iconset
     trait :invalid do
       iconset { nil }

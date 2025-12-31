@@ -2,23 +2,15 @@
 
 FactoryBot.define do
   factory :map do
-    title { 'MyString' }
-    subtitle { 'MyString' }
-    text { 'MyString' }
-    teaser { 'MyTeaser' }
-    credits { 'MyString' }
-    style { 'MyCSS' }
-    published { false }
-    basemap_url { 'MyMapBasemapUrl' }
-    basemap_attribution { 'Basemap made by' }
-    color { '#0000cc' }
-    background_color { '#151515' }
-    mapcenter_lat { '0.1' }
-    mapcenter_lon { '10' }
-    zoom { 12 }
-    popup_display_mode { 'click' }
-    tooltip_display_mode { 'false' }
-    places_sort_order { 'startdate' }
+    title { Faker::Book.title }
+    subtitle { Faker::Lorem.sentence }
+    text {  Faker::Lorem.paragraph }
+    credits { Faker::Book.author }
+    basemap_url { Faker::Internet.url(path: '/map.png') }
+    basemap_attribution { Faker::Lorem.sentence }
+    background_color { Faker::Color.hex_color }
+    mapcenter_lat { Faker::Address.latitude }
+    mapcenter_lon { Faker::Address.longitude }
     group
     trait :invalid do
       title { nil }

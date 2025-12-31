@@ -4,6 +4,7 @@ html,body {
 
 body {
   font-family: "worksans","Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "worksans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
   font-size: 11.3pt;
 }
 header {
@@ -39,6 +40,9 @@ p {
 p.compact {
   margin: 0;
 }
+p.small.compact {
+  margin-bottom: 0.2rem;
+}
 
 a.disabled {
    cursor: not-allowed;
@@ -48,7 +52,7 @@ div.small {
 }
 .hide, .hidden {display: none;}
 .shy {
-    color: #888;
+    color: #666;
     font-size: 14px;
 }
 .small {
@@ -79,9 +83,9 @@ span.confirmation {
 }
 
 span.name, label {
-    color: #888;
+    color: #775;
     font-size: 90%;
-    text-transform: uppercase;
+    text-transform: initial;
     font-weight: bold;
     padding-right: 10px;
     line-height: 1.2;
@@ -114,6 +118,58 @@ tbody th, tbody td {
     text-align: left;
 }
 
+nav.pagination {
+  text-align: right;
+}
+
+.loader_wrapper {
+  // cover the whole page, content in the middle
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30,30,30,0.5);
+  z-index: 2;
+}
+.loader {
+  // place in the moddle of loader_wrapper div
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 48px;
+  height: 48px;
+}
+.loader::after,
+.loader::before {
+  content: '';  
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 5px solid rgba(255,255,255,0.7);
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: animloader 2s linear infinite;
+}
+.loader::after {
+  animation-delay: 1s;
+}
+
+@keyframes animloader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
 /* -------------------- */
 /* foundation adapations */
 .callout {
@@ -139,6 +195,8 @@ a.button {
 }
 a.button.small {
   margin: 0 0.25rem 0.25rem;
+  padding: 0.45em 0.7em;
+  white-space: nowrap;
 }
 .close-button.small {
     right: 0.66rem;
@@ -208,18 +266,41 @@ select {
   }
 }
 /* -------------------- */
+.card {
+  padding: 0.75rem;
+
+  p {
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+  }
+}
+/* -------------------- */
 .label.secondary.tag {
-    padding: 0.15em 0.45em 0.25em;
+    padding: 0.4em 0.6em;
+    margin-bottom: 0.25rem;
     border-radius: 4px;
     background-color: #baa;
+    background-color: #767676;
+    font-size: 0.9rem;
+    transition: all 0.3s;
 
     a {
       color: white;
     }
-
 }
+@media screen and (max-width: 39.9375em) {
+  .label.secondary.tag {
+    padding: 0.35em 0.5em;
+    margin-bottom: 0rem;
+    font-size: 0.8rem;
+  }
+}
+.label.secondary.tag.active,
 .label.secondary.tag:hover {
     background-color: #a99;
+    background-color: #8c7f7f;
+    background-color: #c6c600;
+    transition: all 0.3s;
     a {
       color: white;
     }
@@ -323,6 +404,7 @@ body .top-bar.action-bar {
       display: inline;
       font-weight:  bold;
       font-size:  14px;
+
       opacity:  1;
       transition: 3s all;
       svg {
@@ -377,6 +459,9 @@ div.input-group {
       padding: 0.4em 1em 0 1em;
       margin: 0;
   }
+}
+form.form-inline div.input-group {
+  margin-bottom: 0rem;
 }
 [type="text"], [type="password"], [type="date"], [type="datetime"], [type="datetime-local"], [type="month"], [type="week"], [type="email"], [type="number"], [type="search"], [type="tel"], [type="time"], [type="url"], [type="color"], textarea {
     margin: 0 0 0.3rem;

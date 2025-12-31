@@ -14,6 +14,7 @@ class Map < ApplicationRecord
   validates :title, presence: true
 
   extend FriendlyId
+
   friendly_id :title, use: :slugged
 
   # call me: Map.by_user(current_user).find(params[:id])
@@ -31,5 +32,21 @@ class Map < ApplicationRecord
 
   def image_link
     ApplicationController.helpers.image_url(image) if image&.attached?
+  end
+
+  def geojson
+    merged_geojson = {}
+    layers.each_with_index do |layer, index|
+      next unless layer.geojson.present?
+
+      geojson = JSON.parse(layer.geojson)
+      if geojson['features'].is_a?(Array)
+        if merged_geojson.empty?
+          merged_geojson = geojson
+        else
+          merged_geojson['features'] += geojson['features']
+        end
+      end
+    end
   end
 end

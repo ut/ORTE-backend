@@ -70,7 +70,7 @@ function lookupNominatim(address, url) {
                     }
                     console.log('Lookup :: "value.class" ' + val.class);
 
-                    var regexp = /amenity|building|highway|boundary/gi;
+                    var regexp = /amenity|building|highway|boundary|leisure|landuse/gi;
                     var label = '';
                     if (val.class === 'building') {
                         label = 'Adresse:';
@@ -138,14 +138,14 @@ function lookupNominatim(address, url) {
                 $("<ul/>", {
                     id: "response",
                     html: items.join('')
-                }).appendTo("#selection");
+                }).appendTo("#addresslookup");
                 console.log("Success");
                 $('#selection-hint').html("<p>Please select one result below (or type in another address).</p>");
                 $('#selection-hint').addClass('active');
             }).done(function () {
                 console.log('done');
                 if (items.length === 0) {
-                    $('#selection-hint').html("<p>Sorry, something went wrong.</p>");
+                    $('#selection-hint').html("<p>Sorry, didn't found a match in the osm database.</p>");
                     $('#selection-hint').addClass('active');
                 }
             }).fail(function () {

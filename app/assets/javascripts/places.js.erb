@@ -12,4 +12,45 @@ jQuery(function ($) {
             $('#radius_select').toggle();
         });
     }
+    $('#place_startdate_qualifier').change(function () {
+        let d = $('#place_startdate_date').val();
+        console.log(d); 
+        console.log($(this).val());
+        $('#startdate_qualifier_preview').html('<span class="label small">'+translateQualifierDate(d,$(this).val())+'</span>');
+    })
+    $('#place_enddate_qualifier').change(function () {
+        let d = $('#place_enddate_date').val();
+        console.log(d); 
+        console.log($(this).val());
+        $('#enddate_qualifier_preview').html('<span class="label small">'+translateQualifierDate(d,$(this).val())+'</span>');
+    })
 });
+
+function translateQualifierDate(d,qualifier) {
+    let date = new Date(d);
+    /* get dayofmonth */
+    let day = date.getDate();
+    /* get month */
+    let month = date.getMonth()+1;
+    /* get year */
+    let year = date.getFullYear();
+
+
+    console.log(date);
+    console.log(qualifier);
+    if (qualifier === 'circa') {
+        return "ca. "+year;
+    } else if (qualifier === 'exact') {
+        return day+"."+month+"."+year;
+    } else {
+        /* TODO: just 1.1.2020 to 2020 */
+        if ( day == '1' && month == '1' ) {
+            return year;
+        } 
+        return day+"."+month+"."+year;
+    }
+
+
+    
+
+}

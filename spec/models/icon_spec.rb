@@ -3,13 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Icon, type: :model do
+  let(:icon) { create(:icon) }
   it 'has a valid factory' do
-    expect(build(:icon)).to be_valid
+    expect(icon).to be_valid
   end
 
   it 'icon_linktag' do
-    subject.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.png', content_type: 'image/jpeg')
-    expect(subject.icon_linktag).to eq("<img src=\"#{Rails.application.routes.url_helpers.url_for(subject.file)}\">")
+    icon.file.attach(io: File.open(Rails.root.join('spec', 'support', 'files', 'test.jpg')), filename: 'attachment.png', content_type: 'image/jpeg')
+    icon.save!
+    expect(icon.icon_linktag).to eq("<img src=\"#{Rails.application.routes.url_helpers.url_for(icon.file)}\">")
   end
 
   describe 'Image attachment' do

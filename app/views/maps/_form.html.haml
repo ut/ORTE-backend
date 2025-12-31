@@ -37,6 +37,9 @@
               %p
                 = f.input :enable_map_to_go, :input_html => { :class => '' }, label: 'Enable the Map to go feature'
               %p.hint This option enables that a user can use the Map to go function and the live preview
+              %p
+                = f.input :enable_time_slider, :input_html => { :class => '' }, label: 'Enable a Timeslider (NEW)'
+              %p.hint This option enables a timeslider on the map. Please consider that only places with a date will be displayed on this timeslider!
 
         - else
           %i.fi-torsos-all.fi-21
@@ -52,7 +55,7 @@
             %p
               = f.input :marker_display_mode, :collection => marker_display_mode_for_select, :input_html => { :class => '' }, label: 'Marker display mode'
             %p.hint
-              Choose, if near-by or overlapping markers should displayed as a marker cluster (default) or as single markers.
+              Choose, if near-by or overlapping markers should displayed as a marker cluster (default) or as single markers. NEW: You can choose also a colorized version of marker cluster :)
 
           .large-4.medium-4.small-6.cell
             %p
@@ -70,9 +73,9 @@
         %div.compact
           .grid-x.grid-padding-x
             .large-12.medium-12.small-12.cell
-              %label Predefined Basemaps
+              %label Default basemap
               %p.shy
-                Please select one of the predefined basemaps
+                Please select one of the predefined basemaps as new default
               %select#basemaps
                 %option{value: '', "data-url": '', "data-backgroundcolor": '', "data-attribution": '' }
                 - basemaps.each_value do |b|
@@ -81,7 +84,8 @@
         %hr
         .grid-x.grid-padding-x
           .large-12.medium-12.small-12.cell
-            %p
+            %label Add a basemap as default 
+            %p  
               = f.input :basemap_url, :input_html => {:placeholder => 'https://server/directory/{z}/{y}/{x}'}
             %p.hint
               URL for a custom basemap
@@ -91,6 +95,12 @@
             %p.hint
               Attribution for the custom basemap
               %i.fi.fi-info{"data-tooltip"=>true, :title=>"Basemap are made by someone, you should credit them here. Licences of most providers like Openstreetmap require to mention them properly."}
+        %hr
+          .grid-x.grid-padding-x
+            .large-12.medium-12.small-12.cell         
+              %label Special: Enable historical maps of Hamburg
+              %p
+                = f.input :enable_historical_maps
         %hr
         .grid-x.grid-padding-x
           .medium-12.small-12.cell

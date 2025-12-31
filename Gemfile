@@ -8,16 +8,15 @@ git_source(:github) do |repo_name|
 end
 
 gem 'puma', '~> 6'
-gem 'rails', '~> 6.1'
-gem 'sassc', '~> 2.4'
+gem 'rails', '~> 7.2'
 gem 'sassc-rails'
-gem 'uglifier'
+gem 'terser', '~> 1.1', '>= 1.1.12'
 
 gem 'friendly_id'
 
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4'
+gem 'redis', '~> 5'
 # Use ActiveModel has_secure_password
 gem 'bcrypt'
 gem 'deep_cloneable', '~> 3'
@@ -27,29 +26,28 @@ gem 'cancancan'
 gem 'devise'
 gem 'exception_notification'
 gem 'foundation-icons-sass-rails'
-gem 'foundation-rails', '~> 6'
+gem 'foundation-rails', '6.6.2.0'
+gem 'geocoder'
 gem 'haml-rails'
-gem 'i18n-js', '~> 3' # breaking changes with v4
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
-gem 'jquery-ui-rails'
+gem 'jquery-ui-rails', '~> 7', git: 'https://github.com/jquery-ui-rails/jquery-ui-rails.git', branch: 'master', ref: '27a942cfa3686716ff85a3cb60f1f885a00e35dc'
 gem 'kaminari'
 gem 'mysql2'
 gem 'rack-attack'
 gem 'rack-cors'
-gem 'secure_headers'
+gem 'secure_headers', '6.5.0'
 gem 'select2-rails'
 gem 'simple_form'
-gem 'sprockets', '~> 4'
-gem 'sprockets-es6'
+gem 'sprockets'
+gem 'sprockets-rails', require: 'sprockets/railtie'
 
 gem 'image_processing'
-gem 'mini_racer', platforms: :ruby
+gem 'mini_racer', '0.16', platforms: :ruby
 gem 'nokogiri'
 
-gem 'acts-as-taggable-on', '~> 9'
+gem 'acts-as-taggable-on', '~> 11'
 gem 'color-generator'
-gem 'mini_exiftool'
 gem 'mini_magick'
 gem 'mobility', '~> 1.2'
 gem 'rubyzip'
@@ -58,8 +56,10 @@ gem 'turnout'
 
 gem 'net-smtp'
 
+gem 'concurrent-ruby', '1.3.4' # https://github.com/rails/rails/issues/54260, remove after upgrade to 7.2
+
 group :staging, :production do
-  gem 'passenger'
+  gem 'passenger', '~> 6'
 end
 
 gem 'coveralls_reborn', '~> 0', require: false
@@ -72,16 +72,17 @@ group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capybara', '~> 3'
+  gem 'capybara'
   gem 'capybara-chromedriver-logger'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
+  gem 'faker'
   gem 'json-schema'
   gem 'rails-controller-testing'
   gem 'rspec'
   gem 'rspec_junit_formatter'
   gem 'rspec-rails'
-  gem 'selenium-webdriver', '4.9.0' # 4.9.1 crashed feature tests
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'simplecov-small-badge', require: false
@@ -108,3 +109,5 @@ group :development do
 
   gem 'brakeman', require: false
 end
+
+gem 'activerecord-session_store', '~> 2.1'

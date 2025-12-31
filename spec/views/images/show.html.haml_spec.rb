@@ -12,13 +12,12 @@ RSpec.describe 'images/show', type: :view do
 
   it 'renders attributes in <p>' do
     render
-    expect(rendered).to match(/Title/)
-    expect(rendered).to match(/Licence/)
-    expect(rendered).to match(/Source/)
-    expect(rendered).to match(/Creator/)
-    expect(rendered).to match(//)
-    expect(rendered).to match(/Alt/)
-    expect(rendered).to match(/Caption/)
-    expect(rendered).to match(/2/)
+    expect(rendered).to match(@image.title)
+    expect(rendered).to match(@image.licence)
+    expect(rendered).to match(@image.source)
+    expect(rendered).to match(@image.creator)
+    expect(rendered).to match(@image.alt)
+    expect(rendered).to match(@image.caption)
+    expect(rendered).to match(@image.sorting.to_s)
   end
 end

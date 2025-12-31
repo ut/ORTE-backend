@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :iconset do
-    title { 'MyString' }
-    text { 'MyText' }
+    title { Faker::Artist.name }
+    text {  Faker::Lorem.sentence }
     icon_anchor { '[100,100]' }
     icon_size { '[50,50]' }
     popup_anchor { '[0,70]' }
-    class_name { 'diviconclass' }
+    class_name { Faker::Internet.slug }
     trait :invalid do
       title { nil }
     end

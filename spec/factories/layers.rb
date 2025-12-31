@@ -2,32 +2,18 @@
 
 FactoryBot.define do
   factory :layer do
-    title { 'MyString' }
-    subtitle { 'MyString' }
-    text { 'MyString' }
-    teaser { 'MyTeaser' }
-    credits { 'MyString' }
-    style { 'MyCSS' }
+    title { Faker::Book.genre }
+    subtitle { Faker::Team.name }
+    text { Faker::Hacker.say_something_smart }
+    teaser { Faker::Movie.quote }
+    credits { Faker::Team.mascot }
     published { false }
-    color { '#cc0000' }
+    color { Faker::Color.hex_color }
     use_background_from_parent_map { false }
-    basemap_url { 'MyLayerBasemapUrl' }
-    basemap_attribution { 'Basemap made by' }
-    background_color { '#454545' }
-    mapcenter_lat { '0.1' }
-    mapcenter_lon { '10' }
-    zoom { 12 }
-    tooltip_display_mode { 'false' }
-    places_sort_order { false }
-    rasterize_images { false }
-    submission_config { false }
-    exif_remove { true }
-    image_alt { 'An alternative text' }
-    image_licence { 'An image licence' }
-    image_source { 'The image source' }
-    image_creator { 'The creator of the image' }
-    image_caption { 'A caption for this image' }
     ltype { 'standard' }
+    image_alt { Faker::Quote.famous_last_words }
+    image_creator { Faker::Book.author }
+    geojson { '{ "type": "FeatureCollection" }' }
     map
 
     trait :with_ltype_image do
@@ -88,8 +74,13 @@ FactoryBot.define do
     trait :invalid do
       title { nil }
     end
+
     trait :changed do
       title { 'OtherTitle' }
+    end
+
+    trait :geojson do
+      ltype { 'geojson' }
     end
   end
 end

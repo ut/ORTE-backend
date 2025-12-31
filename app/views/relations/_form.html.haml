@@ -10,18 +10,18 @@
         - if params[:action] == 'edit'
           = @relation.relation_from.title
           \⟶
-          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_and_location, selected: @relation.relation_to.id
+          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_subtitle_and_location, selected: @relation.relation_to.id
         - elsif params[:relations_from_id]
           = hidden_field_tag :back, 'place'
           = f.input :relation_from_id, :as => :hidden, :input_html => { :value => @relation.relation_from.id }
           = @relation.relation_from.title
           \⟶
-          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_and_location
+          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_subtitle_and_location
         - else
           -if params[:layer_id]
             = hidden_field_tag :back, 'layer'
-          = f.input :relation_from_id, collection: @layers_from, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_and_location
-          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_and_location
+          = f.input :relation_from_id, collection: @layers_from, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_subtitle_and_location
+          = f.input :relation_to_id, collection: @layers_to, as: :grouped_select, group_method: :places, group_label_method: :title, label_method: :title_subtitle_and_location
 
 
       .form-actions

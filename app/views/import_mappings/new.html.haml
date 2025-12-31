@@ -1,0 +1,131 @@
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    = link_to root_path, class: 'close_link' do
+      %i.fi.fi-x
+
+  - if @missing_fields&.present?
+    .alert
+      %h3 Missing column names
+      %p Some headers in the CSV are not matching the required table structure and the file cannot be imported. Please chose an existing mapping or map the following fields to the correct model properties.
+      %p Missing required fields are:
+      %ul
+        - @missing_fields.each do |field|
+          %li= field
+  - elsif @import_mapping.errors[:mapping] && @import_mapping.errors[:mapping].any?
+    .alert
+      %h3 Import mapping has errors
+      %p Please map the csv columns to the required fields and be sure that each model property is listed only once
+  - else
+    %h3 Mapping column names <> Datebase fields
+    %p The file can be imported with the prefilled mapping. If you want, you can adjust the mapping below. 
+    %p 
+      Make sure the required fields 
+      %strong.label.secondary.tag title, 
+      %strong.label.secondary.tag  lat 
+      and 
+      %strong.label.secondary.tag lon 
+      are included in the selected model properties.
+  .large-12.medium-12.small-12.cell
+    - if @existing_mappings && !@existing_mappings.empty?
+      %label Choose an existing mapping:
+      = form_with url: '', method: :get, local: true, id: 'existing_mappings_form' do |f|
+        %p
+          %select{name: 'mapping', id: 'mapping_select'}
+            %option{ value: '' } Select a mapping
+            - @existing_mappings.each do |mapping|
+              %option{ value: mapping.id }= mapping.name
+        = f.hidden_field :layer_id, value: @layer.id, name: 'layer_id' if @layer
+        = f.hidden_field :map_id, value: @map.id, name: 'map_id' if @map
+        = f.hidden_field :file_name, value: @file_name, name: 'file_name'
+        = f.hidden_field :col_sep, value: @col_sep, name: 'col_sep'
+        = f.hidden_field :quote_char, value: @quote_char, name: 'quote_char'
+        %p
+          = f.submit 'Use selected mapping', class: 'button', name: nil, data: { disable_with: false }
+    %label Or adjust the mapping between the column names of your CSV and the datebase fields:
+    = render 'import_mappings/partials/form'
+    %h3 Available parsers
+    %p
+      The following parsers are available for the mapping. If you want the values from your csv file to be modified before
+      inserting them to the database, add them with the quotation mark inside the sqare brackets. You can add multiple
+      parsers to a single model property, separated by comma and in the order they shall be executed, i.e.
+      ["remove_leading_hash", "spaces_to_commas"].
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Description
+      %tbody
+        - ImportMapping.parsers.each do |name, parser|
+          %tr
+            %td "#{name}"
+            %td= parser[:description]
+
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const new_import_mapping = document.getElementById('new_import_mapping');
+    new_import_mapping.addEventListener('submit', function() {
+      const mappings = [];
+        document.querySelectorAll('tbody#mapping tr').forEach((row) => {
+          const header = row.querySelector('td').innerText.trim();
+          const modelProperty = row.querySelector('.model-property-select').value;
+          const parsers_input = row.querySelector('.parsers-input').value;
+          const parsers = parsers_input.length > 0 ? parsers_input : "[]";
+          const key = row.querySelector('.key-input').checked;
+          mappings.push({ csv_column_name: header, model_property: modelProperty, parsers: parsers, key: key });
+        });
+        document.getElementById('import_mapping_mapping').value = JSON.stringify(mappings);
+      });
+
+    const existing_mappings_form = document.getElementById('existing_mappings_form');
+    const select = document.getElementById('mapping_select');
+    if (existing_mappings_form && select) {
+      existing_mappings_form.addEventListener('submit', function(event) {
+        const selectedValue = select.value;
+        if (selectedValue) {
+          existing_mappings_form.action = selectedValue;
+        } else {
+          event.preventDefault();
+          alert('Please select a mapping to proceed.');
+        }
+      });
+     }
+     });
+  // handle row duplication
+  document.querySelector('#mapping').addEventListener('click', function(event) {
+    if (event.target.classList.contains('duplicate-row')) {
+      const row = event.target.closest('tr');
+      const clone = row.cloneNode(true);
+
+      //
+      clone.querySelectorAll('input, select').forEach((input) => {
+        const name = input.getAttribute('name');
+        if (name) {
+          const newName = name.replace(/\[\d+\]/, (match) => {
+            const index = parseInt(match.replace(/\[|\]/g, ''), 10) + 1;
+            return `[${index}]`;
+          });
+          input.setAttribute('name', newName);
+        }
+
+        const id = input.getAttribute('id');
+        if (id) {
+          const newId = id.replace(/_\d+_/, (match) => {
+            const index = parseInt(match.replace(/_/g, ''), 10) + 1;
+            return `_${index}_`;
+          });
+          input.setAttribute('id', newId);
+        }
+
+        if (input.type !== 'checkbox') {
+          input.value = input.classList.contains('parsers-input') ? '[]' : '';
+        } else {
+          input.checked = false;
+        }
+      });
+
+      row.parentNode.insertBefore(clone, row.nextSibling);
+    }
+  });
+});

@@ -9,6 +9,18 @@
 #map .leaflet-top {
     top: 40px;
 }
+#map .leaflet-top.leaflet-right {
+  @media screen and (max-width: 39.9375em) {
+    top: unset;
+    right: unset;
+    left: 10px;
+    bottom: 80px;
+    .leaflet-control {
+      float: left;
+    }    
+  }
+
+}
 #map .leaflet-control-layers,
 #map .leaflet-bar {
     border: 0;
@@ -16,7 +28,7 @@
     background-color: #333;
 
     @media screen and (max-width: 39.9375em) {
-        display: none;
+        /* display: none; */
     }
 }
 #map .leaflet-bottom.leaflet-right .leaflet-bar.leaflet-control {
@@ -33,9 +45,8 @@
     padding-left: 8px;
 
     font-size: 44px;
-    line-height: 1;
-    padding: 2px 6px;
-    display: block;
+    line-height: 1.3;
+    padding-left: 6px;
     font-weight: bold;
     font-family: Helvetica, Arial, sans-serif;    
 }
@@ -52,8 +63,17 @@
     margin-right: 5px;
 }
 #map.leaflet-container a {
-    color: darken(#c6c600,10%);
+  color: darken(#c6c600,10%);
+}
 
+/* this is not design guide conform, needs adapation for all UI links and buttons */
+/*
+#map.leaflet-container h4 a {
+  text-decoration: underline;
+}
+  */
+#map.leaflet-container a:hover {
+  color: darken(#c6c600,20%);
 }
 .leaflet-bar a, .leaflet-bar a:hover {
   background-color: #333;
@@ -153,6 +173,13 @@
       div.leaflet-popup-content-image {
         max-height: 450px;
         overflow: hidden;
+
+        @media screen and (max-height: 49.9375em) {
+          max-height: 250px;
+        }        
+        @media screen and (max-height: 39.9375em) {
+          max-height: 200px;
+        }
         @media screen and (max-width: 39.9375em) {
           max-height: 250px;
         }
@@ -185,16 +212,30 @@
 }
 /* ............................. */
 #map.darken-icons img.leaflet-marker-icon {
-    filter: saturate(200%) drop-shadow(0 0 2px #888);
+  filter: saturate(200%) drop-shadow(0 0 1px #888);
+}
+#map.darken-icons.gradient-icons img.leaflet-marker-icon {
+  filter: saturate(200%);
+}
+#map.darken-icons .marker-cluster svg path {
+  filter: saturate(200%) drop-shadow(0 0 1px #888) brightness(90%);
 }
 #map.darken-icons .text_inner {
     color: #333;
     text-shadow: 0 0 7px #888;
     background-color: rgba(250,250,250,0.8);
     max-width: 250px;
+    max-width: none;
     width: auto;
+    margin-left: 10px;
+    margin-top: -10px;
+    padding-bottom: 4px;    
 }
-
+#map.darken-icons.darken-label .text_inner {
+  color: #ccc;
+  text-shadow: 0 0 7px #888;
+  background-color: rgba(50,50,50,0.8);   
+}
 .leaflet-marker-icon svg circle {
   transform: scale(0.9);
   /* fill: #cc0000; */

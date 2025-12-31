@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-if !ENV['COVERAGE']
-  require 'coveralls'
-  Coveralls.wear!
-else
+if ENV['COVERAGE']
   # cli: try  COVERAGE=true rspec spec
   require 'simplecov'
   SimpleCov.start 'rails'
   puts 'Collecting coverage data'
+else
+  require 'coveralls'
+  Coveralls.wear!
 end
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
@@ -32,7 +32,7 @@ require 'devise'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -56,6 +56,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :helper
 
   config.include RequestSpecHelper, type: :request
+  config.include QueryCounter, type: :controller
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.include ActionCable::TestHelper
@@ -64,6 +65,12 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
+
+  config.before(:each, type: :view) do
+    allow(view).to receive(:render).and_wrap_original do |method, *args|
+      CGI.unescapeHTML(method.call(*args))
+    end
+  end
 
   config.before(:suite) do
     # only if compiled assets are really needed:
@@ -109,6 +116,10 @@ RSpec.configure do |config|
 
   config.append_after(:each) do
     DatabaseCleaner.clean
+  end
+
+  config.after(:suite) do
+    FileUtils.rm_rf(Rails.root.join('tmp/import_files'))
   end
 
   # RSpec Rails can automatically mix in different behaviours to your tests

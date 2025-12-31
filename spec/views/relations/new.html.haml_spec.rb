@@ -15,7 +15,6 @@ RSpec.describe 'relations/new', type: :view do
   it 'renders new relation form' do
     render
 
-    assert_select 'form[action=?][method=?]', map_relations_path(@map, @relation), 'post' do
-    end
+    assert_select 'form[action=?][method=?]', map_relations_path(@map, @relation), 'post'
   end
 end

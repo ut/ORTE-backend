@@ -1,0 +1,8 @@
+= simple_form_for :search, url: map_layer_path(@map,@layer), method: :get, html: { class: 'form-inline' } do |f|
+  .input-group
+    .input-group-field
+      - if params[:tag] && !params[:tag].empty?
+        = f.input :tag, as: :hidden, input_html: { value: @tag_name } 
+      = f.input :search, label: false, input_html: { name: "search", value: "#{@search}", placeholder: 'Search this map'}
+    .input-group-button
+      = f.submit "Search", class: "button small button-search"

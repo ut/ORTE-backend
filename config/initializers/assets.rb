@@ -26,3 +26,4 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.precompile << ["*.svg", "*.eot", "*.woff", "*.woff2", "*.ttf"]
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 Rails.application.config.assets.precompile += %w( leaflet-color-markers.js )
+Rails.application.config.assets.precompile += %w( application.css )

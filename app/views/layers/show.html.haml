@@ -7,7 +7,7 @@
     });
 
 
-#selection{:data => { 'url' => "/maps/#{@map.id}/layers/#{@layer.id}.json", 'map_id' => "#{@map.id}", 'layer_id' => "#{@layer.id}", 'map-mapcenter-lat' => "#{@map.mapcenter_lat}", 'map-mapcenter-lon' => "#{@map.mapcenter_lon}", 'map-map-zoom' => "#{@map.zoom}", 'layer-mapcenter-lat' => "#{@layer.mapcenter_lat}", 'layer-mapcenter-lon' => "#{@layer.mapcenter_lon}", 'layer-map-zoom' => "#{@layer.zoom}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}", 'map-basemap-url' => "#{@layer.basemap_url}", 'map-basemap-attribution' => "#{@layer.basemap_attribution}", 'map-popup_display_mode' => "#{@map.popup_display_mode}", 'map-marker_display_mode' => "#{@map.marker_display_mode}", 'place_id' => "#{@place ? @place.id : ''}"  }}
+#selection{:data => { 'url' => "/maps/#{@map.id}/layers/#{@layer.id}.json?filter=#{params[:filter]}&search=#{@search}", 'map_id' => "#{@map.id}", 'layer_id' => "#{@layer.id}", 'map-mapcenter-lat' => "#{@map.mapcenter_lat}", 'map-mapcenter-lon' => "#{@map.mapcenter_lon}", 'map-map-zoom' => "#{@map.zoom}", 'layer-color' => "##{@layer.color}", 'layer-mapcenter-lat' => "#{@layer.mapcenter_lat}", 'layer-mapcenter-lon' => "#{@layer.mapcenter_lon}", 'layer-map-zoom' => "#{@layer.zoom}", 'map-extent-northeast' => "#{@map.northeast_corner}", 'map-extent-southwest' => "#{@map.southwest_corner}", 'map-basemap-url' => "#{@layer.basemap_url}", 'map-basemap-attribution' => "#{@layer.basemap_attribution}", 'map-popup_display_mode' => "#{@map.popup_display_mode}", 'map-marker_display_mode' => "#{@map.marker_display_mode}", 'map-enable_historical_maps' => "#{@map.enable_historical_maps}", 'place_id' => "#{@place ? @place.id : ''}",  'ltype' => "#{@layer.ltype}" }}
   .grid-x
     .cell.medium-12
       =simple_form_for :navselector, url: '/maps/', html: { method: :get }  do |f|
@@ -29,7 +29,7 @@
               <svg version="1.1" id="icons-layers" class="icons" xmlns:serif="http://www.serif.com/" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 68 68" style="enable-background:new 0 0 68 68;" xml:space="preserve"><g><path d="M66.4,25.4c-0.1-0.6-0.5-1-1-1.3L35.8,11.8c-0.6-0.2-1.2-0.2-1.7,0.2l-5.5,4.3L23,13.9c-0.6-0.2-1.2-0.2-1.7,0.2L2.3,29c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3L14.5,37l-3.6,2.8c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3l31.6,13.7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l17-16.1c0.4-0.4,0.6-1,0.5-1.5c-0.1-0.6-0.5-1-1-1.3L57,35.3l8.9-8.4C66.3,26.6,66.5,26,66.4,25.4z M6.6,29.9l16.1-12.4l2.9,1.2L15,26.8c-0.5,0.4-0.7,1-0.6,1.5c0.1,0.6,0.5,1.1,1,1.3l5.5,2.4l1.8,0.8l1.8,0.8l13.1,5.6L34.6,42l-13.5-5.8l-1.8-0.8l-1.8-0.8L6.6,29.9z M57.6,39.3L43.2,52.8l-28-12.1l2.8-2.2l16.2,7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l4.8-4.5l6.1,2.7c0.2,0.1,0.4,0.1,0.7,0.1c0.4,0,0.8-0.2,1.2-0.5l5.4-5.1L57.6,39.3z M53.6,33.9l-1.3,1.3l-1.3,1.3l-3.5,3.3l-3.8-1.6l-1.7-0.7l-1.7-0.7l-12.7-5.5l-1.8-0.8l-1.8-0.8l-4.6-2l9.8-7.6l1.5-1.2l1.5-1.2l3.2-2.5l26.3,11L53.6,33.9z"/></g></svg>
 
           =simple_form_for :navselector, url: '', html: { method: :get }  do |f|
-            = f.input :id, :collection => @map_layers.map { |l| ["#{l.title} (#{l.places.count})", "/maps/#{@map.id}/layers/#{l.id}", :class => "layer-#{l.id} input-group-field"] }, :label => false, :selected => "/maps/#{@map.id}/layers/#{@layer.id}", :include_blank => 'All layers', input_html: {:class => 'nav-selector', :data => { :map => @map.id}}
+            = f.input :id, :collection => @map_layers.map { |l| ["#{l.title} (#{l.ltype == 'geojson' ? 'GeoJSON' : l.places.count})", "/maps/#{@map.id}/layers/#{l.id}", :class => "layer-#{l.id} input-group-field"] }, :label => false, :selected => "/maps/#{@map.id}/layers/#{@layer.id}", :include_blank => 'All layers', input_html: {:class => 'nav-selector', :data => { :map => @map.id}}
 
           .input-group-button
             = link_to edit_map_layer_path(@map,@layer), :class => 'button secondary', :title => 'Edit this layer' do
@@ -54,17 +54,98 @@
               %i.fi-magnifying-glass.fi-24
               %i.fi-fast-forward.fi-24.hide
 
-      - if params[:remap]
-        %div#selection-hint
-          %p
-            Type an address or double-click on the map to change the location of
-            =link_to edit_map_layer_place_path(@map,@layer,@place) do
-              #{@place.title}
+        - if params[:remap]
+          #selection-hint
+            %p
+              Type an address or double-click on the map to change the location of
+              =link_to edit_map_layer_place_path(@map,@layer,@place) do
+                #{@place.title}
 
 
-      - else
-        #selection-hint
-          %p
-            How to map: Search an address with the field above or double-click anywhere on the map to create a place.
+        - else
+          #selection-hint
+            %p
+              How to map: Search an address with the field above or double-click anywhere on the map to create a place.
+  .grid-x
+    .cell.medium-12
+      #filter-wrapper.grid-x
+        .cell.medium-12   
+          %button.button.secondary.small#info-wrapper-button{type: "button", "data-toggle": "filter-wrapper-content"}
+            %i.fi-magnifying-glass.fi-18
+            %i.fi-italic.fi-24
+            %i.fi-filter.fi-18  
+ 
+          %div#filter-wrapper-content.grid-x{"data-toggler": ".expanded"}
+            %button.close-button{type: "button", "data-toggle": "filter-wrapper-content"}
+              %span{"aria-hidden": "true"}
+                &times;            
+            .cell.medium-12
+              .header
+                %h5 
+                  Search 
+                  - if @layer.places.all_tags.count > 0
+                    \& filter
+              = render 'layers/partials/search', object: @map      
+
+            .cell.medium-12 
+              - if @layer.places.all_tags.count > 0
+                .cell.medium-12 
+                  %div.tags
+                    %h5.hide Tags
+
+                    - all_tags_count = 0
+                    - @places.all_tags.each do |tag|
+                      - all_tags_count = @places.all_tags.count
+                      
+                      - count = @places.tagged_with(["#{tag.name}"]).count
+                      - max_count = @places.all_tags.map { |tag| @places.tagged_with(tag.name).count }.max
+                      - count_threshold = 1
+                      - count_threshold = (max_count * 0.1).ceil
+                      - next if all_tags_count > 5 && count <= count_threshold && params[:show_tags] != 'all'
+                      %span.label.secondary.tag{class: "#{params[:filter]&.split(',')&.include?(tag.name) ? 'active' : ''}", id: "tag-#{tag.id}", "data-tag-id" => tag.id}
+                        = link_to map_layer_path(@map, @layer, filter: (params[:filter] ? (params[:filter].split(',').include?(tag.name) ? (params[:filter].split(',') - [tag.name]).join(',') : "#{params[:filter]},#{tag.name}") : tag.name), search: @search) do
+                          %i.fi-price-tag
+                          = tag.name
+                          (#{count})
+                      
+
+                    - if ( params[:filter] && !params[:filter].empty? )
+                      %span.label.secondary.tag 
+                        = link_to map_layer_path(@map, @layer, search: @search), {title: 'Show all places'} do
+                          %i.fi-x      
+                          All places
+                    - if all_tags_count > 5
+                      - if params[:show_tags] != 'all'
+                        = link_to map_layer_path(@map, @layer, filter: params[:filter], search: @search, show_tags: 'all'), {title: 'Show all tags'} do
+                          %strong{style: 'font-size: 23px; line-height: 1; padding-left: 3px'}
+                            \»
+                      - else
+                        = link_to map_layer_path(@map, @layer, filter: params[:filter], search: @search, show_tags: ''), {title: 'Show all tags'} do
+                          %strong{style: 'font-size: 23px; line-height: 1; padding-left: 3px'}
+                            \« 
+              - if ( params[:filter] && !params[:filter].empty? ) || ( @search )
+                %hr
+                - if @places && @places.count > 0          
+                  %p
+                    - if @search
+                      - if params[:filter] && !params[:filter].empty? 
+                        Searching places with #{@tag_names.count > 0 ? 'tags' : 'tag'} <tt>"#{@tag_names.join(', ')}"</tt>
+                      - else
+                        Searching all places 
+                      for <tt>"#{@search}"</tt>
+                    - elsif params[:filter] && !params[:filter].empty? 
+                      Filtering with #{@tag_names.count > 0 ? 'tags' : 'tag'} "#{@tag_names.join(', ')}"
+
+                    \— #{@places.count}&nbsp;#{@places.count == 1 ? 'place' : 'places'} found
+                - else  
+                  No places found
+                = render 'maps/partials/places_list'
+                - if @places && @places.count > 0
+                  %hr
+                  %p
+                    = link_to map_path(@map, tag: @tag_name, search: @search), class: 'button small' do
+                      %i.fi-magnifying-glass.fi-21
+                      Search/filter in all layers of this map
+                    %br
 
 

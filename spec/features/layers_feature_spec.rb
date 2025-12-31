@@ -15,7 +15,7 @@ RSpec.feature 'User creates layer and works on layer level' do
 
   scenario 'shows marker on a map layer and opens a popup on click', js: true do
     @map = FactoryBot.create(:map, group_id: @group.id)
-    @layer = FactoryBot.create(:layer, map_id: @map.id, title: 'my layer')
+    @layer = FactoryBot.create(:layer, map_id: @map.id, title: 'my layer', published: true)
     @place1 = FactoryBot.create(:place, layer_id: @layer.id, title: 'my place 1', lat: 53.5, lon: 10)
     @place2 = FactoryBot.create(:place, layer_id: @layer.id, title: 'my place 2', lat: 53.4, lon: 10)
 

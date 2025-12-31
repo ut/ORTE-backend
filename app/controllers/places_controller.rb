@@ -8,7 +8,7 @@ class PlacesController < ApplicationController
   def index
     @layer = Layer.friendly.find(params[:layer_id])
     @map = @layer.map
-    @places = @layer.places
+    @places = @layer.places.page params[:page]
   end
 
   # GET /places/1
@@ -109,9 +109,9 @@ class PlacesController < ApplicationController
     @map = @place.layer.map
 
     # TODO: render this at generating the form
-    params[:place][:published] = default_checkbox(params[:place][:published])
-    params[:place][:featured] = default_checkbox(params[:place][:featured])
-    params[:place][:sensitive] = default_checkbox(params[:place][:sensitive])
+    params[:place][:published] = default_checkbox?(params[:place][:published])
+    params[:place][:featured] = default_checkbox?(params[:place][:featured])
+    params[:place][:sensitive] = default_checkbox?(params[:place][:sensitive])
     respond_to do |format|
       if @place.update(place_params)
         @place.update({ 'published' => params[:place][:published] })
@@ -167,6 +167,6 @@ class PlacesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def place_params
-    params.require(:place).permit(:title, :uid, :subtitle, :teaser, :text, :link, :startdate, :startdate_date, :startdate_time, :enddate, :enddate_date, :enddate_time, :lat, :lon, :direction, :location, :address, :zip, :city, :country, :published, :featured, :sensitive, :sensitive_radius, :shy, :imagelink, :layer_id, :icon_id, :audio, :relations_tos, :relations_froms, annotations_attributes: %i[title text person_id source], tag_list: [], images: [], videos: [])
+    params.require(:place).permit(:title, :uid, :subtitle, :teaser, :text, :sources, :link, :startdate, :startdate_date, :startdate_time, :startdate_qualifier, :enddate, :enddate_date, :enddate_time, :enddate_qualifier, :lat, :lon, :direction, :location, :address, :zip, :city, :country, :published, :featured, :sensitive, :sensitive_radius, :shy, :imagelink, :layer_id, :icon_id, :audio, :relations_tos, :relations_froms, annotations_attributes: %i[title text person_id source], tag_list: [], images: [], videos: [])
   end
 end

@@ -14,8 +14,8 @@ class Video < ApplicationRecord
   validate :check_file_format
 
   scope :sorted, -> { order(sorted: :asc) }
-  scope :sorted_by_place, ->(place_id) { where('place_id': place_id).order(sorted: :asc) }
-  scope :preview, ->(place_id) { where('place_id': place_id, 'preview': true) }
+  scope :sorted_by_place, ->(place_id) { where(place_id: place_id).order(sorted: :asc) }
+  scope :preview, ->(place_id) { where(place_id: place_id, preview: true) }
 
   def video_url
     ApplicationController.helpers.video_url(file)

@@ -1,18 +1,17 @@
 
 
-function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_layers,image_layers,marker_layers,params,color,clustercolor,places) {
+function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_layers,image_layers,marker_layers,params,color,places) {
     var c = 0;
     var marker_size = 30;
     if ( layer_type === 'image' ) {
       marker_size = 15;
     }
-    console.log("Drawing "+places.length+" markers for layer "+layer_id+" of type "+layer_type+" at level "+level + "(Marker size is "+marker_size+")");
-    console.log("Setting show_annotations_on_map set to "+show_annotations_on_map);
+    // console.log("Drawing "+places.length+" markers for layer "+layer_id+" of type "+layer_type+" at level "+level + " (Marker size is "+marker_size+")");
     var CustomLargeIcon = L.Icon.extend({
         options: {
             iconSize:     [marker_size, marker_size],
             iconAnchor:   [15, 15],
-            popupAnchor:  [-2, -15]
+            popupAnchor:  [0, -15]
         }
     });
     var CustomSmallIcon = L.Icon.extend({
@@ -38,7 +37,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
     });
 
     $.each(places, function(key,place) {
-      console.log("Place ID " + place.id + " at Layer " + layer_id + " // Title: " + place.title);
+      //console.log("Place ID " + place.id + " at Layer " + layer_id + " // Title: " + place.title);
       var opacity = '0.5';
       var stroke = 'transparent';
       var stroke_width = '0';
@@ -58,13 +57,28 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
         if (color.indexOf('#') == -1) {
           color = '#'+color;
         }
-        var svg = "<svg height='"+marker_size+"' width='"+marker_size+"' xmlns='http://www.w3.org/2000/svg'><circle cx='"+marker_size/2+"' cy='"+marker_size/2+"' r='"+marker_size/2+"' fill='"+this_color+"' fill-opacity='"+opacity+"' stroke='"+stroke+"' stroke-width='"+stroke_width+"' stroke-opacity='"+stroke_opacity+"'  shape-rendering='geometricPrecision'></circle></svg>";
+
+        // TODO: only if gradient is selected
+        // TODO: remove box shadow
+        // TODO: rotate gradient
+        var marker_display_mode = $('#selection').data('map-marker-display-mode');
+        var defs_with_gradient = '';
+        if ( marker_display_mode === 'zigzag cluster, w/gradient' ) {
+          // console.log("!!!!Marker display mode: "+marker_display_mode);
+          opacity = '0.85'
+          defs_with_gradient = '<defs><style>.cls-1{fill:url(#linear-gradient);stroke-width:0px;}</style><linearGradient id="linear-gradient" x1="23.08" y1="216.25" x2="274.44" y2="80.74" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f0746f"/><stop offset=".24" stop-color="#f0746f"/><stop offset=".31" stop-color="'+color+'"/><stop offset="1" stop-color="'+color+'"/></linearGradient></defs>';
+        }
+        
+        var svg = '<svg height="'+marker_size+'" width="'+marker_size+'" xmlns="http://www.w3.org/2000/svg">'+defs_with_gradient+'<circle class="cls-1" cx="'+marker_size/2+'" cy="'+marker_size/2+'" r="'+marker_size/2+'" fill="'+color+'" fill-opacity="'+opacity+'" stroke="'+stroke+'" stroke-width="'+stroke_width+'" stroke-opacity="'+stroke_opacity+'" shape-rendering="geometricPrecision"></circle></svg>';
+
+        // major marker definition
         var url = encodeURI("data:image/svg+xml," + svg).replace(new RegExp('#', 'g'),'%23');
         var icon;
         if ( layer_type === 'image' ) {
          icon = new CustomSmallIcon({iconUrl: url});
         } else {
-         icon = new CustomLargeIcon({iconUrl: url});
+         icon = new CustomLargeIcon({iconUrl: url});      
+         icon = LargeMarkerIcon.create({color: color});
         }
       } else {
         if ( parseInt(place.id) === parseInt(params.place) ) {
@@ -76,7 +90,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
           var icon = greyIcon;
         }
       }
-
+      
 
       // alternative place display marker as text
       // TODO: display switch
@@ -117,6 +131,7 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
       var imagemarker = new L.marker([place.lat, place.lon], {customId:"context"+c, icon: imageicon}).addTo(image_layers);
 
 
+      window.map = map;
 
       // TODO: add to layer, not map
       // var marker = L.marker([place.lat, place.lon], {icon: icon}).addTo(marker_layers);
@@ -126,9 +141,40 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
       // TODO: use this ID for triggering relations visibility (show relation on hover)
       // marker.CustomID = 'marker_to_'+place.id;
       if ( ( level != 'maps' ) || ( place.shy == false )) {
+        
         marker_layers.addLayer(marker);
         text_layers.addLayer(textmarker);
         // text_layers.addLayer(marker);
+        if ( place.startdate && !place.enddate ) {
+          
+          place.enddate = parseInt(place.startdate.substring(0, 4))+"-12-31T00:00:00.000Z";
+          console.log("Set enddate with startdate", place.startdate,place.enddate);
+        }
+        marker.data = []
+        if ( place.startdate && place.enddate ) {
+          marker.data = setFromToYears(place.startdate,place.enddate); 
+        }
+        marker.data.title = place.title;
+        marker.data.color = color;
+        marker.data.layer_id = layer_id;
+
+        // Attach fromYear and toYear attributes to marker 
+        // console.log("Marker data", marker.data);
+        
+        
+        window.markers.push(marker);    
+          
+      } else {
+        
+      }
+      function setFromToYears (startdate,enddate) {
+        var startYear = parseInt(startdate.substring(0, 4));
+        var endYear = parseInt(enddate.substring(0, 4));
+        return {
+            fromYear: startYear,
+            endYear: endYear
+        };
+
       }
 
       var content = (place.layer_type == 'standard') ? PopupFullContent(place) : PopupImageOnlyContent(place);
@@ -145,14 +191,14 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
 
       });
       marker.on('click', function (e) {
-        console.log('marker');
+        console.log('Marker clicked');
         console.log(e);
       });
 
       // TODO: change color of marker
-      marker_layers.on('clusterclick', function (a) {
+      marker_layers.on('Clusterclick', function (a) {
         // a.layer is actually a cluster
-        // console.log('cluster ' + a.layer.getAllChildMarkers().length);
+        // console.log('Cluster ' + a.layer.getAllChildMarkers().length);
         // console.log(a.originalEvent.target);
         // console.log(a.originalEvent.target.closest(".leaflet-interactive").classList);
         // $(a.originalEvent.target).closest(".leaflet-interactive").toggleClass("cluster_expanded");
@@ -205,7 +251,8 @@ function drawMarkers(map,layer_id,layer_type,level,show_annotations_on_map,text_
       c++;
     });
     // console.log(c+" Marker added to map!");
-
+    // console.log('Markers hash', window.markers, window.markers.length);
+ 
     // thanks to https://github.com/louh - Allow for offset on center of map
     L.Map.prototype.panToOffset = function (latlng, offset, options) {
         var x = this.latLngToContainerPoint(latlng).x - offset[0]

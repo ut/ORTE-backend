@@ -3,10 +3,6 @@
 require 'rails_helper'
 
 RSpec.feature 'Visitors view startpage and ' do
-  background do
-    # ...
-  end
-
   scenario 'will use the specific js driver', js: true do
     visit root_path
     expect(page).to have_content('Javascript enabled')
@@ -14,9 +10,6 @@ RSpec.feature 'Visitors view startpage and ' do
 end
 
 RSpec.feature 'Login' do
-  background do
-    # ...
-  end
   scenario 'shows login form', js: true do
     visit root_path
     click_link 'Sign in'
@@ -47,10 +40,6 @@ RSpec.feature 'Login' do
 end
 
 RSpec.feature 'Logout' do
-  background do
-    # ...
-  end
-
   scenario 'shows success message if logout was succesful', js: true do
     group = FactoryBot.create(:group)
     user = FactoryBot.create(:admin_user, group_id: group.id)

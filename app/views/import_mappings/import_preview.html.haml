@@ -1,0 +1,209 @@
+- content_for(:title) { "Apply mapping for #{ @layer&.title || @map.title }" }
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Apply Mapping:
+    = @import_mapping.name
+
+    - if @layer
+      = link_to map_layer_path(@map, @layer) do
+        = @layer.title
+      %p
+        Map: #{@layer.map.title}
+        \|
+        Existing Places: #{@layer.places.count}
+    - else
+      = link_to map_path(@map) do
+        = @map.title
+      %p
+        Map: #{@map.title}
+        \|
+        Existing Places: #{@map.places.count}
+  .grid-x.grid-padding-x
+    .large-12.medium-12.small-12.cell
+      %h3 Overview
+      %ul
+        %li
+          = @errored_rows ? "Errored_rows: " + @errored_rows.count.to_s : "-"
+        %li
+          = @ambiguous_rows ? "Ambiguous_rows: " + @ambiguous_rows.count.to_s : "-"
+        %li
+          = @invalid_duplicate_rows ? "Invalid duplicate rows: " + @invalid_duplicate_rows.count.to_s  : "-"
+        %li
+          = @duplicate_rows ? "Duplicate rows: " + @duplicate_rows.count.to_s : "-"
+        %li
+          = @importing_duplicate_rows ? "Importing duplicate rows: " + @importing_duplicate_rows.count.to_s : "-"
+        %li
+          = @valid_rows ? "Valid rows: " + @valid_rows.count.to_s : "-"
+
+
+
+      %hr
+      - if flash[:alert]
+        .alert.alert-danger
+          %p= flash[:alert]
+
+
+      - if @errored_rows && !@errored_rows.empty?
+        .alert
+          %h3 Invalid entries
+          %p Some rows in the CSV are invalid and cannot be imported. Please review the errors below.
+
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Import data
+                %th Error messages
+            %tbody
+              - @errored_rows.each do |error_hash|
+                %tr
+                  %td= error_hash[:data]
+                  %td= error_hash[:messages].join(', ')
+
+      - if @ambiguous_rows && @ambiguous_rows.count > 0
+        .alert
+          %h3 Ambiguous entries
+          %p Some rows in the CSV have already more than one duplicate in the database, so overwriting is not possible.
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Import data
+                %th Number of duplicates
+            %tbody
+              - @ambiguous_rows.each do |row|
+                %tr
+                  %td= row[:data]
+                  %td= row[:duplicate_count]
+
+      - if @invalid_duplicate_rows && @invalid_duplicate_rows.count > 0
+        .alert
+          %h3 Invalid duplicate entries
+          %p Some rows in the CSV have exactly one duplicate with the specified key(s) in the database but are are invalid:
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Import data
+                %th Id of duplicate
+            %tbody
+              - @invalid_duplicate_rows.each do |row|
+                %tr
+                  %td= row[:data]
+                  %td= row[:duplicate_id]
+            %p.small These duplicates cannot be overwritten when importing.
+      - if @overwrite
+        %p
+          %b
+            Overwriting places with the same key(s) is enabled. Keys defined in the mapping:
+            = @import_mapping.keys.any? ? @import_mapping.keys.map(&:to_s).join(', ') : 'None'
+      - if @duplicate_rows && @duplicate_rows.count > 0
+        .warning
+          %h3 Valid duplicate entries
+          %p Some rows in the CSV have exactly one duplicate with the specified key(s) in the database:
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Import data
+                %th Id of duplicate
+            %tbody
+              - @duplicate_rows.each do |row|
+                %tr
+                  %td= row[:data]
+                  %td= row[:duplicate_id]
+          - if @overwrite
+            .feedback
+              %h3 Entries to be imported with overwriting duplicates
+              %p These #{@importing_duplicate_rows.count} rows are validated and will be imported with overwrite:
+              .table-wrapper
+                %table.table.table-striped
+                  %thead
+                    %tr
+                      - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                        %th= field.capitalize
+                  %tbody
+                    - @importing_duplicate_rows.each do |row|
+                      %tr
+                        - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                          %td
+                            - if field == 'title'
+                              %span.nobr
+                                = row[field]
+                            - elsif ['lat', 'lon'].include?(field)
+                              = row[field].to_s[0..5]
+                            - elsif field == 'teaser'
+                              = truncate(row[field], length: 100, omission: '(...)')
+                            - elsif row[field]
+                              = row[field]
+              %h3 Existing entries to be overwritten with overwriting duplicates
+              %p These #{@places_to_be_overwritten.count} will be overwritten with overwrite:
+              .table-wrapper
+                %table.table.table-striped
+                  %thead
+                    %tr
+                      %th Id
+                      - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                        %th= field.capitalize
+                  %tbody
+                    - @places_to_be_overwritten.each do |place|
+                      %tr
+                        %td
+                          = place.id
+                        - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                          %td
+                            - if field == 'title'
+                              %span.nobr
+                                = place.send(field)
+                            - elsif ['lat', 'lon'].include?(field)
+                              = place.send(field).to_s[0..5]
+                            - elsif field == 'teaser'
+                              = truncate(place.send(field), length: 100, omission: '(...)')
+                            - elsif place.send(field)
+                              = place.send(field)
+            %p.small These duplicates will be overwritten when importing. If you don't want to overwrite them, go back, uncheck the "Overwrite?" option and try again.
+          - else
+            %p.small If you want to replace duplicates, go back, tick the "Overwrite?" option and try again.
+            %p.small Otherwise edit your CSV file and remove those rows.
+
+      - if @valid_rows && @valid_rows.any?
+        .feedback
+          %h3 Entries to be imported without duplicates
+          %p These #{@valid_rows.count} rows are validated and will be imported:
+          .table-wrapper
+            %table.table.table-striped
+              %thead
+                %tr
+                  - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                    %th= field.capitalize
+                  %th Layer_id
+              %tbody
+                - @valid_rows.each do |row|
+                  %tr
+                    - Imports::MappingCsvImporter::PREVIEW_FIELDS.each do |field|
+                      %td
+                        - if field == 'title'
+                          %span.nobr
+                            = row[field]
+                        - elsif ['lat', 'lon'].include?(field)
+                          = row[field].to_s[0..5]
+                        - elsif field == 'teaser'
+                          = truncate(row[field], length: 100, omission: '(...)')
+                        - elsif row[field]
+                          = row[field]
+                    %td
+                      = row['layer_id']
+
+      - if @valid_rows && @valid_rows.any? || @overwrite && @importing_duplicate_rows && @importing_duplicate_rows.any?
+        - if @layer
+          = simple_form_for :import, url: importing_map_layer_path(@map.id, @layer.id, file_name: @file_name, import_mapping_id: @import_mapping.id), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+            = link_to 'Back', :back, class: 'button secondary'
+            = f.submit "Confirm and start import on layer #{@layer.title}", class: "button"
+        - else
+          = simple_form_for :import, url: importing_map_path(@map.id, file_name: @file_name, import_mapping_id: @import_mapping.id), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+            = link_to 'Back', :back, class: 'button secondary'
+            = f.submit "Confirm and start import on map #{@map.title}", class: "button"
+
+      - else
+        %p No valid rows found.
+        = link_to 'Back', :back, class: 'button secondary'
+

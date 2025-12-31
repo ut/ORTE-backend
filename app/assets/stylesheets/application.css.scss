@@ -24,6 +24,8 @@
  *= require 3_forms
  *= require 4_map
  *= require 5_header
+ *= require 6_timeline
+ *= require 7_tables
  *= require public/submissions
  */
 
@@ -142,6 +144,7 @@ h1 .orte-icons-places:before {
 }
 .fi-13 { font-size: 13px; vertical-align: top; }
 .fi-16 { font-size: 16px; vertical-align: middle; }
+.fi-18 { font-size: 18px; vertical-align: middle; }
 .fi-21 { font-size: 21px; vertical-align: middle; }
 .fi-24 { font-size: 24px; vertical-align: middle; }
 .fi-30 { font-size: 30px; vertical-align: middle; }

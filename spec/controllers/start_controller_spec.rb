@@ -8,8 +8,8 @@ RSpec.describe StartController, type: :controller do
   before(:all) do
     User.destroy_all
     @my_group = FactoryBot.create(:group)
-    @my_map1 = FactoryBot.create(:map, group_id: @my_group.id)
-    @my_map2 = FactoryBot.create(:map, group_id: @my_group.id)
+    @my_map1 = FactoryBot.create(:map, group_id: @my_group.id, title: 'Map A')
+    @my_map2 = FactoryBot.create(:map, group_id: @my_group.id, title: 'Map B')
     @user = FactoryBot.create(:user, group_id: @my_group.id)
   end
 

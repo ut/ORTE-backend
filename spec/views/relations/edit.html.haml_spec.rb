@@ -15,7 +15,6 @@ RSpec.describe 'relations/edit', type: :view do
   it 'renders the edit relation form' do
     render
 
-    assert_select 'form[action=?][method=?]', map_relation_path(@map, @relation), 'post' do
-    end
+    assert_select 'form[action=?][method=?]', map_relation_path(@map, @relation), 'post'
   end
 end

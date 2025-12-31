@@ -27,10 +27,10 @@ RSpec.describe 'build_logs/index', type: :view do
 
   it 'renders a list of build_logs' do
     render
-    assert_select 'tr>td', text: 'Test'.to_s, count: 2
-    assert_select 'tr>td', text: 'TestLayer'.to_s, count: 2
-    assert_select 'tr>td', text: 'Output'.to_s, count: 2
+    assert_select 'tr>td', text: 'Test', count: 2
+    assert_select 'tr>td', text: 'TestLayer', count: 2
+    assert_select 'tr>td', text: 'Output', count: 2
     assert_select 'tr>td', text: 2.to_s, count: 2
-    assert_select 'tr>td', text: 'Version'.to_s, count: 2
+    assert_select 'tr>td', text: 'Version', count: 2
   end
 end

@@ -4,7 +4,7 @@
       %h1 Place
     .large-4.medium-4.cell
       %div#layer_change
-        - if @place.layer.title && params[:action] == 'new'
+        - if @place.layer && @place.layer.title && params[:action] == 'new'
           %p.inline
             = link_to map_url(@place.layer.map) do
               = @place.layer.map.title
@@ -14,7 +14,7 @@
             = f.association :layer, as: :hidden
         - else
           %div.inline#layer_selector.hide
-            = f.association :layer, :collection => @place.layer.map.layers, :label_method => :title, :value_method => :id, label: false, include_blank: 'Select layer:'
+            = f.association :layer, :collection => @place.layer.map.layers, :label_method => :title, :value_method => :id, label: false, include_blank: 'Select layer:', :selected => @place.layer.id
             %span#layer_display_cancel{:title => "Cancel" }
               %i.fi.fi-x.fi-13
 
@@ -39,7 +39,7 @@
           #{@old_place.lat[0..4]}/#{@old_place.lon[0..4]}
           \-->
         - if @place.lat && @place.lon
-          #{@place.lat[0..4]}/#{@place.lon[0..4]}
+          #{@place.lat[0..9]}, #{@place.lon[0..9]}
           %a{href: '', title: 'Edit coordinates', id: 'edit_coordinates'}
             %i.fi.fi-pencil.fi-13
           %a{href: '', title: 'Edit coordinates', id: 'edit_coordinates_cancel'}
@@ -101,31 +101,53 @@
           
         .small-10.cell                
           = f.input :title
+      .grid-x.grid-padding-x
+        .small-12.cell
+          = f.input :subtitle
       %hr
 
   .grid-x.grid-padding-x
-    .large-6.medium-6.cell
+    .large-7.medium-7.cell
       .form-inputs
         .grid-x
-          .large-6.medium-6.small-7.cell
+          .large-4.medium-5.small-5.cell
             = f.input :startdate, as: :hidden
             = f.label :startdate_data do
               Start date
               %i.fi.fi-info{"data-tooltip"=>true, :title=>"If you just want to define the year, like \"1995\", type in the date 1.1.1995"}
             = f.input :startdate_date, as: :date, html5: true, :label => false
-          .large-6.medium-6.small-5.cell
+          .large-3.medium-3.small-3.cell
             = f.input :startdate_time, as: :time, html5: true, :label => 'Start time', :input_html => {:size => 5, class: 'input-time'}
+          .large-5.medium-4.small-4.cell
+            %p.small.compact#startdate_qualifier_label
+              %a{href: '', title: 'Define date quality', id: 'define_startdate_qualifier'}
+                Startdate qualifier
+                %i.fi.fi-pencil.fi-13                
+              %a{href: '', title: 'Define date quality', id: 'define_startdate_qualifier_cancel'}
+                Startdate qualifier
+                %i.fi.fi-x.fi-13
+              %span#startdate_qualifier_preview
+            = f.input :startdate_qualifier, :label => false, :collection => qualifier_for_select, include_blank: ' ', :selected => @place.startdate_qualifier         
         .grid-x
-          .large-6.medium-6.small-7.cell
+          .large-4.medium-5.small-5.cell
             = f.input :enddate, as: :hidden
             = f.label :enddate_data do
               End date
               %i.fi.fi-info{"data-tooltip"=>true, :title=>"If you just want to define the year, like \"1995\", type in the date 1.1.1995"}
             = f.input :enddate_date, as: :date, html5: true, :label => false
-          .large-6.medium-6.small-5.cell
+          .large-3.medium-3.small-3.cell
             = f.input :enddate_time, as: :time, html5: true, :label => 'End time', :input_html => {:size => 5, class: 'input-time'}
+          .large-5.medium-4.small-4.cell
+            %p.small.compact#enddate_qualifier_label
+              %a{href: '', title: 'Define enddate quality', id: 'define_enddate_qualifier'}
+                Enddate quality
+                %i.fi.fi-pencil.fi-13
+              %a{href: '', title: 'Define enddate quality', id: 'define_enddate_qualifier_cancel'}
+                Enddate quality
+                %i.fi.fi-x.fi-13    
+              %span#enddate_qualifier_preview                
+              = f.input :enddate_qualifier, :label => false, :collection => qualifier_for_select, include_blank: ' ',  :selected => @place.enddate_qualifier            
         %hr
-        = f.input :subtitle
         = tinymce
         = f.input :teaser, :label => 'Teaser', :input_html => {:rows => 8, class: 'large-text tinymce' }
         = f.input :text, :label => 'Text', :input_html => {:rows => 16, class: 'large-text tinymce'}
@@ -143,12 +165,16 @@
             = @map.iconset.title
           = f.association :icon, :collection => @map.iconset.icons, :label_method => lambda { |icon| ("#{icon.title}".html_safe) if icon.title }, :value_method => :id, label: false, include_blank: true
           %p.hint Select one item from list
+        %hr
+        = f.input :sources, :label => 'Sources', :input_html => {:rows => 8, class: 'large-text tinymce'}        
+        %p.hint.text-left
+          Add sources and references to your entry if applicable. 
         - if @place.submissions.count > 0
           = render 'places/list/submissions'
           %hr
         = render 'places/list/annotations'
         %hr.show-for-small-only
-    .large-6.medium-6.cell
+    .large-5.medium-5.cell
       .form-inputs
         = f.input :location, :label => 'Name of Location', :input_html => {:placeholder => 'Name' }
         %p.hint Needed only, if the name is different to the title
@@ -169,6 +195,8 @@
           .small-4.cell
             = f.input :zip
           .small-8.cell
+            - if @place.state
+              = f.input :state
             = f.input :city
         = f.input :country, :input_html => {:placeholder => 'Land' }
         %hr
@@ -196,13 +224,13 @@
             Please upload one video and describe its content and metadata. You can repeat this to add multiple videos to this place.
         = render 'places/form/videos'
         %label Audio
-        - if @place.audio && @place.audio.attached?
+        - if @place.audio.attached? && @place.persisted?
           %p
             = link_to rails_blob_path(@place.audio, disposition: 'attachment') do
               = @place.audio.filename
           %p.shy Upload a new file:
-        = f.input :audio, as: :file, label: false, required: false, accept: 'audio/mpeg'
-        %p.hint Please upload in MP3 format only
+        = f.input :audio, as: :file, label: false, required: false, accept: 'audio/mpeg,audio/x-m4a,audio/mp4'
+        %p.hint Please upload only MP3 or M4A files
         %hr
         - if admin?
           = f.input :shy, label: "Hide on map level (w/all layers)"

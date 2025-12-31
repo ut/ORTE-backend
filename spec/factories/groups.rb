@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :group do
-    title { 'MyString' }
+    title { Faker::FunnyName.name }
     trait :invalid do
       title { nil }
     end

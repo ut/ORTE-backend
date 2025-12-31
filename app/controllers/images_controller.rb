@@ -53,7 +53,7 @@ class ImagesController < ApplicationController
   # PATCH/PUT /images/1
   # PATCH/PUT /images/1.json
   def update
-    params[:image][:preview] = default_checkbox(params[:image][:preview])
+    params[:image][:preview] = default_checkbox?(params[:image][:preview])
     respond_to do |format|
       if @image.update(image_params)
         format.html { redirect_to edit_map_layer_place_path(@image.place.layer.map, @image.place.layer, @image.place), notice: 'Image was successfully updated.' }

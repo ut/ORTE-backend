@@ -12,10 +12,12 @@
     —
     = link_to map_layer_path(@layer.map,@layer) do
       = @layer.title
-    %span.shy (with #{@places.count} Places)
+    %span.shy (with #{@layer.places.count} Places)
 
+  %p
+    &nbsp;        
   .grid-x.grid-padding-x
-    .medium-12.cell
+    .medium-7.cell.card
       %p.text-left.hint-simple
         - if @layer.published
           %i.fi-eye.fi-18
@@ -23,8 +25,10 @@
         - else
           %i.fi-lock.fi-18
           The content of this layer is not public
-  .grid-x.grid-padding-x
-    .medium-7.cell
+      - if @map.enable_time_slider
+        %p.text-left.hint-simple
+          %i.fi-clock.fi-18
+          The time slider for this layer is activated    
       %p.text-left.hint-simple
         Privacy settings for this layer:
       %ul.hint
@@ -46,21 +50,83 @@
         You can change these settings
         = link_to edit_map_layer_path(@map,@layer) do
           in the edit mode
+        %br
+        %br
     .medium-5.cell
-      %p.text-right.hint-simple
-        See also:
       %ul.hint
         %li
           = link_to annotations_map_layer_path(@map,@layer) do
-            Annotations (about Places)
+            List of all annotations (about Places)
         %li
           = link_to relations_map_layer_path(@map,@layer) do
-            Relations (between places)
+            List of all relations (between places)
         %li
           = link_to images_map_layer_path(@map,@layer) do
-            All Images of this layer
+            List of all images
+      %hr
+      %p
+        = link_to import_map_layer_path(@map,@layer), :class=>'button small' do
+          %i.fi-upload.fi-18          
+          Import/update places from CSV
   %p
     &nbsp;
+  - if @map.enable_time_slider
+    %table#timeline-list
+      %thead
+        %tr
+          %th#timeline-list-header{colspan:2}
+            %p
+              - minyear = @places.reject { |place| place.startdate.nil? }.min_by { |place| place.startdate.year }&.startdate&.year || Date.today.year
+              - maxyear = @places.reject { |place| place.enddate.nil? }.max_by { |place| place.enddate.year }&.enddate&.year || Date.today.year
+              %b
+                Timeline coverage
+              from
+              = minyear
+              - if minyear != maxyear
+                \—
+                = maxyear
+              - timespan = maxyear-minyear+1
+              (#{timespan} #{timespan > 1 ? 'years' : 'year'})
+              >>
+        %tr
+          %th#timeline-list-info{colspan:2}            
+            %p
+              %label.small
+                Displays the "coverage" of all start/enddates in this layer. Dates in brackets are the new fuzzy dates with qualifiers (this replaces the fixed date format)
+                %i.fi.fi-info{"data-tooltip"=>true, :title=>"This is a new feature to allow to define fuzzy dates, where either the start or end is not exactly known. You have to set a qualifier in the edit form of each place to use this feature."}
+      %tbody#timeline-list-body      
+        - @places.sort_by{ |e| e.startdate.nil? ? Date.new : e.startdate }.each do |place|
+          %tr 
+            %td
+              %p
+                = smart_date_display(place.startdate, place.enddate)
+                - if place.startdate_qualifier.present? || place.enddate_qualifier.present?
+                  %br
+                  %label.small
+                    (#{smart_date_display_with_qualifier(place.startdate, place.enddate, place.startdate_qualifier, place.enddate_qualifier)})
+                  %br
+                %em
+                  = place.title
+                = link_to edit_map_layer_place_path(place.layer.map,place.layer,place), 
+                  :class => "",
+                  :title => "Edit this place" do
+                  %i.fi-pencil
+
+            %td.nobr
+              - for i in minyear..maxyear
+                - if place.startdate && place.startdate.year == i
+                  %span.time.time-first>‒
+                - elsif place.startdate && place.startdate.year < i && place.enddate && place.enddate.year > i
+                  %span.time.time-on>‒
+                - else
+                  %span.time.time-off>‒
+  
+
+  .grid-x
+    .medium-6.cell
+      Showing #{@places.count} of total of #{@layer.places.count} Placves
+    .medium-6.call
+      = paginate @places
   %table
     %thead
       %tr
@@ -69,76 +135,10 @@
           &nbsp;
 
     %tbody
-      - @places.sort_by{ |e| e.startdate.nil? ? Date.new : e.startdate }.each do |place|
-        %tr
+      - @places.sort_by{ |e| e.startdate.nil? ? Date.new(9999) : e.startdate }.each do |place|
+        %tr.place{"data-startyear":(place.startdate ? place.startdate.year : ''),"data-endyear":(place.enddate ? place.enddate.year : '')}
           %td
-            = smart_date_display(place.startdate, place.enddate)
-            %p.show-for-small-only
-              = smart_date_display(place.startdate, place.enddate)
-            - images = Image.preview(place.id)
-            - if images.count > 0
-              - images.each do |img|
-                - begin
-                  - if img.attached?
-                    %p
-                    - if img.place.layer.rasterize_images  && img.itype == 'image'
-                      = image_tag img.variant(resize: "250x250", "ordered-dither": "h4x4a").processed, title: img.title, alt: img.alt
-                    - else
-                      = image_tag img.variant(resize: "250x250").processed, title: img.title, alt: img.alt
-                      %br
-                      %small.nowrap
-                        #{img.title}
-                        - if img.alt.present?
-                          %i.fi-info{title: img.alt}
-                - rescue
-                  %p.shy (Image missing)
-            %h4
-              - if place.uid.present?
-                = place.uid
-                \&mdash;
-              = link_to map_layer_place_path(place.layer.map,place.layer,place) do
-                = place.title
-              - if place.published
-                %i.fi-eye.fi-21{title: 'Published'}
-              - else
-                %i.fi-lock.fi-21{title: 'Not published'}
-              - if place.featured
-                %i.fi-star.fi-21{title: 'Feature'}
-            - if place.subtitle.present?
-              %p= place.subtitle
-            %p
-              = link_to place.link do
-                = place.link
-            %p
-              = place.location
-              %br
-              = place.address
-              %br
-              = place.zip
-              = place.city
-
-            - if place.annotations && place.annotations.count > 0
-              %p
-                = link_to map_layer_place_path(place.layer.map,place.layer,place) do
-                  #{place.annotations.count} Annotations
-            - if place.tags
-              %p
-                - place.tags.each do |tag|
-                  %span.label.secondary.tag
-                    = link_to map_tag_path(@map,tag) do
-                      %i.fi-price-tag
-                      = tag.name
-            %p.shy.text-left
-              - if place.lat
-                #{place.lat[0..6]}, #{place.lon[0..5]}
-              \|
-              Created at
-              
-              - if place.created_at == place.updated_at
-                #{l(place.created_at)}
-              - else
-                #{l(place.created_at)}, edited at #{l(place.updated_at)}
-
+            = render 'places/list/place', place: place
           %td
             = link_to edit_map_layer_place_path(place.layer.map,place.layer,place), :class => "button small" do
               %i.fi-pencil.fi-21
@@ -165,7 +165,7 @@
               Video
             - if admin? && current_user.group.title == 'Admins'
               %br
-              = link_to clone_map_layer_place_path(place.layer.map,place.layer,place), :class => 'button small secondary', :title=>'Make a copy of this place and change it' do
+              = link_to clone_map_layer_place_path(place.layer.map,place.layer,place), :class => 'button small secondary', :title=>'Make a copy of this place and edit' do
                 %i.fi-page-copy.fi-21
                 Copy
             %br
@@ -176,3 +176,4 @@
             = link_to map_layer_place_path(place.layer.map,place.layer,place), method: :delete, data: { confirm:warning }, :class => "button alert small" do
               %i.fi-trash.fi-21
               Destroy
+  %p.text-right= paginate @places

@@ -10,7 +10,6 @@ RSpec.describe 'admin/users/edit', type: :view do
 
   it 'renders the edit admin_user form' do
     render
-    assert_select 'form[action=?][method=?]', admin_user_path(@user), 'post' do
-    end
+    assert_select 'form[action=?][method=?]', admin_user_path(@user), 'post'
   end
 end

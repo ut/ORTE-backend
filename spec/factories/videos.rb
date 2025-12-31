@@ -2,14 +2,14 @@
 
 FactoryBot.define do
   factory :video do
-    title { 'Title' }
-    licence { 'Licence' }
-    source { 'Source' }
-    creator { 'Creator' }
+    title { Faker::GreekPhilosophers.name }
+    licence { Faker::Hipster.word }
+    source { Faker::Book.publisher }
+    creator { Faker::Book.author }
     place
-    alt { 'Alt' }
-    caption { 'Caption' }
-    sorting { 2 }
+    alt { Faker::Commerce.material }
+    caption { Faker::Commerce.department }
+    sorting { Faker::Number.between(from: 1, to: 10) }
     preview { false }
     trait :with_file do
       after(:build) do |video|

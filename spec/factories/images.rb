@@ -2,14 +2,14 @@
 
 FactoryBot.define do
   factory :image do
-    title { 'Title' }
-    licence { 'Licence' }
-    source { 'Source' }
-    creator { 'Creator' }
+    title { Faker::Commerce.product_name }
+    licence { Faker::FunnyName.two_word_name }
+    source {  Faker::Lorem.word }
+    creator { Faker::FunnyName.name }
     place
-    alt { 'Alt' }
-    caption { 'Caption' }
-    sorting { 2 }
+    alt { Faker::Lorem.sentence }
+    caption { Faker::Hipster.sentence }
+    sorting { Faker::Number.between(from: 1, to: 10) }
     preview { false }
     itype { 'image' }
     trait :with_file do

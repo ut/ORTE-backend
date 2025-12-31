@@ -6,7 +6,7 @@ if @layer&.published
   json.text @layer.text
   json.id @layer.id
 
-  json.features @layer.places do |place|
+  json.features @places do |place|
     next unless place.published
 
     json.type 'Feature'
@@ -26,6 +26,7 @@ if @layer&.published
       json.teaser place.teaser
       json.text place.text
       json.link place.link
+      json.tags place.tags.map(&:name).sort
       json.images do
         json.array! place.images do |image|
           json.call(image, :id, :title, :source, :creator, :alt, :sorting, :image_linktag, :image_url)

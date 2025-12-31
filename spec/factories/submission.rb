@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :submission do
-    name { 'MyString' }
-    email { 'email@domain.org' }
+    name { Faker::FunnyName.name }
+    email { Faker::Internet.email }
     rights { true }
     privacy { true }
     locale { 'en' }

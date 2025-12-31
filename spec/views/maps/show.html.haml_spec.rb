@@ -16,6 +16,13 @@ RSpec.describe 'maps/show', type: :view do
                         ))
     @layer = FactoryBot.create(:layer, map_id: @map.id)
     @map_layers = @map.layers
+
+    # small detour, we'd need a  ActiveRecord::Relation here
+    FactoryBot.create(:place, :with_tags, layer: @layer)
+    FactoryBot.create(:place, :with_tags, layer: @layer)
+    FactoryBot.create(:place, :with_tags, layer: @layer)
+    @places = Place.where(layer: @layer).tagged_with(%w[Tag1 Tag2 Tag3])
+    @places_with_dates = FactoryBot.create_list(:place, 3, layer_id: @layer.id)
   end
 
   it 'renders attributes in <p>' do

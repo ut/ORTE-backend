@@ -1,0 +1,263 @@
+= simple_form_for([@map, @layer]) do |f|
+  = f.hidden_field :ltype, value: @layer.ltype
+  .grid-x
+    .large-12.cell
+      = f.error_notification
+  .grid-x
+    .large-12.medium-12.cell
+      .form-inputs
+        .grid-x.grid-padding-x
+          .large-8.medium-7.small-6.cell
+            = f.input :title
+            = f.input :subtitle
+          .large-4.medium-5.small-6.cell
+            %p
+              = f.input :published, :label => 'Publish <i class="fi-eye fi-21"></i>'.html_safe
+            %p
+              - if admin? && params[:action] == 'edit'
+                = f.association :map, collection: Map.by_user(current_user), include_blank: false, :label => 'Map'
+              - else
+                Map:
+                =link_to map_path(@map) do
+                  #{@map.title}
+                = f.association :map, as: :hidden, :input_html => { :value => @map.id }
+        .grid-x.grid-padding-x
+          .large-12.medium-12.small-12.cell
+            = tinymce
+            = f.input :text, :label => 'Description', :input_html => {:rows => 8, class: 'large-text tinymce' }
+            = f.input :teaser, :label => 'Teaser', :input_html => {:rows => 4, class: 'large-text tinymce' }
+            = f.input :credits, :label => 'Credits', :input_html => {:rows => 8, class: 'large-text tinymce' }        
+          
+        - if @layer.ltype == 'image'  
+          %hr
+          .grid-x.grid-padding-x            
+            .small-6.cell        
+              - if params[:action] == 'edit'  
+                %p
+                  = link_to images_map_layer_path(@map,@layer) do
+                    = @layer.places.count
+                    Places with Images         
+                %hr   
+              = f.input :images_files, as: :file, label: 'Images', :input_html => { multiple: true}, required: false
+              %p.shy Please upload one or more images with embedded geodata. A place will be created for each image and placed on the map.
+            .small-6.cell                      
+              = f.input :images_creator, label: 'Creator of these images'
+              %p.hint Creator of these images
+              = f.input :images_licence, label: 'Licence for all images'
+              %p.hint Licence of the image (CC, Public Domain, Rights reserved)
+              = f.input :images_source, label: 'Source'
+              %p.hint Origin of these images    
+        %hr        
+        .grid-x.grid-padding-x
+          .small-5.cell
+            %p
+              = f.input :public_submission, :label => 'Submissions'
+              %p.hint.text-left Enable public submissions
+            - if @layer.public_submission
+              - if @layer.submission_config
+                = link_to edit_submission_config_path(@layer.submission_config.id), :class=>"button small" do
+                  %i.fi-pencil.fi-18
+                  Edit submissions configuration
+                - if @layer.submission_config.locales.count > 0
+                  %br
+                  Submission forms:
+                  %br
+                  - @layer.submission_config.locales.each do |language|
+                    - klass = 'button secondary'
+                    = link_to new_submission_path(layer_id: @layer.id, locale: language.to_s), class: "#{klass}", target: '_blank' do
+                      %i.fi-web.fi-24
+                      - title = @layer.submission_config.title_intro(locale: language)
+                      - if title.nil?
+                        %i Missing title
+                      - else
+                        = title
+              - else
+                = link_to new_submission_config_path(layer_id: @layer.id), :class=>"button small" do
+                  %i.fi-pencil.fi-24
+                  Create submission configuration
+            %hr
+            - if @map.enable_privacy_features
+              %p
+                %label Privacy features
+              %p.shy
+                These features are experimental and need some real life testing. Do not use them without beeing aware of this status. If you use them we'd be very happy if you could share your exprience with us :)
+              .grid-x.grid-padding-x
+                .large-12.medium-12.small-12.cell
+                  %p
+                    = f.label :exif_remove, "Remove EXIF data"
+                    #switch.switch.inline
+                      %input{:name=>"layer[exif_remove]", :class => "switch-input", :id => "layer_exif_remove", :type => "checkbox", :checked => @layer.exif_remove }
+                      %label.switch-paddle{:for=>"layer_exif_remove"}
+                        %span.show-for-sr
+                          Remove EXIF data for all images
+                        %span.switch-active{:aria-hidden=>"true"} Remove
+                        %span.switch-inactive{:aria-hidden=>"true"} Keep
+                      %p.hint
+                        Metadata will be erased from uploaded images
+                        %i.fi.fi-info{"data-tooltip"=>true, :title=>"After selecting this option a function will remove all embedded metadata (EXIF) from images. This will have no impact on images that have been already uploaded!" }
+                  %hr
+                  %p
+                    = f.label :rasterize_images, "Rasterize images"
+                    #switch_rasterize_images.switch.inline
+                      %input{:name=>"layer[rasterize_images]", :class => "switch-input", :id => "layer_rasterize_images", :type => "checkbox", :checked => @layer.rasterize_images }
+                      %label.switch-paddle{:for=>"layer_rasterize_images"}
+                        %span.show-for-sr
+                          Raster all images, that are no graphics
+                        %span.switch-active{:aria-hidden=>"true"} Raster
+                        %span.switch-inactive{:aria-hidden=>"true"} No
+                      %p.hint
+                        Display all images, that are no graphics, with a halftone raster
+                        %i.fi.fi-info{"data-tooltip"=>true, :title=>"With this option all images of this layer, that are no graphics, will be published as rastered, and so mildly disguised images. This option will not alter the images already uploaded in this system." }
+          .small-7.cell
+            = f.input :image, as: :file, label: 'Cover image', required: false
+            - if @layer.image && @layer.image.attached? && ActiveStorage::Blob.service.exist?(@layer.image.blob.key)
+              = image_tag @layer.image.variant(resize: "200x200").processed, class: "thumbnail"
+            = f.input :image_creator
+            %p.hint Who is the creator of this image?
+            = f.input :image_alt, label: 'Alternate image text'
+            %p.hint Short description for screenreader
+            = f.input :image_licence, label: 'Image licence'
+            %p.hint Licence of the image (CC, Public Domain, Rights reserved)
+            = f.input :image_source
+            %p.hint Origin of this image
+            %hr
+            = f.input :backgroundimage, as: :file, label: 'Background image', required: false
+            - if @layer.backgroundimage && @layer.backgroundimage.attached? && ActiveStorage::Blob.service.exist?(@layer.backgroundimage.blob.key)
+              = image_tag @layer.backgroundimage.variant(resize: "200x200").processed, class: "thumbnail"
+            %p.hint This image can be displayed in the background of the client map
+            %hr
+            = f.input :favicon, as: :file, label: 'Favicon image', required: false
+            - if @layer.favicon && @layer.favicon.attached? && ActiveStorage::Blob.service.exist?(@layer.favicon.blob.key)
+              = image_tag @layer.favicon.variant(resize: "200x200").processed, class: "thumbnail"
+            %p.hint Image that can be used as Favicon for the client. (PNG)
+        %hr
+        = render partial: 'layers/partials/marker_color', locals: { f: f } 
+        %hr
+        %div.compact
+          .grid-x.grid-padding-x
+            .large-6.medium-6.small-12.cell
+              %label Tooltip
+              = f.input :tooltip_display_mode, :collection => tooltip_display_mode_for_select, include_blank: true, label: false, :selected => @layer.tooltip_display_mode
+              %p.hint.text-left
+                Tooltips show the title of a place on the map. Here you can decide how the tooltips should be visible, either permanently or per mouse-over
+            .large-6.medium-6.small-12.cell
+              %label Sorting
+              = f.input :places_sort_order, :collection => places_sort_order_for_select, label: false, :selected => @layer.places_sort_order
+              %p.hint.text-left
+                As a list, how the places should be sorted: By their ID oder by startdate (if defined)?
+        %hr
+        %div.compact
+          .grid-x.grid-padding-x
+            .large-4.medium-4.small-6.cell
+              %label Relations bending
+              .grid-x
+                .large-3.medium-3.small-6.cell
+                  = f.input :relations_bending, label: false, input_html: { type: 'number', min: 0, max: 1, step: 1 }
+              %p.hint.text-left
+                Should relation vectors be bended? (0/1)
+            .large-6.medium-4.small-6.cell
+              %label Relations coloring
+              = f.input :relations_coloring, :collection =>  relations_coloring_for_select, label: false, :selected => @layer.relations_coloring
+              %p.hint.text-left
+                Should the realtions be colored in random colors, or rendered black or in the color of the markers (monochrome)?
+            .large-2.medium-4.small-12.cell
+              &nbsp;
+        %hr
+        %div.compact
+          .grid-x.grid-padding-x
+            .large-6.medium-6.small-12.cell
+              %label Predefined Basemaps
+              %select#basemaps{"data-map-basemap-url": @map.basemap_url, "data-map-basemap-attribution": @map.basemap_attribution, "data-map-background-color": @map.background_color, "data-layer-basemap-url": @layer.basemap_url, "data-layer-basemap-attribution": @layer.basemap_attribution, "data-layer-background-color": @layer.background_color, disabled: (@layer.use_background_from_parent_map ? true : false)}
+                %option{value: '', "data-url": '', "data-backgroundcolor": '', "data-attribution": '' }
+                - basemaps.each_value do |b|
+                  %option{value: b['id'], "data-url": b['url'], "data-backgroundcolor": b['backgroundcolor'], "data-attribution": b['attribution'] }
+                    = b['title']
+              %p.shy
+                Please select one of the predefined basemaps
+
+            .large-6.medium-6.cell
+              - if @map && @map.basemap_url.present?
+                = f.input :use_background_from_parent_map, label: "Use background from parent map"
+                %p.hint Using the background settings from the parent map. Disable this option, if you want to set custom background just for this layer.
+              - else
+                %p.hint.text-left
+                  You could also
+                  = link_to edit_map_url(@map, :anchor => "basemap") do
+                    set the background settings per map,
+                  so it would apply to layers of this map.
+
+
+          %hr
+          .grid-x.grid-padding-x
+            .large-12.medium-12.small-12.cell
+              %div
+                %label{for: 'layer_basemap_url'} Default Basemap URL
+                = f.input :basemap_url, :input_html => {:placeholder => 'https://server/directory/{z}/{y}/{x}'}, label: false, disabled: (@layer.use_background_from_parent_map ? true : false)
+              %p.shy
+                URL for a basemap (used as tile layer in the background)
+                %i.fi.fi-info{"data-tooltip"=>true, :title=>"Default are Esri satellite images. Here you can define a default basemap for this map. It must have the following syntax: 'https://server/directory/{z}/{y}/{x}"}
+              %div
+                %label{for: 'layer_basemap_attribution'} Basemap Attribution
+                = f.input :basemap_attribution, :input_html => {:placeholder => ''}, label: false, disabled: (@layer.use_background_from_parent_map ? true : false)
+              %p.shy
+                Attribution for this basemap
+                %i.fi.fi-info{"data-tooltip"=>true, :title=>"Basemap are made by someone, you should credit them here. Licences of most providers like Openstreetmap require to mention them properly."}
+          %hr
+          .grid-x.grid-padding-x
+            .medium-12.small-12.cell
+              %p
+                %label Background color
+              .grid-x.grid-padding-x
+                .medium-2.cell
+                  %p.shy Pick a color:
+                  .grid-x
+                    .medium-5.cell
+                      %input{type: "color", id: "background_color_preselector", value: @layer.background_color, disabled: (@layer.use_background_from_parent_map ? true : false)}
+                .medium-5.cell
+                  %p.shy Or paste a color definition:
+                  = f.input :background_color, value: @layer.background_color, label: false, disabled: (@layer.use_background_from_parent_map ? true : false)
+                  %p.shy
+                    Color in HEX, RGB or a gradient definition :)
+                    %i.fi.fi-info{"data-tooltip"=>true, :title=>"Here you can define a fullcolor in HEX or RGB format, or a gradient definition, all according to the CSS definitions of 'background-color'"}
+                .medium-5.cell
+                  %p
+                    %label Preview
+                    %div#background_color_preview{style: "background: #{@layer.background_color}" }
+                      &nbsp;
+
+                  %p.hint
+                    The background of the map will be filled with this color.
+                    %i.fi.fi-info{"data-tooltip"=>true, :title=>"Most basemap layers (tile layer) will cover the background, so this background color will only be visible while loading and in cases of errors. Exception: The 3plusx tiles don't have a background, so this background color will be visible."}
+
+        %hr
+        %div.compact#mapcenter{"data-map-mapcenter-lat": @map.mapcenter_lat, "data-map-mapcenter-lon": @map.mapcenter_lon, "data-map-zoom": @map.zoom, "data-layer-mapcenter-lat": @layer.mapcenter_lat, "data-layer-mapcenter-lon": @layer.mapcenter_lon, "data-layer-zoom": @layer.zoom }
+          .grid-x.grid-padding-x
+            .large-12.medium-12.cell#mapcenter
+              %h5 Mapcenter
+          .grid-x.grid-padding-x
+            .large-5.medium-6.cell
+              %p.hint.text-left Set these geocoordinates if you want to manually define a map center (not that center automatically calculated by the extent of all places)
+            .large-7.medium-6.cell
+              - if @map && @map.mapcenter_lat.present? && @map.mapcenter_lon.present?
+                = f.input :use_mapcenter_from_parent_map, label: "Use coordinates from parent map"
+                %p.hint Using the coordinate settings from the parent map. Disable this option, if you want to set custom coordinates for this layer.
+              - else
+                %p.hint.text-left
+                  You could also
+                  = link_to edit_map_url(@map, :anchor => "mapcenter") do
+                    set the mapcenter per map,
+                  so it would apply to layers of this map.
+          .grid-x.grid-padding-x
+            .medium-5.cell
+              = f.input :mapcenter_lat, label: "Latitude", input_html: { placeholder: '53.0000'}, disabled: (@layer.use_mapcenter_from_parent_map ? true : false)
+            .medium-5.cell
+              = f.input :mapcenter_lon, label: "Longitude", input_html: { placeholder: '10.0000'}, disabled: (@layer.use_mapcenter_from_parent_map ? true : false)
+            .medium-2.cell
+              = f.input :zoom, label: "Zoom", input_html: { placeholder: '12'}, disabled: (@layer.use_mapcenter_from_parent_map ? true : false)
+              %p.hint 1-18
+
+
+        %hr
+      .form-actions
+        %p
+          = f.button :submit, :class => "button"

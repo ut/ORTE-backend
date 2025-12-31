@@ -1,0 +1,34 @@
+- content_for(:title) { "Import for #{@layer.title}" }
+
+#table-wrapper
+  %p.text-right.close_link_wrapper
+    =link_to map_path(@map), :class=>'close_link' do
+      %i.fi.fi-x
+  %h1
+    Import:
+    = link_to map_layer_path(@map,@layer) do
+      = @layer.title
+  .grid-x.grid-padding-x
+    .large-12.medium-12.small-12.cell
+      %hr
+      %p You can create many places for this layer by importing a CSV file.
+      %p.hint
+        You can use this importer also to re-import an earlier exported
+        = link_to map_layer_path(@map,@layer,:format => :csv), :title => "Export this layer as CSV" do
+          Layer-CSV (as a backup)
+        or to quickly fill a layer with places defined elsewhere.
+      = simple_form_for :import, url: import_preview_map_layer_path(@map), multipart: true, method: "POST", html: { class: 'form-inline' } do |f|
+        %hr
+        %p
+          = f.input :file, :as => "file", :label => 'CSV File', input_html: { accept: '.csv' }
+          %span.hint  The format of the file must be CSV.
+        %p
+          .grid-x.grid-padding-x
+            .cell.medium-3
+              = f.input :column_separator, as: :radio_buttons, collection: ['Comma', 'Semicolon', 'Tab'], checked: 'Comma'
+            .cell.medium-3
+              = f.input :quote_char, as: :string, label: 'Quote Char', input_html: { value: '"' }
+        %hr
+        .form-actions
+          %p
+            = f.submit "Import CSV File", class: "button"

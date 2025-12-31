@@ -1,0 +1,3 @@
+id,title,teaser,text,annotations,startdate,enddate,lat,lon,location,address,zip,city,country,unknown
+239,Place 1,"Ein etwas versteckt gelegenes und daher wohl eher unbekanntes Fleckchen  Grün.","a annotation",,,,53.55,9.94,"","",22765,Hamburg (Altona-Nord),"Something"
+240,Place 2,"Zusätzlich wurden zum Zweck der Feuerholzgewinnung zahlreiche der alten Alleebäume abgeholzt.","another annotation",,,,53.55,9.95, ,Norderreihe 2,22767,Hamburg (Altona-Altstadt),"","Some other thing"

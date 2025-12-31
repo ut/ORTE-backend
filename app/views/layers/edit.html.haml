@@ -27,5 +27,5 @@
           = link_to map_layer_places_path(@map, @layer) do
             = @layer.places.count
             Places.
-  = render 'form'
+  = render 'layers/partials/form'
   = link_to 'View Layer', [@map, @layer], :class => 'button secondary'

@@ -1,0 +1,19 @@
+%p.compact
+  = f.label :color, "Marker color"
+.grid-x
+  .small-6.cell
+    #preview_color_wrapper
+      %svg{id: "layer_color_preview",height:50,width:50,version:"1.1",xmlns:"http://www.w3.org/2000/svg"}
+        %circle{cx:"25",cy:"25",r:"25",fill:"#{@layer.color}"}
+      = f.input :color, :label => false, :size => 10, :class => "inline"
+  .small-6.cell
+
+    - if @colors_selectable
+      #another_color_wrapper
+        %p.small
+          Select an alternate color:
+        %p
+          - @colors_selectable.each do |c|
+            %span{:class=>'another_color',"data-color"=>"#{c}"}
+              %svg{height:24,width:24,version:"1.1",xmlns:"http://www.w3.org/2000/svg"}
+                %circle{cx:"12",cy:"12",r:"12",fill:"#{c}"}
