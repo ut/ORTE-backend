@@ -9,7 +9,7 @@ require File.expand_path('../deploy/cap_notify', __FILE__)
 set :application, Rails.application.credentials.dig(:deploy, :orte, :application)
 set :repo_url, "git@github.com:a-thousand-channels/ORTE-backend.git"
 set :deploy_to, "/home/orte-deploy/#{fetch(:application)}-#{fetch(:stage)}"
-set :ssh_options, forward_agent: true, verify_host_key: :always
+set :ssh_options, forward_agent: true, verify_host_key: :never
 set :keep_releases, 3
 set :rvm_type, :user
 set :bundle_flags,    ''
