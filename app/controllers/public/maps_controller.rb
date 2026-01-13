@@ -30,7 +30,7 @@ class Public::MapsController < ActionController::Base
       if @map_layers.present?
         @map_layers = @map_layers
                       .includes(:image_attachment, places: [:icon, :annotations, :tags, { images: { file_attachment: :blob }, audio_attachment: :blob, relations_froms: %i[relation_from relation_to] }])
-                      .where(places: { published: true })
+
         if params[:filter_by_tags]
           tags = params[:filter_by_tags].split(',')
           accordingly_tagged_place_ids = if params[:match_all].present? && params[:match_all] == 'true'
